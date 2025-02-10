@@ -12,6 +12,10 @@ import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.hologram.Hologram;
 import toutouchien.niveriaholograms.hologram.HologramManager;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+
 public class HologramTeleport extends SubCommand {
 	HologramTeleport(Plugin plugin) {
 		super(new CommandData("teleport", plugin)
@@ -44,5 +48,17 @@ public class HologramTeleport extends SubCommand {
 
 		player.teleportAsync(hologram.display().getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
 		player.sendMessage(MessageUtils.successMessage(Component.text("Tu as été téléporté à " + hologram.name())));
+	}
+
+	@Override
+	public List<String> complete(Player player, String[] args, int argIndex) {
+		if (argIndex != 0)
+			return Collections.emptyList();
+
+		String currentArg = args[argIndex].toLowerCase(Locale.ROOT);
+		return NiveriaHolograms.instance().hologramManager().holograms().stream()
+				.map(Hologram::name)
+				.filter(hologramName -> hologramName.toLowerCase(Locale.ROOT).startsWith(currentArg))
+				.toList();
 	}
 }
