@@ -1,0 +1,26 @@
+name: NiveriaHolograms
+version: '${project.version}'
+main: toutouchien.niveriaholograms.NiveriaHolograms
+api-version: '1.20'
+load: STARTUP
+authors: [ Toutouchien ]
+website: niveria.fr
+
+dependencies:
+  server:
+    NiveriaAPI:
+      load: BEFORE
+      required: true
+
+
+permissions:
+  niveriacore.*:
+    children:
+      - niveriaholograms.command.*
+
+  niveriacore.command.*:
+    children:
+      - niveriaholograms.command.niveriaholograms
+
+  niveriacore.command.niveriaholograms:
+    default: op
