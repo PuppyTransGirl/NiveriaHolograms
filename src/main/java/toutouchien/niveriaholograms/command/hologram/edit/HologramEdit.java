@@ -123,7 +123,12 @@ public class HologramEdit extends SubCommand {
                 default -> null;
             };
 
+			if (completions == null)
+				return Collections.emptyList();
+
 			return completions.filter(completion -> completion.toLowerCase(Locale.ROOT).startsWith(currentArg)).toList();
 		}
+
+		return Collections.emptyList();
 	}
 }
