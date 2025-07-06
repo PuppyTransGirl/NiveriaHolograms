@@ -25,8 +25,8 @@ import static net.kyori.adventure.text.Component.text;
 import static toutouchien.niveriaholograms.utils.MathUtils.decimalRound;
 
 public class HologramNearby extends SubCommand {
-	HologramNearby(Plugin plugin) {
-		super(new CommandData("nearby", plugin)
+	HologramNearby() {
+		super(new CommandData("nearby", "niveriaholograms")
 				.aliases("near", "n")
 				.playerRequired(true)
 				.usage("<range>"));
@@ -55,7 +55,7 @@ public class HologramNearby extends SubCommand {
 			return;
 		}
 
-		HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+/*		HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
 		List<Map.Entry<Hologram<?>, Double>> nearbyHolograms = hologramManager.holograms().stream()
 				.filter(hologram -> hologram.display().getLocation().getWorld() == player.getWorld())
 				.map(hologram -> Map.<Hologram<?>, Double>entry(hologram, hologram.display().getLocation().distance(player.getLocation())))
@@ -102,6 +102,6 @@ public class HologramNearby extends SubCommand {
 					.hoverEvent(HoverEvent.showText(Component.text("Clique pour s'y téléporter")));
 
 			player.sendMessage(playerInfo);
-		});
+		});*/
 	}
 }

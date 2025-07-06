@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Locale;
 
 public class HologramTeleport extends SubCommand {
-	HologramTeleport(Plugin plugin) {
-		super(new CommandData("teleport", plugin)
+	HologramTeleport() {
+		super(new CommandData("teleport", "niveriaholograms")
 				.aliases("t")
 				.playerRequired(true)
 				.usage("<hologram>"));
@@ -36,7 +36,7 @@ public class HologramTeleport extends SubCommand {
 		}
 
 		HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
-		Hologram<?> hologram = hologramManager.hologramByName(args[0]);
+		Hologram hologram = hologramManager.hologramByName(args[0]);
 		if (hologram == null) {
 			TextComponent errorMessage = MessageUtils.errorMessage(
 					Component.text("Cet hologramme n'existe pas.")
@@ -46,7 +46,7 @@ public class HologramTeleport extends SubCommand {
 			return;
 		}
 
-		player.teleportAsync(hologram.display().getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+		player.teleportAsync(hologram.location().bukkitLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
 		player.sendMessage(MessageUtils.successMessage(Component.text("Tu as été téléporté à " + hologram.name())));
 	}
 

@@ -9,11 +9,11 @@ import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.utils.MessageUtils;
 
 public class NiveriaHolograms extends Command {
-	public NiveriaHolograms(Plugin plugin) {
-		super(new CommandData("niveriaholograms", plugin)
+	public NiveriaHolograms() {
+		super(new CommandData("niveriaholograms", "niveriaholograms")
 				.description("Permet de gérer le plugin d'hologrammes de Niveria.")
 				.usage("<reload>")
-				.subCommands(new NiveriaHologramsReload(plugin), new NiveriaHologramsTest(plugin)));
+				.subCommands(new NiveriaHologramsReload(), new NiveriaHologramsTest(), new NiveriaHologramCreate()));
 	}
 
 	@Override

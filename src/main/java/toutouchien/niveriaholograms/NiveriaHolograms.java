@@ -1,14 +1,23 @@
 package toutouchien.niveriaholograms;
 
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 import toutouchien.niveriaapi.NiveriaAPI;
+import toutouchien.niveriaholograms.command.hologram.Hologram;
+import toutouchien.niveriaholograms.hologram.HologramListener;
 import toutouchien.niveriaholograms.hologram.HologramManager;
-import toutouchien.niveriaholograms.listeners.ServerStartListener;
+import toutouchien.niveriaholograms.utils.CustomLocation;
+
+import java.util.Arrays;
 
 public class NiveriaHolograms extends JavaPlugin {
 	private static NiveriaHolograms INSTANCE;
 
 	private HologramManager hologramManager;
+
+	static {
+		ConfigurationSerialization.registerClass(CustomLocation.class, "CustomLocation");
+	}
 
 	@Override
 	public void onEnable() {
@@ -16,11 +25,15 @@ public class NiveriaHolograms extends JavaPlugin {
 
 		(this.hologramManager = new HologramManager(this)).initialize();
 
-		NiveriaAPI.instance().commandManager().registerCommand(
-				new toutouchien.niveriaholograms.command.niveriaholograms.NiveriaHolograms(this)
+		NiveriaAPI.instance().commandManager().registerCommands(
+				Arrays.asList(
+						new toutouchien.niveriaholograms.command.niveriaholograms.NiveriaHolograms(),
+
+						new Hologram()
+				)
 		);
 
-		getServer().getPluginManager().registerEvents(new ServerStartListener(this), this);
+		getServer().getPluginManager().registerEvents(new HologramListener(this), this);
 	}
 
 	@Override
@@ -31,7 +44,7 @@ public class NiveriaHolograms extends JavaPlugin {
 	}
 
 	public void reload() {
-
+		this.hologramManager.reload();
 	}
 
 	public HologramManager hologramManager() {

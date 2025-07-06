@@ -10,8 +10,8 @@ import toutouchien.niveriaapi.utils.MessageUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 
 public class NiveriaHologramsReload extends SubCommand {
-	NiveriaHologramsReload(Plugin plugin) {
-		super(new CommandData("reload", plugin));
+	NiveriaHologramsReload() {
+		super(new CommandData("reload", "niveriaholograms"));
 	}
 
 	@Override
