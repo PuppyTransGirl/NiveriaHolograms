@@ -1,7 +1,7 @@
 name: NiveriaHolograms
 version: '${project.version}'
 main: toutouchien.niveriaholograms.NiveriaHolograms
-api-version: '1.20'
+api-version: '1.21'
 load: STARTUP
 authors: [ Toutouchien ]
 website: niveria.fr

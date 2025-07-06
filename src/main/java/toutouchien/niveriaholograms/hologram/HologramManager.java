@@ -7,10 +7,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import toutouchien.niveriaholograms.NiveriaHolograms;
-import toutouchien.niveriaholograms.hologram.configuration.BlockHologramConfiguration;
-import toutouchien.niveriaholograms.hologram.configuration.HologramConfiguration;
-import toutouchien.niveriaholograms.hologram.configuration.ItemHologramConfiguration;
-import toutouchien.niveriaholograms.hologram.configuration.TextHologramConfiguration;
+import toutouchien.niveriaholograms.configuration.BlockHologramConfiguration;
+import toutouchien.niveriaholograms.configuration.HologramConfiguration;
+import toutouchien.niveriaholograms.configuration.ItemHologramConfiguration;
+import toutouchien.niveriaholograms.configuration.TextHologramConfiguration;
 import toutouchien.niveriaholograms.utils.CustomLocation;
 
 import java.io.File;

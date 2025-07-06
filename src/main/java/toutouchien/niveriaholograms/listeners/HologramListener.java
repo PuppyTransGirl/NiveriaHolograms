@@ -1,4 +1,4 @@
-package toutouchien.niveriaholograms.hologram;
+package toutouchien.niveriaholograms.listeners;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -10,6 +10,7 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import toutouchien.niveriaholograms.NiveriaHolograms;
+import toutouchien.niveriaholograms.hologram.HologramManager;
 
 import java.io.File;
 import java.util.List;

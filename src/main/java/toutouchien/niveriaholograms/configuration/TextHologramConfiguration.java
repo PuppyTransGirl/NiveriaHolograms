@@ -1,4 +1,4 @@
-package toutouchien.niveriaholograms.hologram.configuration;
+package toutouchien.niveriaholograms.configuration;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;

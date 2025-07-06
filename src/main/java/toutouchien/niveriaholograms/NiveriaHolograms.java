@@ -4,8 +4,8 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 import toutouchien.niveriaapi.NiveriaAPI;
 import toutouchien.niveriaholograms.command.hologram.Hologram;
-import toutouchien.niveriaholograms.hologram.HologramListener;
 import toutouchien.niveriaholograms.hologram.HologramManager;
+import toutouchien.niveriaholograms.listeners.HologramListener;
 import toutouchien.niveriaholograms.utils.CustomLocation;
 
 import java.util.Arrays;
