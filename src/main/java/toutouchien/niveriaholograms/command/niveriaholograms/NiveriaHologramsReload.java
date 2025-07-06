@@ -3,10 +3,9 @@ package toutouchien.niveriaholograms.command.niveriaholograms;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
-import toutouchien.niveriaapi.utils.MessageUtils;
+import toutouchien.niveriaapi.utils.ui.MessageUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 
 public class NiveriaHologramsReload extends SubCommand {

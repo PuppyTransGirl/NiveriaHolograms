@@ -5,7 +5,7 @@ import net.kyori.adventure.text.TextComponent;
 import org.bukkit.command.CommandSender;
 import toutouchien.niveriaapi.command.Command;
 import toutouchien.niveriaapi.command.CommandData;
-import toutouchien.niveriaapi.utils.MessageUtils;
+import toutouchien.niveriaapi.utils.ui.MessageUtils;
 
 public class Hologram extends Command {
 	public Hologram() {

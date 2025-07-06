@@ -2,27 +2,10 @@ package toutouchien.niveriaholograms.command.hologram;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.plugin.Plugin;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
-import toutouchien.niveriaapi.utils.ColorUtils;
-import toutouchien.niveriaapi.utils.MessageUtils;
-import toutouchien.niveriaholograms.NiveriaHolograms;
-import toutouchien.niveriaholograms.hologram.Hologram;
-import toutouchien.niveriaholograms.hologram.HologramManager;
-
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-
-import static net.kyori.adventure.text.Component.text;
-import static toutouchien.niveriaholograms.utils.MathUtils.decimalRound;
+import toutouchien.niveriaapi.utils.ui.MessageUtils;
 
 public class HologramNearby extends SubCommand {
 	HologramNearby() {

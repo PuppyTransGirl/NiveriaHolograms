@@ -1,4 +1,4 @@
-package toutouchien.niveriaholograms.hologram.configuration;
+package toutouchien.niveriaholograms.configuration;
 
 import org.bukkit.Material;
 

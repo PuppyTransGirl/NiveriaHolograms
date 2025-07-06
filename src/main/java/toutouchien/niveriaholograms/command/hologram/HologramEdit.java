@@ -2,26 +2,24 @@ package toutouchien.niveriaholograms.command.hologram;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.entity.Display;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.TextDisplay;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
-import toutouchien.niveriaapi.utils.MessageUtils;
+import toutouchien.niveriaapi.utils.ui.MessageUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.command.hologram.edit.HologramEditBillboard;
 import toutouchien.niveriaholograms.command.hologram.edit.HologramEditBrightness;
+import toutouchien.niveriaholograms.command.hologram.edit.HologramEditPosition;
 import toutouchien.niveriaholograms.command.hologram.edit.block.HologramEditBlock;
 import toutouchien.niveriaholograms.command.hologram.edit.item.HologramEditItem;
-import toutouchien.niveriaholograms.command.hologram.edit.HologramEditPosition;
 import toutouchien.niveriaholograms.command.hologram.edit.text.*;
 import toutouchien.niveriaholograms.hologram.Hologram;
 import toutouchien.niveriaholograms.hologram.HologramManager;
 
-import java.util.*;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 public class HologramEdit extends SubCommand {
 	public HologramEdit() {

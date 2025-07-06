@@ -6,14 +6,11 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
-import toutouchien.niveriaapi.utils.MessageUtils;
+import toutouchien.niveriaapi.utils.ui.MessageUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
+import toutouchien.niveriaholograms.configuration.TextHologramConfiguration;
 import toutouchien.niveriaholograms.hologram.Hologram;
 import toutouchien.niveriaholograms.hologram.HologramManager;
-import toutouchien.niveriaholograms.hologram.configuration.TextHologramConfiguration;
-
-import java.util.Collections;
-import java.util.List;
 
 public class HologramEditAddLine extends SubCommand {
 	public HologramEditAddLine() {

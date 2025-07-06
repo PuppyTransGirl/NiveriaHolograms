@@ -2,16 +2,14 @@ package toutouchien.niveriaholograms.command.hologram.edit;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import org.bukkit.Material;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.Player;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
-import toutouchien.niveriaapi.utils.MessageUtils;
+import toutouchien.niveriaapi.utils.ui.MessageUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.hologram.Hologram;
 import toutouchien.niveriaholograms.hologram.HologramManager;
-import toutouchien.niveriaholograms.hologram.configuration.BlockHologramConfiguration;
 
 import java.util.Arrays;
 import java.util.Collections;
