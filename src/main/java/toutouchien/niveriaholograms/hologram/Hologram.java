@@ -1,30 +1,257 @@
 package toutouchien.niveriaholograms.hologram;
 
-import org.bukkit.entity.Display;
+import com.mojang.math.Transformation;
+import io.netty.buffer.Unpooled;
+import io.papermc.paper.adventure.PaperAdventure;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import net.kyori.adventure.text.format.TextColor;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
+import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
+import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Brightness;
+import net.minecraft.world.entity.Display;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.TextDisplay;
+import org.joml.Quaternionf;
+import toutouchien.niveriaholograms.hologram.configuration.BlockHologramConfiguration;
+import toutouchien.niveriaholograms.hologram.configuration.HologramConfiguration;
+import toutouchien.niveriaholograms.hologram.configuration.ItemHologramConfiguration;
+import toutouchien.niveriaholograms.hologram.configuration.TextHologramConfiguration;
+import toutouchien.niveriaholograms.utils.CustomLocation;
+import toutouchien.niveriaholograms.utils.ReflectionUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
-public class Hologram<T extends Display> {
+public class Hologram {
+	private static final ConcurrentHashMap<UUID, PacketStats> playerPacketStats = new ConcurrentHashMap<>();
+	public static final TextColor TRANSPARENT = () -> 0;
+	private Display display = null;
+
+	private HologramType type;
+	private HologramConfiguration configuration;
 	private String name;
+	private CustomLocation location;
 	private UUID owner;
-	private long timestamp;
-	private T display;
-	private int updateInterval;
 
-	public Hologram(String name, UUID owner, long timestamp, T display, int updateInterval) {
-		this.owner = owner;
-		this.timestamp = timestamp;
+	public Hologram(HologramType type, HologramConfiguration configuration, String name, CustomLocation location, UUID owner) {
+		this.type = type;
+		this.configuration = configuration;
 		this.name = name;
-		this.display = display;
-		this.updateInterval = updateInterval;
+		this.location = location;
+		this.owner = owner;
+	}
+
+	public void createForAllPlayers() {
+		Bukkit.getOnlinePlayers().forEach(player -> {
+			if (!player.getWorld().getName().equals(location.world()))
+				return;
+
+			this.create(player);
+		});
+	}
+
+	public void deleteForAllPlayers() {
+		Bukkit.getOnlinePlayers().forEach(this::delete);
+	}
+
+	public void updateForAllPlayers() {
+		Bukkit.getOnlinePlayers().forEach(this::update);
+	}
+
+	public void create(Player player) {
+		send(player, new ClientboundAddEntityPacket(display));
+		update(player);
+	}
+	
+	public void delete(Player player) {
+		send(player, new ClientboundRemoveEntitiesPacket(display.getId()));
+	}
+
+	public void update(Player player) {
+		send(player, new ClientboundTeleportEntityPacket(display));
+
+		if (display instanceof Display.TextDisplay textDisplay)
+			textDisplay.setText(PaperAdventure.asVanilla(((TextHologramConfiguration) configuration).text()));
+
+		// Doesn't work :c
+/*		List<SynchedEntityData.DataValue<?>> nonDefaultValues = display.getEntityData().getNonDefaultValues();
+		if (nonDefaultValues == null)
+			nonDefaultValues = Collections.emptyList();
+
+		send(player, new ClientboundSetEntityDataPacket(display.getId(), nonDefaultValues));*/
+
+		// TODO: Use packDirty()
+		List<SynchedEntityData.DataValue<?>> values = new ArrayList<>();
+		for (SynchedEntityData.DataItem<?> item : ((Int2ObjectMap<SynchedEntityData.DataItem<?>>) ReflectionUtils.getValue(display.getEntityData(), "e")).values())
+			values.add(item.value());
+
+		send(player, new ClientboundSetEntityDataPacket(display.getId(), values));
+	}
+	
+	public void create() {
+		ServerLevel level = ((CraftWorld) location.bukkitLocation().getWorld()).getHandle();
+		switch (type) {
+			case BLOCK -> this.display = new Display.BlockDisplay(EntityType.BLOCK_DISPLAY, level);
+			case ITEM -> this.display = new Display.ItemDisplay(EntityType.ITEM_DISPLAY, level);
+			case TEXT -> this.display = new Display.TextDisplay(EntityType.TEXT_DISPLAY, level);
+		}
+
+		display.setTransformationInterpolationDuration(1);
+		display.setTransformationInterpolationDelay(0);
+
+		updateLocation();
+		update();
+	}
+
+	public void updateLocation() {
+		display.setPosRaw(location.x(), location.y(), location.z());
+		display.setYRot(location.yaw()); // These are correct Y = Yaw, X = Pitch
+		display.setXRot(location.pitch());
+	}
+
+	public void update() {
+		display.setBillboardConstraints(switch (configuration.billboard()) {
+			case FIXED -> Display.BillboardConstraints.FIXED;
+			case VERTICAL -> Display.BillboardConstraints.VERTICAL;
+			case HORIZONTAL -> Display.BillboardConstraints.HORIZONTAL;
+			case CENTER -> Display.BillboardConstraints.CENTER;
+		});
+
+		if (display instanceof Display.BlockDisplay blockDisplay && configuration instanceof BlockHologramConfiguration blockConfiguration) {
+			Block block = BuiltInRegistries.BLOCK.get(ResourceLocation.of(blockConfiguration.material().key().asString(), ':'));
+			blockDisplay.setBlockState(block.defaultBlockState());
+		} else if (display instanceof Display.ItemDisplay itemDisplay && configuration instanceof ItemHologramConfiguration itemConfiguration) {
+			itemDisplay.setItemStack(ItemStack.fromBukkitCopy(itemConfiguration.itemStack()));
+		} else if (display instanceof Display.TextDisplay textDisplay && configuration instanceof TextHologramConfiguration textConfiguration) {
+			display.getEntityData().set(Display.TextDisplay.DATA_LINE_WIDTH_ID, 1403);
+
+			TextColor background = textConfiguration.background();
+			int newBackground = background == null ? Display.TextDisplay.INITIAL_BACKGROUND : background == TRANSPARENT ? 0 : background.value() | 0xC8000000;
+			display.getEntityData().set(Display.TextDisplay.DATA_BACKGROUND_COLOR_ID, newBackground);
+
+			byte flags = textDisplay.getFlags();
+			flags = (byte) (textConfiguration.textShadow() ? flags | Display.TextDisplay.FLAG_SHADOW : (flags & ~Display.TextDisplay.FLAG_SHADOW));
+			flags = (byte) (textConfiguration.textAlignment() == TextDisplay.TextAlignment.LEFT ? (flags | Display.TextDisplay.FLAG_ALIGN_LEFT) : (flags & ~Display.TextDisplay.FLAG_ALIGN_LEFT));
+			flags = (byte) (textConfiguration.seeThrough() ? flags | Display.TextDisplay.FLAG_SEE_THROUGH : (flags & ~Display.TextDisplay.FLAG_SEE_THROUGH));
+			flags = (byte) (textConfiguration.textAlignment() == TextDisplay.TextAlignment.RIGHT ? (flags | Display.TextDisplay.FLAG_ALIGN_RIGHT) : (flags & ~Display.TextDisplay.FLAG_ALIGN_RIGHT));
+			textDisplay.setFlags(flags);
+		}
+
+		org.bukkit.entity.Display.Brightness brightness = configuration.brightness();
+		if (brightness != null)
+			display.setBrightnessOverride(new Brightness(brightness.getBlockLight(), brightness.getSkyLight()));
+
+		display.setTransformation(new Transformation(
+				configuration.translation(),
+				new Quaternionf(),
+				configuration.scale(),
+				new Quaternionf()
+		));
+
+		display.setShadowRadius(configuration.shadowRadius());
+		display.setShadowStrength(configuration.shadowStrength());
+	}
+
+	private void send(Player player, Packet<?> packet) {
+		if (packet instanceof ClientboundSetEntityDataPacket) {
+			FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+			packet.write(buf);
+			int packetSize = buf.readableBytes();
+
+			playerPacketStats.computeIfAbsent(player.getUniqueId(), id -> new PacketStats()).update(packetSize);
+
+			System.out.println("[Hologram] Sent Data Packet to " + player.getName() + " | Size: " + packetSize + " bytes");
+		}
+
+		((CraftPlayer) player).getHandle().connection.send(packet);
+	}
+
+	public static void printPacketStats() {
+		System.out.println("[Hologram] Packet Statistics:");
+		playerPacketStats.forEach((uuid, stats) -> {
+			Player player = Bukkit.getPlayer(uuid);
+			if (player != null) {
+				System.out.println("  - " + player.getName() + ":");
+				System.out.println("      Total Size: " + stats.getTotalSize() + " bytes");
+				System.out.println("      Count: " + stats.getCount());
+				System.out.println("      Min: " + stats.getMinSize() + " bytes");
+				System.out.println("      Max: " + stats.getMaxSize() + " bytes");
+				System.out.println("      Avg: " + String.format("%.2f", stats.getAverageSize()) + " bytes");
+			}
+		});
+	}
+
+	public void teleportTo(Location location) {
+		boolean worldChanged = !this.location.world().equals(location.getWorld().getName());
+		this.location = new CustomLocation(location);
+		this.updateLocation();
+
+		if (!worldChanged)
+			return;
+
+		this.deleteForAllPlayers();
+		Bukkit.getOnlinePlayers().stream()
+				.filter(player -> player.getWorld().getName().equals(location.getWorld().getName()))
+				.forEach(player -> {
+					this.create();
+					this.create(player);
+				});
+	}
+
+	public HologramType type() {
+		return type;
+	}
+
+	public Hologram type(HologramType type) {
+		this.type = type;
+		return this;
+	}
+
+	public HologramConfiguration configuration() {
+		return configuration;
+	}
+
+	public Hologram configuration(HologramConfiguration configuration) {
+		this.configuration = configuration;
+		return this;
 	}
 
 	public String name() {
 		return name;
 	}
 
-	public Hologram<T> name(String name) {
+	public Hologram name(String name) {
 		this.name = name;
+		return this;
+	}
+
+	public CustomLocation location() {
+		return location;
+	}
+
+	public Hologram location(CustomLocation location) {
+		this.location = location;
 		return this;
 	}
 
@@ -32,41 +259,29 @@ public class Hologram<T extends Display> {
 		return owner;
 	}
 
-	public Hologram<T> owner(UUID owner) {
+	public Hologram owner(UUID owner) {
 		this.owner = owner;
 		return this;
 	}
 
-	public long timestamp() {
-		return timestamp;
-	}
+	private static class PacketStats {
+		private final AtomicLong totalSize = new AtomicLong();
+		private final AtomicInteger count = new AtomicInteger();
+		private final AtomicLong minSize = new AtomicLong(Long.MAX_VALUE);
+		private final AtomicLong maxSize = new AtomicLong();
 
-	public Hologram<T> timestamp(long timestamp) {
-		this.timestamp = timestamp;
-		return this;
-	}
+		public void update(long packetSize) {
+			totalSize.addAndGet(packetSize);
+			count.incrementAndGet();
 
-	public Display display() {
-		return display;
-	}
+			minSize.updateAndGet(currentMin -> Math.min(currentMin, packetSize));
+			maxSize.updateAndGet(currentMax -> Math.max(currentMax, packetSize));
+		}
 
-	public Hologram<T> display(T display) {
-		this.display = display;
-		return this;
-	}
-
-	public int updateInterval() {
-		return updateInterval;
-	}
-
-	public Hologram<T> updateInterval(int updateInterval) {
-		this.updateInterval = updateInterval;
-		return this;
-	}
-
-	public enum Type {
-		BLOCK,
-		ITEM,
-		TEXT;
+		public long getTotalSize() { return totalSize.get(); }
+		public int getCount() { return count.get(); }
+		public long getMinSize() { return (count.get() == 0) ? 0 : minSize.get(); }
+		public long getMaxSize() { return maxSize.get(); }
+		public double getAverageSize() { return (count.get() == 0) ? 0 : (double) totalSize.get() / count.get(); }
 	}
 }

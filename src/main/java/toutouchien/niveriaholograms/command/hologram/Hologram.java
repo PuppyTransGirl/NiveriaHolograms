@@ -3,17 +3,17 @@ package toutouchien.niveriaholograms.command.hologram;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
 import toutouchien.niveriaapi.command.Command;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.utils.MessageUtils;
 
 public class Hologram extends Command {
-	public Hologram(Plugin plugin) {
-		super(new CommandData("hologram", plugin)
-				.aliases("holo")
+	public Hologram() {
+		super(new CommandData("hologram", "niveriaholograms")
+				.aliases("holo", "nholo")
 				.description("Gère les hologrammes")
-				.usage("<list|nearby|teleport|create|remove|copy|edit>"));
+				.usage("<list|nearby|teleport|create|remove|copy|edit>")
+				.subCommands(new HologramList(), new HologramNearby(), new HologramTeleport(), new HologramEdit()));
 	}
 
 	@Override
