@@ -90,7 +90,7 @@ public class Hologram {
 		send(player, new ClientboundTeleportEntityPacket(display));
 
 		if (display instanceof Display.TextDisplay textDisplay)
-			textDisplay.setText(PaperAdventure.asVanilla(((TextHologramConfiguration) configuration).text()));
+			textDisplay.setText(PaperAdventure.asVanilla(((TextHologramConfiguration) configuration).serializedText()));
 
         List<SynchedEntityData.DataValue<?>> values = join ? display.getEntityData().packAll() : display.getEntityData().packDirty();
 		if (values == null)
