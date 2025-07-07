@@ -7,12 +7,12 @@ import toutouchien.niveriaapi.command.Command;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.utils.ui.MessageUtils;
 
-public class NiveriaHolograms extends Command {
-	public NiveriaHolograms() {
+public class NiveriaHologramsCommand extends Command {
+	public NiveriaHologramsCommand() {
 		super(new CommandData("niveriaholograms", "niveriaholograms")
 				.description("Permet de gérer le plugin d'hologrammes de Niveria.")
 				.usage("<reload>")
-				.subCommands(new NiveriaHologramsReload(), new NiveriaHologramsTest(), new NiveriaHologramCreate()));
+				.subCommands(new NiveriaHologramsReloadCommand(), new NiveriaHologramsTestCommand(), new NiveriaHologramCreateCommand()));
 	}
 
 	@Override

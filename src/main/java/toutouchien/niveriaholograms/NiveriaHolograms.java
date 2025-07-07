@@ -3,7 +3,8 @@ package toutouchien.niveriaholograms;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 import toutouchien.niveriaapi.NiveriaAPI;
-import toutouchien.niveriaholograms.command.hologram.Hologram;
+import toutouchien.niveriaholograms.command.hologram.HologramCommand;
+import toutouchien.niveriaholograms.command.niveriaholograms.NiveriaHologramsCommand;
 import toutouchien.niveriaholograms.hologram.HologramManager;
 import toutouchien.niveriaholograms.listeners.HologramListener;
 import toutouchien.niveriaholograms.utils.CustomLocation;
@@ -27,9 +28,9 @@ public class NiveriaHolograms extends JavaPlugin {
 
 		NiveriaAPI.instance().commandManager().registerCommands(
 				Arrays.asList(
-						new toutouchien.niveriaholograms.command.niveriaholograms.NiveriaHolograms(),
+						new NiveriaHologramsCommand(),
 
-						new Hologram()
+						new HologramCommand()
 				)
 		);
 

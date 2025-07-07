@@ -14,8 +14,8 @@ import toutouchien.niveriaholograms.hologram.HologramManager;
 import java.util.Collections;
 import java.util.List;
 
-public class HologramEditTextShadow extends SubCommand {
-	public HologramEditTextShadow() {
+public class HologramEditTextShadowCommand extends SubCommand {
+	public HologramEditTextShadowCommand() {
 		super(new CommandData("textshadow", "niveriaholograms")
 				.playerRequired(true)
 				.usage("<true|false>"));

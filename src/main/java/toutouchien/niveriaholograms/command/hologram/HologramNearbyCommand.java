@@ -7,8 +7,8 @@ import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
 import toutouchien.niveriaapi.utils.ui.MessageUtils;
 
-public class HologramNearby extends SubCommand {
-	HologramNearby() {
+public class HologramNearbyCommand extends SubCommand {
+	HologramNearbyCommand() {
 		super(new CommandData("nearby", "niveriaholograms")
 				.aliases("near", "n")
 				.playerRequired(true)

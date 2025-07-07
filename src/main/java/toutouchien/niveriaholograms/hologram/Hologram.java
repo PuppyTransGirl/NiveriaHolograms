@@ -3,10 +3,12 @@ package toutouchien.niveriaholograms.hologram;
 import com.mojang.math.Transformation;
 import io.netty.buffer.Unpooled;
 import io.papermc.paper.adventure.PaperAdventure;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.kyori.adventure.text.format.TextColor;
+import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
@@ -18,12 +20,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Brightness;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
 import org.joml.Quaternionf;
@@ -34,8 +37,9 @@ import toutouchien.niveriaholograms.configuration.TextHologramConfiguration;
 import toutouchien.niveriaholograms.utils.CustomLocation;
 import toutouchien.niveriaholograms.utils.ReflectionUtils;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -74,20 +78,20 @@ public class Hologram {
 	}
 
 	public void updateForAllPlayers() {
-		Bukkit.getOnlinePlayers().forEach(this::update);
+		Bukkit.getOnlinePlayers().forEach(player -> update(player, false));
 	}
 
 	public void create(Player player) {
-		send(player, new ClientboundAddEntityPacket(display));
-		update(player);
+		send(player, new ClientboundAddEntityPacket(display, 0, display.blockPosition()));
+		update(player, true);
 	}
 	
 	public void delete(Player player) {
 		send(player, new ClientboundRemoveEntitiesPacket(display.getId()));
 	}
 
-	public void update(Player player) {
-		send(player, new ClientboundTeleportEntityPacket(display));
+	public void update(Player player, boolean join) {
+		send(player, new ClientboundTeleportEntityPacket(display.getId(), PositionMoveRotation.of(display), Set.of(), false));
 
 		if (display instanceof Display.TextDisplay textDisplay)
 			textDisplay.setText(PaperAdventure.asVanilla(((TextHologramConfiguration) configuration).serializedText()));
@@ -129,7 +133,12 @@ public class Hologram {
 		});
 
 		if (display instanceof Display.BlockDisplay blockDisplay && configuration instanceof BlockHologramConfiguration blockConfiguration) {
-			Block block = BuiltInRegistries.BLOCK.get(ResourceLocation.of(blockConfiguration.material().key().asString(), ':'));
+			ResourceLocation blockResource = ResourceLocation.parse(blockConfiguration.material().key().asString());
+			Optional<Holder.Reference<Block>> blockHolder = BuiltInRegistries.BLOCK.get(blockResource);
+			if (blockHolder.isEmpty())
+				throw new IllegalArgumentException("Invalid block material: " + blockResource);
+
+			Block block = blockHolder.get().value();
 			blockDisplay.setBlockState(block.defaultBlockState());
 		} else if (display instanceof Display.ItemDisplay itemDisplay && configuration instanceof ItemHologramConfiguration itemConfiguration) {
 			itemDisplay.setItemStack(ItemStack.fromBukkitCopy(itemConfiguration.itemStack()));
@@ -164,9 +173,11 @@ public class Hologram {
 	}
 
 	private void send(Player player, Packet<?> packet) {
-		if (packet instanceof ClientboundSetEntityDataPacket) {
-			FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-			packet.write(buf);
+		if (packet instanceof ClientboundSetEntityDataPacket setEntityDataPacket) {
+			ServerLevel level = ((CraftWorld) player.getWorld()).getHandle();
+			RegistryAccess registryAccess = level.registryAccess();
+			RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(new FriendlyByteBuf(Unpooled.buffer()), registryAccess);
+			ReflectionUtils.callMethod(setEntityDataPacket, "write", Set.of(RegistryFriendlyByteBuf.class), buf);
 			int packetSize = buf.readableBytes();
 
 			playerPacketStats.computeIfAbsent(player.getUniqueId(), id -> new PacketStats()).update(packetSize);

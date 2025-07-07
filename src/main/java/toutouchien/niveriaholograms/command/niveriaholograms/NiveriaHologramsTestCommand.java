@@ -1,28 +1,13 @@
 package toutouchien.niveriaholograms.command.niveriaholograms;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Display;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
-import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.hologram.Hologram;
-import toutouchien.niveriaholograms.hologram.HologramManager;
-import toutouchien.niveriaholograms.hologram.HologramType;
 
-import java.util.UUID;
-
-public class NiveriaHologramsTest extends SubCommand {
-	NiveriaHologramsTest() {
+public class NiveriaHologramsTestCommand extends SubCommand {
+	NiveriaHologramsTestCommand() {
 		super(new CommandData("test", "niveriaholograms"));
 	}
 

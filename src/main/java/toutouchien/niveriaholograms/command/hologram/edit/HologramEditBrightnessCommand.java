@@ -19,11 +19,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Stream;
 
-public class HologramEditBrightness extends SubCommand {
+public class HologramEditBrightnessCommand extends SubCommand {
     private static final List<String> BRIGHTNESS_TYPES = Arrays.asList("sky", "block");
     private static final List<String> DEFAULT_VALUES = Arrays.asList("0", "5", "10", "15");
     
-    public HologramEditBrightness() {
+    public HologramEditBrightnessCommand() {
         super(new CommandData("brightness", "niveriaholograms")
               .playerRequired(true)
               .usage("<block|sky> <0-15>"));

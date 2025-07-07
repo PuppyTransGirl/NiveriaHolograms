@@ -15,8 +15,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-public class HologramTeleport extends SubCommand {
-	HologramTeleport() {
+public class HologramTeleportCommand extends SubCommand {
+	HologramTeleportCommand() {
 		super(new CommandData("teleport", "niveriaholograms")
 				.aliases("t")
 				.playerRequired(true)
