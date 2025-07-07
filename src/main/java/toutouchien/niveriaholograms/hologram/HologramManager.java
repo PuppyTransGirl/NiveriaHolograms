@@ -1,6 +1,5 @@
 package toutouchien.niveriaholograms.hologram;
 
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -52,7 +51,7 @@ public class HologramManager {
 		Hologram hologram = createHologram(type, configuration, name, new CustomLocation(player.getLocation()), player.getUniqueId());
 
 		if (type == HologramType.TEXT)
-			((TextHologramConfiguration) configuration).text(Component.text("Utilise /holo edit " + name + " setline 1 <ton texte>"));
+			((TextHologramConfiguration) configuration).text(new ArrayList<>(List.of("Utilise /holo edit " + name + " setline 1 <ton texte>")));
 
 		hologram.create();
 		hologram.createForAllPlayers();
@@ -139,7 +138,10 @@ public class HologramManager {
 	}
 
 	public Hologram hologramByName(String name) {
-		return this.holograms.stream().filter(hologram -> hologram.name().equalsIgnoreCase(name)).findFirst().orElse(null);
+		return this.holograms.stream()
+				.filter(hologram -> hologram.name().equalsIgnoreCase(name))
+				.findFirst()
+				.orElse(null);
 	}
 
 	public List<Hologram> holograms() {

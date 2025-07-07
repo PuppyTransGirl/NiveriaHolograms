@@ -2,7 +2,6 @@ package toutouchien.niveriaholograms.command.hologram.edit.text;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
@@ -12,8 +11,8 @@ import toutouchien.niveriaholograms.configuration.TextHologramConfiguration;
 import toutouchien.niveriaholograms.hologram.Hologram;
 import toutouchien.niveriaholograms.hologram.HologramManager;
 
-public class HologramEditAddLine extends SubCommand {
-	public HologramEditAddLine() {
+public class HologramEditAddLineCommand extends SubCommand {
+	public HologramEditAddLineCommand() {
 		super(new CommandData("addline", "niveriaholograms")
 				.playerRequired(true)
 				.usage("<texte>"));
@@ -50,12 +49,8 @@ public class HologramEditAddLine extends SubCommand {
 			return;
 		}
 
-		Component newText = MiniMessage.miniMessage().deserialize(String.join(" ", args));
-		Component existingText = configuration.text();
-
-		// Remove first empty line
-		Component combinedText = existingText == null || existingText.equals(Component.empty()) ? newText : existingText.appendNewline().append(newText);
-		configuration.text(combinedText);
+		String newText = String.join(" ", args);
+		configuration.addText(newText);
 
 		hologram.update();
 		hologram.updateForAllPlayers();

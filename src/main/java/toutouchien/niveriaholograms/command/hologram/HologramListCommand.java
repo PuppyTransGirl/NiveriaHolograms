@@ -18,8 +18,8 @@ import toutouchien.niveriaholograms.utils.CustomLocation;
 import static net.kyori.adventure.text.Component.text;
 import static toutouchien.niveriaholograms.utils.MathUtils.decimalRound;
 
-public class HologramList extends SubCommand {
-	HologramList() {
+public class HologramListCommand extends SubCommand {
+	HologramListCommand() {
 		super(new CommandData("list", "niveriaholograms")
 				.aliases("l"));
 	}

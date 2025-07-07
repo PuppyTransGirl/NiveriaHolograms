@@ -2,10 +2,6 @@ package toutouchien.niveriaholograms.command.hologram.edit.text;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
@@ -15,14 +11,14 @@ import toutouchien.niveriaholograms.configuration.TextHologramConfiguration;
 import toutouchien.niveriaholograms.hologram.Hologram;
 import toutouchien.niveriaholograms.hologram.HologramManager;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class HologramEditRemoveLine extends SubCommand {
-	public HologramEditRemoveLine() {
-		super(new CommandData("removeline", "niveriaholograms")
+public class HologramEditSetLineCommand extends SubCommand {
+	public HologramEditSetLineCommand() {
+		super(new CommandData("setline", "niveriaholograms")
 				.playerRequired(true)
 				.usage("<ligne>"));
 	}
@@ -51,7 +47,16 @@ public class HologramEditRemoveLine extends SubCommand {
 
 		if (args.length == 0) {
 			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Tu dois spécifier la ligne que tu veux retirer.")
+					Component.text("Tu dois spécifier la ligne que tu veux modifier.")
+			);
+
+			player.sendMessage(errorMessage);
+			return;
+		}
+
+		if (args.length == 1) {
+			TextComponent errorMessage = MessageUtils.errorMessage(
+					Component.text("Tu dois spécifier le texte que tu veux mettre.")
 			);
 
 			player.sendMessage(errorMessage);
@@ -70,12 +75,7 @@ public class HologramEditRemoveLine extends SubCommand {
 			return;
 		}
 
-		File file = new File(NiveriaHolograms.instance().getDataFolder(), "holograms.yml");
-		FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-
-		ConfigurationSection hologramSection = config.getConfigurationSection("holograms." + hologram.name());
-
-		List<String> text = hologramSection.getStringList("text");
+		List<String> text = configuration.text();
 		if (lineNumber < 1 || lineNumber > text.size()) {
 			TextComponent errorMessage = MessageUtils.errorMessage(
 					Component.text("Le numéro de la ligne n'est pas valide.")
@@ -85,33 +85,18 @@ public class HologramEditRemoveLine extends SubCommand {
 			return;
 		}
 
-		String[] textLines = text.toArray(new String[0]);
-		TextComponent.Builder builder = Component.text();
+		String newText = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+		configuration.text(lineNumber - 1, newText);
 
-		boolean isFirst = true;
-		MiniMessage miniMessage = MiniMessage.miniMessage();
-		for (int i = 0; i < textLines.length; i++) {
-			if (i + 1 == lineNumber || (i == 0 && (textLines[i] == null || textLines[i].isEmpty() || textLines[i].equals("''"))))
-				continue;
-
-			// Remove first empty line
-			if (!isFirst)
-				builder.appendNewline();
-
-			builder.append(miniMessage.deserialize(textLines[i]));
-			isFirst = false;
-		}
-
-		configuration.text(builder.build());
 		hologram.update();
 		hologram.updateForAllPlayers();
 		hologramManager.saveHologram(hologram);
 
 		TextComponent successMessage = MessageUtils.successMessage(
 				Component.text()
-						.append(Component.text("La ligne "))
+						.append(Component.text("La contenu de la ligne "))
 						.append(Component.text(lineNumber))
-						.append(Component.text(" a été retirée avec succès !"))
+						.append(Component.text(" a été changé avec succès !"))
 						.build()
 		);
 
@@ -120,25 +105,33 @@ public class HologramEditRemoveLine extends SubCommand {
 
 	@Override
 	public List<String> complete(Player player, String[] args, String[] fullArgs, int argIndex) {
-		if (argIndex != 0)
+		if (argIndex > 1)
 			return Collections.emptyList();
 
 		Hologram hologram = NiveriaHolograms.instance().hologramManager().hologramByName(fullArgs[1]);
 		if (hologram == null)
 			return Collections.emptyList();
 
-		if (!(hologram.configuration() instanceof TextHologramConfiguration))
+		if (!(hologram.configuration() instanceof TextHologramConfiguration configuration))
 			return Collections.emptyList();
 
-		File file = new File(NiveriaHolograms.instance().getDataFolder(), "holograms.yml");
-		FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-		ConfigurationSection hologramSection = config.getConfigurationSection("holograms." + hologram.name());
-
-		List<String> text = hologramSection.getStringList("text");
+		List<String> text = configuration.text();
 		List<String> suggestions = new ArrayList<>();
 
-		for (int i = 1; i <= text.size(); i++)
-			suggestions.add(String.valueOf(i));
+		if (argIndex == 0) {
+			for (int i = 1; i <= text.size(); i++) {
+				suggestions.add(Integer.toString(i));
+			}
+		} else if (argIndex == 1 && args.length > 0) {
+			try {
+				int lineNumber = Integer.parseInt(args[0]);
+				if (lineNumber >= 1 && lineNumber <= text.size()) {
+					suggestions.add(text.get(lineNumber - 1));
+				}
+			} catch (NumberFormatException ignored) {
+				// Ignore invalid number format
+			}
+		}
 
 		return suggestions;
 	}

@@ -7,13 +7,13 @@ import toutouchien.niveriaapi.command.Command;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.utils.ui.MessageUtils;
 
-public class Hologram extends Command {
-	public Hologram() {
+public class HologramCommand extends Command {
+	public HologramCommand() {
 		super(new CommandData("hologram", "niveriaholograms")
 				.aliases("holo", "nholo")
 				.description("Gère les hologrammes")
 				.usage("<list|nearby|teleport|create|remove|copy|edit>")
-				.subCommands(new HologramList(), new HologramNearby(), new HologramTeleport(), new HologramEdit()));
+				.subCommands(new HologramListCommand(), new HologramNearbyCommand(), new HologramTeleportCommand(), new HologramEditCommand()));
 	}
 
 	@Override

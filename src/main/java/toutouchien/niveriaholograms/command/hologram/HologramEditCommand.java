@@ -7,9 +7,9 @@ import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
 import toutouchien.niveriaapi.utils.ui.MessageUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
-import toutouchien.niveriaholograms.command.hologram.edit.HologramEditBillboard;
-import toutouchien.niveriaholograms.command.hologram.edit.HologramEditBrightness;
-import toutouchien.niveriaholograms.command.hologram.edit.HologramEditPosition;
+import toutouchien.niveriaholograms.command.hologram.edit.HologramEditBillboardCommand;
+import toutouchien.niveriaholograms.command.hologram.edit.HologramEditBrightnessCommand;
+import toutouchien.niveriaholograms.command.hologram.edit.HologramEditPositionCommand;
 import toutouchien.niveriaholograms.command.hologram.edit.block.HologramEditBlock;
 import toutouchien.niveriaholograms.command.hologram.edit.item.HologramEditItem;
 import toutouchien.niveriaholograms.command.hologram.edit.text.*;
@@ -21,8 +21,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-public class HologramEdit extends SubCommand {
-	public HologramEdit() {
+public class HologramEditCommand extends SubCommand {
+	public HologramEditCommand() {
 		super(new CommandData("edit", "niveriaholograms")
 				.aliases("e")
 				.playerRequired(true)
@@ -32,11 +32,11 @@ public class HologramEdit extends SubCommand {
 
 						new HologramEditItem(),
 
-						new HologramEditAddLine(), new HologramEditBackground(), new HologramEditRemoveLine(),
-						new HologramEditSeeThrough(), new HologramEditSetLine(), new HologramEditTextAlignment(),
-						new HologramEditTextShadow(),
+						new HologramEditAddLineCommand(), new HologramEditBackgroundCommand(), new HologramEditRemoveLineCommand(),
+						new HologramEditSeeThroughCommand(), new HologramEditSetLineCommand(), new HologramEditTextAlignmentCommand(),
+						new HologramEditTextShadowCommand(),
 
-						new HologramEditBillboard(), new HologramEditBrightness(), new HologramEditPosition()
+						new HologramEditBillboardCommand(), new HologramEditBrightnessCommand(), new HologramEditPositionCommand()
 				)
 				.hasParameterBeforeSubcommands(true));
 	}

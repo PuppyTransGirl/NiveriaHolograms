@@ -18,8 +18,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-public class HologramEditBackground extends SubCommand {
-	public HologramEditBackground() {
+public class HologramEditBackgroundCommand extends SubCommand {
+	public HologramEditBackgroundCommand() {
 		super(new CommandData("background", "niveriaholograms")
 				.playerRequired(true)
 				.usage("<couleur|transparent|none|#FFFFFF>"));

@@ -11,14 +11,15 @@ import toutouchien.niveriaholograms.configuration.TextHologramConfiguration;
 import toutouchien.niveriaholograms.hologram.Hologram;
 import toutouchien.niveriaholograms.hologram.HologramManager;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class HologramEditSeeThrough extends SubCommand {
-	public HologramEditSeeThrough() {
-		super(new CommandData("seethrough", "niveriaholograms")
+public class HologramEditRemoveLineCommand extends SubCommand {
+	public HologramEditRemoveLineCommand() {
+		super(new CommandData("removeline", "niveriaholograms")
 				.playerRequired(true)
-				.usage("<true|false>"));
+				.usage("<ligne>"));
 	}
 
 	@Override
@@ -45,23 +46,45 @@ public class HologramEditSeeThrough extends SubCommand {
 
 		if (args.length == 0) {
 			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Tu dois spécifier si tu veux que l'on voit à travers l'hologramme ou non.")
+					Component.text("Tu dois spécifier la ligne que tu veux retirer.")
 			);
 
 			player.sendMessage(errorMessage);
 			return;
 		}
 
-		boolean seeThrough = Boolean.parseBoolean(args[0]);
+		int lineNumber;
+		try {
+			lineNumber = Integer.parseInt(args[0]);
+		} catch (NumberFormatException e) {
+			TextComponent errorMessage = MessageUtils.errorMessage(
+					Component.text("Le numéro de la ligne n'est pas valide.")
+			);
 
-		configuration.seeThrough(seeThrough);
+			player.sendMessage(errorMessage);
+			return;
+		}
 
+		if (lineNumber < 1 || lineNumber > configuration.text().size()) {
+			TextComponent errorMessage = MessageUtils.errorMessage(
+					Component.text("Le numéro de la ligne n'est pas valide.")
+			);
+
+			player.sendMessage(errorMessage);
+			return;
+		}
+
+		configuration.removeText(lineNumber - 1);
 		hologram.update();
 		hologram.updateForAllPlayers();
 		hologramManager.saveHologram(hologram);
 
 		TextComponent successMessage = MessageUtils.successMessage(
-				Component.text("La transparence a été " + (seeThrough ? "activée" : "désactivée") + ".")
+				Component.text()
+						.append(Component.text("La ligne "))
+						.append(Component.text(lineNumber))
+						.append(Component.text(" a été retirée avec succès !"))
+						.build()
 		);
 
 		player.sendMessage(successMessage);
@@ -73,9 +96,18 @@ public class HologramEditSeeThrough extends SubCommand {
 			return Collections.emptyList();
 
 		Hologram hologram = NiveriaHolograms.instance().hologramManager().hologramByName(fullArgs[1]);
-		if (hologram == null || !(hologram.configuration() instanceof TextHologramConfiguration configuration))
+		if (hologram == null)
 			return Collections.emptyList();
 
-		return Collections.singletonList(String.valueOf(!configuration.seeThrough()));
+		if (!(hologram.configuration() instanceof TextHologramConfiguration configuration))
+			return Collections.emptyList();
+
+		List<String> text = configuration.text();
+		List<String> suggestions = new ArrayList<>();
+
+		for (int i = 1; i <= text.size(); i++)
+			suggestions.add(Integer.toString(i));
+
+		return suggestions;
 	}
 }

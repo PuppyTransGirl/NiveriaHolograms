@@ -3,7 +3,6 @@ package toutouchien.niveriaholograms.command.hologram.edit.text;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.TextDisplay;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
 import toutouchien.niveriaapi.utils.ui.MessageUtils;
@@ -12,16 +11,14 @@ import toutouchien.niveriaholograms.configuration.TextHologramConfiguration;
 import toutouchien.niveriaholograms.hologram.Hologram;
 import toutouchien.niveriaholograms.hologram.HologramManager;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
-public class HologramEditTextAlignment extends SubCommand {
-	public HologramEditTextAlignment() {
-		super(new CommandData("textalignment", "niveriaholograms")
+public class HologramEditSeeThroughCommand extends SubCommand {
+	public HologramEditSeeThroughCommand() {
+		super(new CommandData("seethrough", "niveriaholograms")
 				.playerRequired(true)
-				.usage("<textalignment>"));
+				.usage("<true|false>"));
 	}
 
 	@Override
@@ -48,38 +45,23 @@ public class HologramEditTextAlignment extends SubCommand {
 
 		if (args.length == 0) {
 			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Tu dois spécifier l'alignement du texte.")
+					Component.text("Tu dois spécifier si tu veux que l'on voit à travers l'hologramme ou non.")
 			);
 
 			player.sendMessage(errorMessage);
 			return;
 		}
 
-		TextDisplay.TextAlignment textAlignment;
+		boolean seeThrough = Boolean.parseBoolean(args[0]);
 
-		try {
-			textAlignment = TextDisplay.TextAlignment.valueOf(args[0]);
-		} catch (IllegalArgumentException e) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Ce type d'alignement de texte n'existe pas.")
-			);
-
-			player.sendMessage(errorMessage);
-			return;
-		}
-
-		configuration.textAlignment(textAlignment);
+		configuration.seeThrough(seeThrough);
 
 		hologram.update();
 		hologram.updateForAllPlayers();
 		hologramManager.saveHologram(hologram);
 
 		TextComponent successMessage = MessageUtils.successMessage(
-				Component.text()
-						.append(Component.text("L'alignement du texte a été mit à "))
-						.append(Component.text(textAlignment.name()))
-						.append(Component.text("."))
-						.build()
+				Component.text("La transparence a été " + (seeThrough ? "activée" : "désactivée") + ".")
 		);
 
 		player.sendMessage(successMessage);
@@ -94,11 +76,6 @@ public class HologramEditTextAlignment extends SubCommand {
 		if (hologram == null || !(hologram.configuration() instanceof TextHologramConfiguration configuration))
 			return Collections.emptyList();
 
-		String currentArg = args[argIndex].toLowerCase(Locale.ROOT);
-		return Arrays.stream(TextDisplay.TextAlignment.values())
-				.filter(textAlignment -> textAlignment != configuration.textAlignment())
-				.map(Enum::name)
-				.filter(textAlignment -> textAlignment.toLowerCase(Locale.ROOT).startsWith(currentArg))
-				.toList();
+		return Collections.singletonList(String.valueOf(!configuration.seeThrough()));
 	}
 }

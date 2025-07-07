@@ -9,8 +9,8 @@ import toutouchien.niveriaholograms.hologram.HologramType;
 
 import java.util.UUID;
 
-public class NiveriaHologramCreate extends SubCommand {
-	NiveriaHologramCreate() {
+public class NiveriaHologramCreateCommand extends SubCommand {
+	NiveriaHologramCreateCommand() {
 		super(new CommandData("create", "niveriaholograms")
 				.playerRequired(true));
 	}

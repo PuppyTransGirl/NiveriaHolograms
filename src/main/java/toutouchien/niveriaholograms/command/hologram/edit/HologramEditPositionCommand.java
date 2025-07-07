@@ -19,8 +19,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-public class HologramEditPosition extends SubCommand {
-	public HologramEditPosition() {
+public class HologramEditPositionCommand extends SubCommand {
+	public HologramEditPositionCommand() {
 		super(new CommandData("position", "niveriaholograms")
 				.playerRequired(true)
 				.usage("<here|joueur|x y z>"));
@@ -145,7 +145,10 @@ public class HologramEditPosition extends SubCommand {
 				case 0 -> completions.add(String.valueOf(MathUtils.decimalRound(currentLocation.x(), 2)));
 				case 1 -> completions.add(String.valueOf(MathUtils.decimalRound(currentLocation.y(), 2)));
 				case 2 -> completions.add(String.valueOf(MathUtils.decimalRound(currentLocation.z(), 2)));
-			}
+                default -> {
+					// Do nothing
+                }
+            }
 		}
 
 		return completions.stream()

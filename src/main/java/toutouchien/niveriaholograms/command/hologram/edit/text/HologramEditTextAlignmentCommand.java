@@ -1,13 +1,14 @@
-package toutouchien.niveriaholograms.command.hologram.edit;
+package toutouchien.niveriaholograms.command.hologram.edit.text;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import org.bukkit.entity.Display;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TextDisplay;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
 import toutouchien.niveriaapi.utils.ui.MessageUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
+import toutouchien.niveriaholograms.configuration.TextHologramConfiguration;
 import toutouchien.niveriaholograms.hologram.Hologram;
 import toutouchien.niveriaholograms.hologram.HologramManager;
 
@@ -16,11 +17,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-public class HologramEditBillboard extends SubCommand {
-	public HologramEditBillboard() {
-		super(new CommandData("billboard", "niveriaholograms")
+public class HologramEditTextAlignmentCommand extends SubCommand {
+	public HologramEditTextAlignmentCommand() {
+		super(new CommandData("textalignment", "niveriaholograms")
 				.playerRequired(true)
-				.usage("<billboard>"));
+				.usage("<textalignment>"));
 	}
 
 	@Override
@@ -36,29 +37,38 @@ public class HologramEditBillboard extends SubCommand {
 			return;
 		}
 
+		if (!(hologram.configuration() instanceof TextHologramConfiguration configuration)) {
+			TextComponent errorMessage = MessageUtils.errorMessage(
+					Component.text("Cette comande ne peut être utilisée que sur des hologrammes de texte.")
+			);
+
+			player.sendMessage(errorMessage);
+			return;
+		}
+
 		if (args.length == 0) {
 			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Tu dois spécifier le type de billboard que tu veux mettre.")
+					Component.text("Tu dois spécifier l'alignement du texte.")
 			);
 
 			player.sendMessage(errorMessage);
 			return;
 		}
 
-		Display.Billboard billboard;
+		TextDisplay.TextAlignment textAlignment;
 
 		try {
-			billboard = Display.Billboard.valueOf(args[0]);
+			textAlignment = TextDisplay.TextAlignment.valueOf(args[0]);
 		} catch (IllegalArgumentException e) {
 			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Ce type de billboard n'existe pas.")
+					Component.text("Ce type d'alignement de texte n'existe pas.")
 			);
 
 			player.sendMessage(errorMessage);
 			return;
 		}
 
-		hologram.configuration().billboard(billboard);
+		configuration.textAlignment(textAlignment);
 
 		hologram.update();
 		hologram.updateForAllPlayers();
@@ -66,8 +76,8 @@ public class HologramEditBillboard extends SubCommand {
 
 		TextComponent successMessage = MessageUtils.successMessage(
 				Component.text()
-						.append(Component.text("Le type de billboard a été mit à "))
-						.append(Component.text(billboard.name()))
+						.append(Component.text("L'alignement du texte a été mit à "))
+						.append(Component.text(textAlignment.name()))
 						.append(Component.text("."))
 						.build()
 		);
@@ -81,14 +91,14 @@ public class HologramEditBillboard extends SubCommand {
 			return Collections.emptyList();
 
 		Hologram hologram = NiveriaHolograms.instance().hologramManager().hologramByName(fullArgs[1]);
-		if (hologram == null)
+		if (hologram == null || !(hologram.configuration() instanceof TextHologramConfiguration configuration))
 			return Collections.emptyList();
 
 		String currentArg = args[argIndex].toLowerCase(Locale.ROOT);
-		return Arrays.stream(Display.Billboard.values())
-				.filter(billboard -> billboard != hologram.configuration().billboard())
+		return Arrays.stream(TextDisplay.TextAlignment.values())
+				.filter(textAlignment -> textAlignment != configuration.textAlignment())
 				.map(Enum::name)
-				.filter(billboard -> billboard.toLowerCase(Locale.ROOT).startsWith(currentArg))
+				.filter(textAlignment -> textAlignment.toLowerCase(Locale.ROOT).startsWith(currentArg))
 				.toList();
 	}
 }

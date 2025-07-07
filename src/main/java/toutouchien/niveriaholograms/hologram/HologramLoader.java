@@ -1,10 +1,7 @@
 package toutouchien.niveriaholograms.hologram;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Display;
@@ -82,18 +79,7 @@ public class HologramLoader {
 		if (text.isEmpty())
 			return;
 
-		String[] textLines = text.toArray(new String[0]);
-		TextComponent.Builder builder = Component.text();
-
-		for (int i = 0; i < textLines.length; i++) {
-			builder.append(MiniMessage.miniMessage().deserialize(textLines[i]));
-			if (i + 1 == textLines.length)
-				continue;
-
-			builder.appendNewline();
-		}
-
-		configuration.text(builder.build());
+		configuration.text(text);
 	}
 
 	public void save(ConfigurationSection section, Hologram hologram) {
@@ -140,7 +126,7 @@ public class HologramLoader {
 		section.set("see-through", configuration.seeThrough());
 		section.set("text-shadow", configuration.textShadow());
 
-		section.set("text", MiniMessage.miniMessage().serialize(configuration.text()).split("<br>"));
+		section.set("text", configuration.text());
 	}
 
 	private Vector3f loadVector(ConfigurationSection section, String path) {
