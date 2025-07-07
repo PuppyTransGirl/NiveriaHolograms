@@ -92,17 +92,9 @@ public class Hologram {
 		if (display instanceof Display.TextDisplay textDisplay)
 			textDisplay.setText(PaperAdventure.asVanilla(((TextHologramConfiguration) configuration).text()));
 
-		// Doesn't work :c
-/*		List<SynchedEntityData.DataValue<?>> nonDefaultValues = display.getEntityData().getNonDefaultValues();
-		if (nonDefaultValues == null)
-			nonDefaultValues = Collections.emptyList();
-
-		send(player, new ClientboundSetEntityDataPacket(display.getId(), nonDefaultValues));*/
-
-		// TODO: Use packDirty()
-		List<SynchedEntityData.DataValue<?>> values = new ArrayList<>();
-		for (SynchedEntityData.DataItem<?> item : ((Int2ObjectMap<SynchedEntityData.DataItem<?>>) ReflectionUtils.getValue(display.getEntityData(), "e")).values())
-			values.add(item.value());
+        List<SynchedEntityData.DataValue<?>> values = join ? display.getEntityData().packAll() : display.getEntityData().packDirty();
+		if (values == null)
+			return;
 
 		send(player, new ClientboundSetEntityDataPacket(display.getId(), values));
 	}
