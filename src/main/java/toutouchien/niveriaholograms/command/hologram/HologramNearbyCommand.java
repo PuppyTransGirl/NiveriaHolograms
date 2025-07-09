@@ -2,10 +2,23 @@ package toutouchien.niveriaholograms.command.hologram;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
+import toutouchien.niveriaapi.utils.ui.ColorUtils;
 import toutouchien.niveriaapi.utils.ui.MessageUtils;
+import toutouchien.niveriaholograms.NiveriaHolograms;
+import toutouchien.niveriaholograms.hologram.Hologram;
+import toutouchien.niveriaholograms.hologram.HologramManager;
+import toutouchien.niveriaholograms.utils.CustomLocation;
+import toutouchien.niveriaholograms.utils.MathUtils;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 public class HologramNearbyCommand extends SubCommand {
 	HologramNearbyCommand() {
@@ -38,12 +51,12 @@ public class HologramNearbyCommand extends SubCommand {
 			return;
 		}
 
-/*		HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
-		List<Map.Entry<Hologram<?>, Double>> nearbyHolograms = hologramManager.holograms().stream()
-				.filter(hologram -> hologram.display().getLocation().getWorld() == player.getWorld())
-				.map(hologram -> Map.<Hologram<?>, Double>entry(hologram, hologram.display().getLocation().distance(player.getLocation())))
+		HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+		List<Map.Entry<Hologram, Double>> nearbyHolograms = hologramManager.holograms().stream()
+				.filter(hologram -> hologram.location().world().equals(player.getWorld().getName()))
+				.map(hologram -> Map.entry(hologram, hologram.location().distance(player.getLocation())))
 				.filter(distance -> distance.getValue() <= radius)
-				.sorted(Comparator.comparingInt(i -> i.getValue().intValue()))
+				.sorted(Comparator.comparingDouble(Map.Entry::getValue))
 				.toList();
 
 		if (nearbyHolograms.isEmpty()) {
@@ -56,35 +69,35 @@ public class HologramNearbyCommand extends SubCommand {
 		}
 
 		TextComponent infoMessage = MessageUtils.infoMessage(
-				text("Voici la liste des hologrammes aux alentours (%s rayon):".formatted(radius))
+				Component.text("Voici la liste des hologrammes aux alentours (%s rayon):".formatted(radius))
 		);
 
 		player.sendMessage(infoMessage);
 
 		nearbyHolograms.forEach(entry -> {
-			Hologram<?> hologram = entry.getKey();
+			Hologram hologram = entry.getKey();
 			double distance = entry.getValue();
 			String name = hologram.name();
 
-			Location location = hologram.display().getLocation();
-			String coordinates = "(%s/%s/%s in %s, %s blocks away)".formatted(
-					decimalRound(location.getX(), 2),
-					decimalRound(location.getY(), 2),
-					decimalRound(location.getZ(), 2),
-					location.getWorld().getName(),
-					decimalRound(distance, 2)
+			CustomLocation location = hologram.location();
+			String coordinates = "%s/%s/%s in %s, %s blocks away".formatted(
+					MathUtils.decimalRound(location.x(), 2),
+					MathUtils.decimalRound(location.y(), 2),
+					MathUtils.decimalRound(location.z(), 2),
+					location.world(),
+					MathUtils.decimalRound(distance, 2)
 			);
 
-			TextComponent.Builder playerInfo = text()
+			TextComponent.Builder playerInfo = Component.text()
 					.content(" - ").color(NamedTextColor.DARK_GRAY)
-					.append(text(hologram.name(), ColorUtils.primaryColor()))
-					.append(text(" (", NamedTextColor.DARK_GRAY))
-					.append(text(coordinates, ColorUtils.secondaryColor()))
-					.append(text(")", NamedTextColor.DARK_GRAY))
-					.clickEvent(ClickEvent.runCommand("holo teleport " + name))
+					.append(Component.text(hologram.name(), ColorUtils.primaryColor()))
+					.append(Component.text(" (", NamedTextColor.DARK_GRAY))
+					.append(Component.text(coordinates, ColorUtils.secondaryColor()))
+					.append(Component.text(")", NamedTextColor.DARK_GRAY))
+					.clickEvent(ClickEvent.runCommand("/" + label + " teleport " + name))
 					.hoverEvent(HoverEvent.showText(Component.text("Clique pour s'y téléporter")));
 
 			player.sendMessage(playerInfo);
-		});*/
+		});
 	}
 }
