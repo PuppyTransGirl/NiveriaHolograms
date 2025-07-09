@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
@@ -47,7 +48,13 @@ public class HologramEditPositionCommand extends SubCommand {
 		String arg = args[0];
 
 		if (arg.equalsIgnoreCase("here")) {
-			hologram.teleportTo(player.getLocation());
+			// Don't change the rotation
+			Location playerLocation = player.getLocation().clone();
+			CustomLocation hologramLocation = hologram.location();
+			playerLocation.setYaw(hologramLocation.yaw());
+			playerLocation.setPitch(hologramLocation.pitch());
+
+			hologram.teleportTo(playerLocation);
 			hologram.updateForAllPlayers();
 			hologramManager.saveHologram(hologram);
 
@@ -61,7 +68,13 @@ public class HologramEditPositionCommand extends SubCommand {
 
 		Player p = Bukkit.getPlayerExact(arg);
 		if (p != null) {
-			hologram.teleportTo(p.getLocation());
+			// Don't change the rotation
+			Location playerLocation = p.getLocation().clone();
+			CustomLocation hologramLocation = hologram.location();
+			playerLocation.setYaw(hologramLocation.yaw());
+			playerLocation.setPitch(hologramLocation.pitch());
+
+			hologram.teleportTo(playerLocation);
 			hologram.updateForAllPlayers();
 			hologramManager.saveHologram(hologram);
 
@@ -108,14 +121,22 @@ public class HologramEditPositionCommand extends SubCommand {
 	}
 
 	private double parseCoordinate(String coord, double currentValue) {
-		if (!coord.startsWith("~"))
-			return Double.parseDouble(coord);
+		if (!coord.startsWith("~")) {
+			double value = Double.parseDouble(coord);
+			if (!Double.isFinite(value)) {
+				throw new NumberFormatException("Coordinate is not finite: " + coord);
+			}
+			return value;
+		}
 
 		if (coord.length() == 1)
 			return currentValue;
 
-		return currentValue + Double.parseDouble(coord.substring(1));
-
+		double delta = Double.parseDouble(coord.substring(1));
+		if (!Double.isFinite(delta)) {
+			throw new NumberFormatException("Coordinate delta is not finite: " + coord);
+		}
+		return currentValue + delta;
 	}
 
 	@Override
