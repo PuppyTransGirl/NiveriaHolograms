@@ -78,7 +78,7 @@ public class HologramEditCommand extends SubCommand {
 			if (hologram == null)
 				return Collections.emptyList();
 
-			List<String> edits = new ArrayList<>(List.of("billboard", "brightness", "pitch", "position", "rotate", "scale", "shadowradius", "shadowstrength", "translate", "visibility", "visibilitydistance", "yaw"));
+			List<String> edits = new ArrayList<>(List.of("billboard", "brightness", "pitch", "position", "rotation", "scale", "shadowradius", "shadowstrength", "translate", "visibility", "visibilitydistance", "yaw"));
 
 			edits.addAll(switch (hologram.type()) {
 				case BLOCK -> List.of("block");
