@@ -50,7 +50,7 @@ public class HologramListCommand extends SubCommand {
 					.append(text(" in ", NamedTextColor.GRAY))
 					.append(text(location.world(), ColorUtils.secondaryColor()))
 					.append(text(")", NamedTextColor.DARK_GRAY))
-					.clickEvent(ClickEvent.runCommand("/holo teleport " + name))
+					.clickEvent(ClickEvent.runCommand("/" + label + " teleport " + name))
 					.hoverEvent(HoverEvent.showText(Component.text("Clique pour s'y téléporter")));
 
 			sender.sendMessage(hologramInfo);
