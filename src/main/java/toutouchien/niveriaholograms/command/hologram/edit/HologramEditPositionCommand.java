@@ -40,7 +40,7 @@ public class HologramEditPositionCommand extends SubCommand {
 		}
 
 		if (args.length == 0) {
-			player.sendMessage(Component.text("/" + label + " edit " + fullArgs[1] + " <here|joueur|x y z>", NamedTextColor.RED));
+			player.sendMessage(Component.text("/" + label + " " + String.join(" ", fullArgs) + " <here|joueur|x y z>", NamedTextColor.RED));
 			return;
 		}
 
@@ -104,7 +104,7 @@ public class HologramEditPositionCommand extends SubCommand {
 			player.sendMessage(errorMessage);
 		}
 
-		player.sendMessage(Component.text("/" + label + " edit " + fullArgs[1] + " <here|joueur|x y z>", NamedTextColor.RED));
+		player.sendMessage(Component.text("/" + label + " " + String.join(" ", fullArgs) + " <here|joueur|x y z>", NamedTextColor.RED));
 	}
 
 	private double parseCoordinate(String coord, double currentValue) {

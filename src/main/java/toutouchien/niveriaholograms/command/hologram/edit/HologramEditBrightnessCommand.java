@@ -43,7 +43,7 @@ public class HologramEditBrightnessCommand extends SubCommand {
         }
 
         if (args.length == 0) {
-            player.sendMessage(Component.text("/" + label + " edit " + fullArgs[1] + " <block|sky> <0-15>", NamedTextColor.RED));
+            player.sendMessage(Component.text("/" + label + " " + String.join(" ", fullArgs) + " <block|sky> <0-15>", NamedTextColor.RED));
             return;
         }
         
