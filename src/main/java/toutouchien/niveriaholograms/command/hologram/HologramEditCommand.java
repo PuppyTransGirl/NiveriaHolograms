@@ -7,9 +7,7 @@ import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
 import toutouchien.niveriaapi.utils.ui.MessageUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
-import toutouchien.niveriaholograms.command.hologram.edit.HologramEditBillboardCommand;
-import toutouchien.niveriaholograms.command.hologram.edit.HologramEditBrightnessCommand;
-import toutouchien.niveriaholograms.command.hologram.edit.HologramEditPositionCommand;
+import toutouchien.niveriaholograms.command.hologram.edit.*;
 import toutouchien.niveriaholograms.command.hologram.edit.block.HologramEditBlock;
 import toutouchien.niveriaholograms.command.hologram.edit.item.HologramEditItem;
 import toutouchien.niveriaholograms.command.hologram.edit.text.*;
@@ -36,7 +34,8 @@ public class HologramEditCommand extends SubCommand {
 						new HologramEditSeeThroughCommand(), new HologramEditSetLineCommand(), new HologramEditTextAlignmentCommand(),
 						new HologramEditTextShadowCommand(),
 
-						new HologramEditBillboardCommand(), new HologramEditBrightnessCommand(), new HologramEditPositionCommand()
+						new HologramEditBillboardCommand(), new HologramEditBrightnessCommand(), new HologramEditPitchCommand(),
+						new HologramEditPositionCommand(), new HologramEditRotationCommand(), new HologramEditYawCommand()
 				)
 				.hasParameterBeforeSubcommands(true));
 	}
