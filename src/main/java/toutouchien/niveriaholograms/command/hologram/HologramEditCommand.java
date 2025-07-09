@@ -16,7 +16,7 @@ import toutouchien.niveriaholograms.command.hologram.edit.text.*;
 import toutouchien.niveriaholograms.hologram.Hologram;
 import toutouchien.niveriaholograms.hologram.HologramManager;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -79,7 +79,7 @@ public class HologramEditCommand extends SubCommand {
 			if (hologram == null)
 				return Collections.emptyList();
 
-			List<String> edits = Arrays.asList("billboard", "brightness", "pitch", "position", "rotate", "scale", "shadowradius", "shadowstrength", "translate", "visibility", "visibilitydistance", "yaw");
+			List<String> edits = new ArrayList<>(List.of("billboard", "brightness", "pitch", "position", "rotate", "scale", "shadowradius", "shadowstrength", "translate", "visibility", "visibilitydistance", "yaw"));
 
 			edits.addAll(switch (hologram.type()) {
 				case BLOCK -> List.of("block");
