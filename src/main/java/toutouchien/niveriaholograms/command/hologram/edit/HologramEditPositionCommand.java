@@ -87,8 +87,8 @@ public class HologramEditPositionCommand extends SubCommand {
 		}
 
 		// New coordinate parsing logic
-		try {
-			if (args.length == 3) {
+		if (args.length == 3) {
+			try {
 				CustomLocation currentLocation = hologram.location();
 				double x = parseCoordinate(args[0], currentLocation.x());
 				double y = parseCoordinate(args[1], currentLocation.y());
@@ -107,14 +107,14 @@ public class HologramEditPositionCommand extends SubCommand {
 				);
 
 				player.sendMessage(successMessage);
-				return;
-			}
-		} catch (NumberFormatException e) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Les coordonnées sont invalides.")
-			);
+			} catch (NumberFormatException e) {
+				TextComponent errorMessage = MessageUtils.errorMessage(
+						Component.text("Les coordonnées sont invalides.")
+				);
 
-			player.sendMessage(errorMessage);
+				player.sendMessage(errorMessage);
+			}
+			return;
 		}
 
 		player.sendMessage(Component.text("/" + label + " " + String.join(" ", fullArgs) + " <here|joueur|x y z>", NamedTextColor.RED));
