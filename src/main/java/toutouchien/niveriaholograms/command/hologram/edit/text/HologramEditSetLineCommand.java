@@ -20,7 +20,7 @@ public class HologramEditSetLineCommand extends SubCommand {
 	public HologramEditSetLineCommand() {
 		super(new CommandData("setline", "niveriaholograms")
 				.playerRequired(true)
-				.usage("<ligne>"));
+				.usage("<ligne> <texte>"));
 	}
 
 	@Override
