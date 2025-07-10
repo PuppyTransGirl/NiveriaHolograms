@@ -44,7 +44,7 @@ public class HologramRemoveCommand extends SubCommand {
 		}
 
 		hologramManager.delete(hologram);
-		player.sendMessage(MessageUtils.successMessage(Component.text("Hologram supprimé avec succès !")));
+		player.sendMessage(MessageUtils.successMessage(Component.text("Hologramme supprimé avec succès !")));
 	}
 
 	@Override
