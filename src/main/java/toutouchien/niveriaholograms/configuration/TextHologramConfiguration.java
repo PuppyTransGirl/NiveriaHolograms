@@ -48,6 +48,24 @@ public class TextHologramConfiguration extends HologramConfiguration {
         return this;
     }
 
+    public TextHologramConfiguration addTextAfter(int index, String text) {
+        if (index < 0 || index >= this.text.size())
+            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds for text list of size " + this.text.size());
+
+        this.text.add(index + 1, text);
+        this.serializedText = null;
+        return this;
+    }
+
+    public TextHologramConfiguration addTextBefore(int index, String text) {
+        if (index < 0 || index >= this.text.size())
+            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds for text list of size " + this.text.size());
+
+        this.text.add(index, text);
+        this.serializedText = null;
+        return this;
+    }
+
     public TextHologramConfiguration background(TextColor background) {
         this.background = background;
         return this;

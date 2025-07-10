@@ -30,9 +30,9 @@ public class HologramEditCommand extends SubCommand {
 
 						new HologramEditItem(),
 
-						new HologramEditAddLineCommand(), new HologramEditBackgroundCommand(), new HologramEditRemoveLineCommand(),
-						new HologramEditSeeThroughCommand(), new HologramEditSetLineCommand(), new HologramEditTextAlignmentCommand(),
-						new HologramEditTextShadowCommand(),
+						new HologramEditAddLineCommand(), new HologramEditBackgroundCommand(), new HologramEditInsertAfterCommand(),
+						new HologramEditInsertBeforeCommand(), new HologramEditRemoveLineCommand(), new HologramEditSeeThroughCommand(),
+						new HologramEditSetLineCommand(), new HologramEditTextAlignmentCommand(), new HologramEditTextShadowCommand(),
 
 						new HologramEditBillboardCommand(), new HologramEditBrightnessCommand(), new HologramEditPitchCommand(),
 						new HologramEditPositionCommand(), new HologramEditRotationCommand(), new HologramEditYawCommand()
