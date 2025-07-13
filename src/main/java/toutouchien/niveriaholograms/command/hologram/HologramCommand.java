@@ -12,8 +12,11 @@ public class HologramCommand extends Command {
 		super(new CommandData("hologram", "niveriaholograms")
 				.aliases("holo", "nholo")
 				.description("Gère les hologrammes")
-				.usage("<list|nearby|teleport|create|remove|copy|edit>")
-				.subCommands(new HologramEditCommand(), new HologramListCommand(), new HologramNearbyCommand(), new HologramRemoveCommand(), new HologramTeleportCommand()));
+				.usage("<list|nearby|teleport|create|remove|clone|edit>")
+				.subCommands(
+						new HologramCloneCommand(), new HologramEditCommand(), new HologramListCommand(),
+						new HologramNearbyCommand(), new HologramRemoveCommand(), new HologramTeleportCommand()
+				));
 	}
 
 	@Override
@@ -23,7 +26,7 @@ public class HologramCommand extends Command {
 		);
 
 		TextComponent infoMessage = MessageUtils.infoMessage(
-				Component.text("Les sous-commandes possibles sont list, nearby, teleport, create, remove, copy, edit.")
+				Component.text("Les sous-commandes possibles sont list, nearby, teleport, create, remove, clone, edit.")
 		);
 
 		sender.sendMessage(errorMessage);
