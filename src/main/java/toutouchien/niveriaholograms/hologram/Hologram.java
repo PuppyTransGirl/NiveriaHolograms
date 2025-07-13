@@ -46,243 +46,266 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Hologram {
-	private static final ConcurrentHashMap<UUID, PacketStats> playerPacketStats = new ConcurrentHashMap<>();
-	public static final TextColor TRANSPARENT = () -> 0;
-	private Display display = null;
+    private static final ConcurrentHashMap<UUID, PacketStats> playerPacketStats = new ConcurrentHashMap<>();
+    public static final TextColor TRANSPARENT = () -> 0;
+    private Display display = null;
 
-	private HologramType type;
-	private HologramConfiguration configuration;
-	private String name;
-	private CustomLocation location;
-	private UUID owner;
+    private HologramType type;
+    private HologramConfiguration configuration;
+    private String name;
+    private CustomLocation location;
+    private UUID owner;
 
-	public Hologram(HologramType type, HologramConfiguration configuration, String name, CustomLocation location, UUID owner) {
-		this.type = type;
-		this.configuration = configuration;
-		this.name = name;
-		this.location = location;
-		this.owner = owner;
-	}
+    public Hologram(HologramType type, HologramConfiguration configuration, String name, CustomLocation location, UUID owner) {
+        this.type = type;
+        this.configuration = configuration;
+        this.name = name;
+        this.location = location;
+        this.owner = owner;
+    }
 
-	public void createForAllPlayers() {
-		Bukkit.getOnlinePlayers().forEach(player -> {
-			if (!player.getWorld().getName().equals(location.world()))
-				return;
+    public Hologram(Hologram original, Player player, String newName) {
+        this.type = original.type;
+        this.name = newName;
+        this.owner = original.owner;
+        this.location = new CustomLocation(player.getLocation());
+        this.configuration = original.configuration.clone();
+        this.display = null;
+    }
 
-			this.create(player);
-		});
-	}
+    public void createForAllPlayers() {
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            if (!player.getWorld().getName().equals(location.world()))
+                return;
 
-	public void deleteForAllPlayers() {
-		Bukkit.getOnlinePlayers().forEach(this::delete);
-	}
+            this.create(player);
+        });
+    }
 
-	public void updateForAllPlayers() {
-		Bukkit.getOnlinePlayers().forEach(player -> update(player, false));
-	}
+    public void deleteForAllPlayers() {
+        Bukkit.getOnlinePlayers().forEach(this::delete);
+    }
 
-	public void create(Player player) {
-		send(player, new ClientboundAddEntityPacket(display, 0, display.blockPosition()));
-		update(player, true);
-	}
-	
-	public void delete(Player player) {
-		send(player, new ClientboundRemoveEntitiesPacket(display.getId()));
-	}
+    public void updateForAllPlayers() {
+        Bukkit.getOnlinePlayers().forEach(player -> update(player, false));
+    }
 
-	public void update(Player player, boolean join) {
-		send(player, new ClientboundTeleportEntityPacket(display.getId(), PositionMoveRotation.of(display), Set.of(), false));
+    public void create(Player player) {
+        send(player, new ClientboundAddEntityPacket(display, 0, display.blockPosition()));
+        update(player, true);
+    }
 
-		if (display instanceof Display.TextDisplay textDisplay)
-			textDisplay.setText(PaperAdventure.asVanilla(((TextHologramConfiguration) configuration).serializedText()));
+    public void delete(Player player) {
+        send(player, new ClientboundRemoveEntitiesPacket(display.getId()));
+    }
+
+    public void update(Player player, boolean join) {
+        send(player, new ClientboundTeleportEntityPacket(display.getId(), PositionMoveRotation.of(display), Set.of(), false));
+
+        if (display instanceof Display.TextDisplay textDisplay)
+            textDisplay.setText(PaperAdventure.asVanilla(((TextHologramConfiguration) configuration).serializedText()));
 
         List<SynchedEntityData.DataValue<?>> values = join ? display.getEntityData().packAll() : display.getEntityData().packDirty();
-		if (values == null)
-			return;
+        if (values == null)
+            return;
 
-		send(player, new ClientboundSetEntityDataPacket(display.getId(), values));
-	}
-	
-	public void create() {
-		ServerLevel level = ((CraftWorld) location.bukkitLocation().getWorld()).getHandle();
-		switch (type) {
-			case BLOCK -> this.display = new Display.BlockDisplay(EntityType.BLOCK_DISPLAY, level);
-			case ITEM -> this.display = new Display.ItemDisplay(EntityType.ITEM_DISPLAY, level);
-			case TEXT -> this.display = new Display.TextDisplay(EntityType.TEXT_DISPLAY, level);
-		}
+        send(player, new ClientboundSetEntityDataPacket(display.getId(), values));
+    }
 
-		display.setTransformationInterpolationDuration(1);
-		display.setTransformationInterpolationDelay(0);
+    public void create() {
+        ServerLevel level = ((CraftWorld) location.bukkitLocation().getWorld()).getHandle();
+        switch (type) {
+            case BLOCK -> this.display = new Display.BlockDisplay(EntityType.BLOCK_DISPLAY, level);
+            case ITEM -> this.display = new Display.ItemDisplay(EntityType.ITEM_DISPLAY, level);
+            case TEXT -> this.display = new Display.TextDisplay(EntityType.TEXT_DISPLAY, level);
+        }
 
-		updateLocation();
-		update();
-	}
+        display.setTransformationInterpolationDuration(1);
+        display.setTransformationInterpolationDelay(0);
 
-	public void updateLocation() {
-		display.setPosRaw(location.x(), location.y(), location.z());
-		display.setYRot(location.yaw()); // These are correct Y = Yaw, X = Pitch
-		display.setXRot(location.pitch());
-	}
+        updateLocation();
+        update();
+    }
 
-	public void update() {
-		display.setBillboardConstraints(switch (configuration.billboard()) {
-			case FIXED -> Display.BillboardConstraints.FIXED;
-			case VERTICAL -> Display.BillboardConstraints.VERTICAL;
-			case HORIZONTAL -> Display.BillboardConstraints.HORIZONTAL;
-			case CENTER -> Display.BillboardConstraints.CENTER;
-		});
+    public void updateLocation() {
+        display.setPosRaw(location.x(), location.y(), location.z());
+        display.setYRot(location.yaw()); // These are correct Y = Yaw, X = Pitch
+        display.setXRot(location.pitch());
+    }
 
-		if (display instanceof Display.BlockDisplay blockDisplay && configuration instanceof BlockHologramConfiguration blockConfiguration) {
-			ResourceLocation blockResource = ResourceLocation.parse(blockConfiguration.material().key().asString());
-			Optional<Holder.Reference<Block>> blockHolder = BuiltInRegistries.BLOCK.get(blockResource);
-			if (blockHolder.isEmpty())
-				throw new IllegalArgumentException("Invalid block material: " + blockResource);
+    public void update() {
+        display.setBillboardConstraints(switch (configuration.billboard()) {
+            case FIXED -> Display.BillboardConstraints.FIXED;
+            case VERTICAL -> Display.BillboardConstraints.VERTICAL;
+            case HORIZONTAL -> Display.BillboardConstraints.HORIZONTAL;
+            case CENTER -> Display.BillboardConstraints.CENTER;
+        });
 
-			Block block = blockHolder.get().value();
-			blockDisplay.setBlockState(block.defaultBlockState());
-		} else if (display instanceof Display.ItemDisplay itemDisplay && configuration instanceof ItemHologramConfiguration itemConfiguration) {
-			itemDisplay.setItemStack(ItemStack.fromBukkitCopy(itemConfiguration.itemStack()));
-		} else if (display instanceof Display.TextDisplay textDisplay && configuration instanceof TextHologramConfiguration textConfiguration) {
-			display.getEntityData().set(Display.TextDisplay.DATA_LINE_WIDTH_ID, 1403);
+        if (display instanceof Display.BlockDisplay blockDisplay && configuration instanceof BlockHologramConfiguration blockConfiguration) {
+            ResourceLocation blockResource = ResourceLocation.parse(blockConfiguration.material().key().asString());
+            Optional<Holder.Reference<Block>> blockHolder = BuiltInRegistries.BLOCK.get(blockResource);
+            if (blockHolder.isEmpty())
+                throw new IllegalArgumentException("Invalid block material: " + blockResource);
 
-			TextColor background = textConfiguration.background();
-			int newBackground = background == null ? Display.TextDisplay.INITIAL_BACKGROUND : background == TRANSPARENT ? 0 : background.value() | 0xC8000000;
-			display.getEntityData().set(Display.TextDisplay.DATA_BACKGROUND_COLOR_ID, newBackground);
+            Block block = blockHolder.get().value();
+            blockDisplay.setBlockState(block.defaultBlockState());
+        } else if (display instanceof Display.ItemDisplay itemDisplay && configuration instanceof ItemHologramConfiguration itemConfiguration) {
+            itemDisplay.setItemStack(ItemStack.fromBukkitCopy(itemConfiguration.itemStack()));
+        } else if (display instanceof Display.TextDisplay textDisplay && configuration instanceof TextHologramConfiguration textConfiguration) {
+            display.getEntityData().set(Display.TextDisplay.DATA_LINE_WIDTH_ID, 1403);
 
-			byte flags = textDisplay.getFlags();
-			flags = (byte) (textConfiguration.textShadow() ? flags | Display.TextDisplay.FLAG_SHADOW : (flags & ~Display.TextDisplay.FLAG_SHADOW));
-			flags = (byte) (textConfiguration.textAlignment() == TextDisplay.TextAlignment.LEFT ? (flags | Display.TextDisplay.FLAG_ALIGN_LEFT) : (flags & ~Display.TextDisplay.FLAG_ALIGN_LEFT));
-			flags = (byte) (textConfiguration.seeThrough() ? flags | Display.TextDisplay.FLAG_SEE_THROUGH : (flags & ~Display.TextDisplay.FLAG_SEE_THROUGH));
-			flags = (byte) (textConfiguration.textAlignment() == TextDisplay.TextAlignment.RIGHT ? (flags | Display.TextDisplay.FLAG_ALIGN_RIGHT) : (flags & ~Display.TextDisplay.FLAG_ALIGN_RIGHT));
-			textDisplay.setFlags(flags);
-		}
+            TextColor background = textConfiguration.background();
+            int newBackground = background == null ? Display.TextDisplay.INITIAL_BACKGROUND : background == TRANSPARENT ? 0 : background.value() | 0xC8000000;
+            display.getEntityData().set(Display.TextDisplay.DATA_BACKGROUND_COLOR_ID, newBackground);
 
-		org.bukkit.entity.Display.Brightness brightness = configuration.brightness();
-		if (brightness != null)
-			display.setBrightnessOverride(new Brightness(brightness.getBlockLight(), brightness.getSkyLight()));
+            byte flags = textDisplay.getFlags();
+            flags = (byte) (textConfiguration.textShadow() ? flags | Display.TextDisplay.FLAG_SHADOW : (flags & ~Display.TextDisplay.FLAG_SHADOW));
+            flags = (byte) (textConfiguration.textAlignment() == TextDisplay.TextAlignment.LEFT ? (flags | Display.TextDisplay.FLAG_ALIGN_LEFT) : (flags & ~Display.TextDisplay.FLAG_ALIGN_LEFT));
+            flags = (byte) (textConfiguration.seeThrough() ? flags | Display.TextDisplay.FLAG_SEE_THROUGH : (flags & ~Display.TextDisplay.FLAG_SEE_THROUGH));
+            flags = (byte) (textConfiguration.textAlignment() == TextDisplay.TextAlignment.RIGHT ? (flags | Display.TextDisplay.FLAG_ALIGN_RIGHT) : (flags & ~Display.TextDisplay.FLAG_ALIGN_RIGHT));
+            textDisplay.setFlags(flags);
+        }
 
-		display.setTransformation(new Transformation(
-				configuration.translation(),
-				new Quaternionf(),
-				configuration.scale(),
-				new Quaternionf()
-		));
+        org.bukkit.entity.Display.Brightness brightness = configuration.brightness();
+        if (brightness != null)
+            display.setBrightnessOverride(new Brightness(brightness.getBlockLight(), brightness.getSkyLight()));
 
-		display.setShadowRadius(configuration.shadowRadius());
-		display.setShadowStrength(configuration.shadowStrength());
-	}
+        display.setTransformation(new Transformation(
+                configuration.translation(),
+                new Quaternionf(),
+                configuration.scale(),
+                new Quaternionf()
+        ));
 
-	private void send(Player player, Packet<?> packet) {
-		if (packet instanceof ClientboundSetEntityDataPacket setEntityDataPacket) {
-			ServerLevel level = ((CraftWorld) player.getWorld()).getHandle();
-			RegistryAccess registryAccess = level.registryAccess();
-			RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(new FriendlyByteBuf(Unpooled.buffer()), registryAccess);
-			ReflectionUtils.callMethod(setEntityDataPacket, "write", Set.of(RegistryFriendlyByteBuf.class), buf);
-			int packetSize = buf.readableBytes();
+        display.setShadowRadius(configuration.shadowRadius());
+        display.setShadowStrength(configuration.shadowStrength());
+    }
 
-			playerPacketStats.computeIfAbsent(player.getUniqueId(), id -> new PacketStats()).update(packetSize);
+    private void send(Player player, Packet<?> packet) {
+        if (packet instanceof ClientboundSetEntityDataPacket setEntityDataPacket) {
+            ServerLevel level = ((CraftWorld) player.getWorld()).getHandle();
+            RegistryAccess registryAccess = level.registryAccess();
+            RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(new FriendlyByteBuf(Unpooled.buffer()), registryAccess);
+            ReflectionUtils.callMethod(setEntityDataPacket, "write", Set.of(RegistryFriendlyByteBuf.class), buf);
+            int packetSize = buf.readableBytes();
 
-			System.out.println("[Hologram] Sent Data Packet to " + player.getName() + " | Size: " + packetSize + " bytes");
-		}
+            playerPacketStats.computeIfAbsent(player.getUniqueId(), id -> new PacketStats()).update(packetSize);
 
-		((CraftPlayer) player).getHandle().connection.send(packet);
-	}
+            System.out.println("[Hologram] Sent Data Packet to " + player.getName() + " | Size: " + packetSize + " bytes");
+        }
 
-	public static void printPacketStats() {
-		System.out.println("[Hologram] Packet Statistics:");
-		playerPacketStats.forEach((uuid, stats) -> {
-			Player player = Bukkit.getPlayer(uuid);
-			if (player != null) {
-				System.out.println("  - " + player.getName() + ":");
-				System.out.println("      Total Size: " + stats.getTotalSize() + " bytes");
-				System.out.println("      Count: " + stats.getCount());
-				System.out.println("      Min: " + stats.getMinSize() + " bytes");
-				System.out.println("      Max: " + stats.getMaxSize() + " bytes");
-				System.out.println("      Avg: " + String.format("%.2f", stats.getAverageSize()) + " bytes");
-			}
-		});
-	}
+        ((CraftPlayer) player).getHandle().connection.send(packet);
+    }
 
-	public void teleportTo(Location location) {
-		boolean worldChanged = !this.location.world().equals(location.getWorld().getName());
-		this.location = new CustomLocation(location);
-		this.updateLocation();
+    public static void printPacketStats() {
+        System.out.println("[Hologram] Packet Statistics:");
+        playerPacketStats.forEach((uuid, stats) -> {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player != null) {
+                System.out.println("  - " + player.getName() + ":");
+                System.out.println("      Total Size: " + stats.getTotalSize() + " bytes");
+                System.out.println("      Count: " + stats.getCount());
+                System.out.println("      Min: " + stats.getMinSize() + " bytes");
+                System.out.println("      Max: " + stats.getMaxSize() + " bytes");
+                System.out.println("      Avg: " + String.format("%.2f", stats.getAverageSize()) + " bytes");
+            }
+        });
+    }
 
-		if (!worldChanged)
-			return;
+    public void teleportTo(Location location) {
+        boolean worldChanged = !this.location.world().equals(location.getWorld().getName());
+        this.location = new CustomLocation(location);
+        this.updateLocation();
 
-		this.deleteForAllPlayers();
-		Bukkit.getOnlinePlayers().stream()
-				.filter(player -> player.getWorld().getName().equals(location.getWorld().getName()))
-				.forEach(player -> {
-					this.create();
-					this.create(player);
-				});
-	}
+        if (!worldChanged)
+            return;
 
-	public HologramType type() {
-		return type;
-	}
+        this.deleteForAllPlayers();
+        Bukkit.getOnlinePlayers().stream()
+                .filter(player -> player.getWorld().getName().equals(location.getWorld().getName()))
+                .forEach(player -> {
+                    this.create();
+                    this.create(player);
+                });
+    }
 
-	public Hologram type(HologramType type) {
-		this.type = type;
-		return this;
-	}
+    public HologramType type() {
+        return type;
+    }
 
-	public HologramConfiguration configuration() {
-		return configuration;
-	}
+    public Hologram type(HologramType type) {
+        this.type = type;
+        return this;
+    }
 
-	public Hologram configuration(HologramConfiguration configuration) {
-		this.configuration = configuration;
-		return this;
-	}
+    public HologramConfiguration configuration() {
+        return configuration;
+    }
 
-	public String name() {
-		return name;
-	}
+    public Hologram configuration(HologramConfiguration configuration) {
+        this.configuration = configuration;
+        return this;
+    }
 
-	public Hologram name(String name) {
-		this.name = name;
-		return this;
-	}
+    public String name() {
+        return name;
+    }
 
-	public CustomLocation location() {
-		return location;
-	}
+    public Hologram name(String name) {
+        this.name = name;
+        return this;
+    }
 
-	public Hologram location(CustomLocation location) {
-		this.location = location;
-		return this;
-	}
+    public CustomLocation location() {
+        return location;
+    }
 
-	public UUID owner() {
-		return owner;
-	}
+    public Hologram location(CustomLocation location) {
+        this.location = location;
+        return this;
+    }
 
-	public Hologram owner(UUID owner) {
-		this.owner = owner;
-		return this;
-	}
+    public UUID owner() {
+        return owner;
+    }
 
-	private static class PacketStats {
-		private final AtomicLong totalSize = new AtomicLong();
-		private final AtomicInteger count = new AtomicInteger();
-		private final AtomicLong minSize = new AtomicLong(Long.MAX_VALUE);
-		private final AtomicLong maxSize = new AtomicLong();
+    public Hologram owner(UUID owner) {
+        this.owner = owner;
+        return this;
+    }
 
-		public void update(long packetSize) {
-			totalSize.addAndGet(packetSize);
-			count.incrementAndGet();
+    private static class PacketStats {
+        private final AtomicLong totalSize = new AtomicLong();
+        private final AtomicInteger count = new AtomicInteger();
+        private final AtomicLong minSize = new AtomicLong(Long.MAX_VALUE);
+        private final AtomicLong maxSize = new AtomicLong();
 
-			minSize.updateAndGet(currentMin -> Math.min(currentMin, packetSize));
-			maxSize.updateAndGet(currentMax -> Math.max(currentMax, packetSize));
-		}
+        public void update(long packetSize) {
+            totalSize.addAndGet(packetSize);
+            count.incrementAndGet();
 
-		public long getTotalSize() { return totalSize.get(); }
-		public int getCount() { return count.get(); }
-		public long getMinSize() { return (count.get() == 0) ? 0 : minSize.get(); }
-		public long getMaxSize() { return maxSize.get(); }
-		public double getAverageSize() { return (count.get() == 0) ? 0 : (double) totalSize.get() / count.get(); }
-	}
+            minSize.updateAndGet(currentMin -> Math.min(currentMin, packetSize));
+            maxSize.updateAndGet(currentMax -> Math.max(currentMax, packetSize));
+        }
+
+        public long getTotalSize() {
+            return totalSize.get();
+        }
+
+        public int getCount() {
+            return count.get();
+        }
+
+        public long getMinSize() {
+            return (count.get() == 0) ? 0 : minSize.get();
+        }
+
+        public long getMaxSize() {
+            return maxSize.get();
+        }
+
+        public double getAverageSize() {
+            return (count.get() == 0) ? 0 : (double) totalSize.get() / count.get();
+        }
+    }
 }

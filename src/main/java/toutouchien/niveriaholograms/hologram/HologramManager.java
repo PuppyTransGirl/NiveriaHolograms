@@ -57,7 +57,7 @@ public class HologramManager {
 		hologram.createForAllPlayers();
 
 		this.saveHologram(hologram);
-		this.holograms.add(hologram);
+		this.addHologram(hologram);
 
 		return hologram;
 	}
@@ -80,6 +80,10 @@ public class HologramManager {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void addHologram(Hologram hologram) {
+		this.holograms.add(hologram);
 	}
 
 	public void loadHolograms() {
@@ -142,6 +146,11 @@ public class HologramManager {
 				.filter(hologram -> hologram.name().equalsIgnoreCase(name))
 				.findFirst()
 				.orElse(null);
+	}
+
+	public boolean hologramExists(String name) {
+		return this.holograms.stream()
+				.anyMatch(hologram -> hologram.name().equalsIgnoreCase(name));
 	}
 
 	public List<Hologram> holograms() {
