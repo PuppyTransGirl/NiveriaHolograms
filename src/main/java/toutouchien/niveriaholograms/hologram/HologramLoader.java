@@ -82,65 +82,12 @@ public class HologramLoader {
 		configuration.text(text);
 	}
 
-	public void save(ConfigurationSection section, Hologram hologram) {
-		HologramType type = hologram.type();
-		section.set("type", type.name());
-		section.set("name", hologram.name());
-		section.set("location", hologram.location());
-		section.set("owner", hologram.owner().toString());
-
-		HologramConfiguration configuration = hologram.configuration();
-
-		saveVector(section, "scale.", configuration.scale());
-		saveVector(section, "translation.", configuration.translation());
-
-		section.set("billboard", configuration.billboard().name());
-		section.set("shadow-radius", configuration.shadowRadius());
-		section.set("shadow-strength", configuration.shadowStrength());
-		section.set("visibility-distance", configuration.visibilityDistance());
-
-		Display.Brightness brightness = configuration.brightness();
-		if (brightness != null) {
-			section.set("brightness.block", brightness.getBlockLight());
-			section.set("brightness.sky", brightness.getSkyLight());
-		}
-
-		switch (type) {
-			case BLOCK -> saveBlockConfiguration(section, (BlockHologramConfiguration) configuration);
-			case ITEM -> saveItemConfiguration(section, (ItemHologramConfiguration) configuration);
-			case TEXT -> saveTextConfiguration(section, (TextHologramConfiguration) configuration);
-		}
-	}
-
-	private void saveBlockConfiguration(ConfigurationSection section, BlockHologramConfiguration configuration) {
-		section.set("material", configuration.material().name());
-	}
-
-	private void saveItemConfiguration(ConfigurationSection section, ItemHologramConfiguration configuration) {
-		section.set("itemstack", configuration.itemStack());
-	}
-
-	private void saveTextConfiguration(ConfigurationSection section, TextHologramConfiguration configuration) {
-		section.set("text-background", backgroundColor(configuration.background()));
-		section.set("text-alignment", configuration.textAlignment().name());
-		section.set("see-through", configuration.seeThrough());
-		section.set("text-shadow", configuration.textShadow());
-
-		section.set("text", configuration.text());
-	}
-
 	private Vector3f loadVector(ConfigurationSection section, String path) {
 		return new Vector3f(
 				(float) section.getDouble(path + "x"),
 				(float) section.getDouble(path + "y"),
 				(float) section.getDouble(path + "z")
 		);
-	}
-
-	private void saveVector(ConfigurationSection section, String path, Vector3f vector) {
-		section.set(path + "x", vector.x());
-		section.set(path + "y", vector.y());
-		section.set(path + "z", vector.z());
 	}
 
 	private TextColor loadBackground(ConfigurationSection section) {
@@ -153,16 +100,5 @@ public class HologramLoader {
 			return TextColor.fromHexString(background);
 		else
 			return NamedTextColor.NAMES.value(background);
-	}
-
-	private String backgroundColor(TextColor backgroundColor) {
-		if (backgroundColor == null)
-			return "default";
-		else if (backgroundColor == Hologram.TRANSPARENT)
-			return "transparent";
-		else if (backgroundColor instanceof NamedTextColor namedTextColor)
-			return namedTextColor.toString();
-		else
-			return backgroundColor.asHexString();
 	}
 }

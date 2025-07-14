@@ -65,6 +65,15 @@ public class Hologram {
         this.owner = owner;
     }
 
+    public Hologram(Hologram original) {
+        this.type = original.type;
+        this.name = original.name;
+        this.owner = original.owner;
+        this.location = original.location.clone();
+        this.configuration = original.configuration.clone();
+        this.display = null;
+    }
+
     public Hologram(Hologram original, Player player, String newName) {
         this.type = original.type;
         this.name = newName;
