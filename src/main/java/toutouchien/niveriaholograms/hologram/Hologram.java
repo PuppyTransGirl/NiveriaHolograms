@@ -48,6 +48,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class Hologram {
     private static final ConcurrentHashMap<UUID, PacketStats> playerPacketStats = new ConcurrentHashMap<>();
     public static final TextColor TRANSPARENT = () -> 0;
+    public static final int MAX_LINE_LENGTH = 1403;
     private Display display = null;
 
     private HologramType type;
@@ -152,7 +153,7 @@ public class Hologram {
         } else if (display instanceof Display.ItemDisplay itemDisplay && configuration instanceof ItemHologramConfiguration itemConfiguration) {
             itemDisplay.setItemStack(ItemStack.fromBukkitCopy(itemConfiguration.itemStack()));
         } else if (display instanceof Display.TextDisplay textDisplay && configuration instanceof TextHologramConfiguration textConfiguration) {
-            display.getEntityData().set(Display.TextDisplay.DATA_LINE_WIDTH_ID, 1403);
+            display.getEntityData().set(Display.TextDisplay.DATA_LINE_WIDTH_ID, MAX_LINE_LENGTH);
 
             TextColor background = textConfiguration.background();
             int newBackground = background == null ? Display.TextDisplay.INITIAL_BACKGROUND : background == TRANSPARENT ? 0 : background.value() | 0xC8000000;

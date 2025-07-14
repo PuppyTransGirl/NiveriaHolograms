@@ -3,6 +3,7 @@ package toutouchien.niveriaholograms.command.hologram;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 import toutouchien.niveriaapi.command.Command;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.utils.ui.MessageUtils;
@@ -20,7 +21,7 @@ public class HologramCommand extends Command {
 	}
 
 	@Override
-	public void execute(CommandSender sender, String[] args, String label) {
+	public void execute(CommandSender sender, String @NotNull [] args, @NotNull String label) {
 		TextComponent errorMessage = MessageUtils.errorMessage(
 				Component.text("Tu n'as pas spécifié de sous-commande.")
 		);
