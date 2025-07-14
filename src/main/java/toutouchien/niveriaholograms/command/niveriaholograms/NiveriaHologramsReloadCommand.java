@@ -3,6 +3,7 @@ package toutouchien.niveriaholograms.command.niveriaholograms;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
 import toutouchien.niveriaapi.utils.ui.MessageUtils;
@@ -14,7 +15,7 @@ public class NiveriaHologramsReloadCommand extends SubCommand {
 	}
 
 	@Override
-	public void execute(CommandSender sender, String[] args, String label) {
+	public void execute(CommandSender sender, String @NotNull [] args, @NotNull String label) {
 		long startMillis = System.currentTimeMillis();
 		NiveriaHolograms.instance().reload();
 		long timeTaken = System.currentTimeMillis() - startMillis;

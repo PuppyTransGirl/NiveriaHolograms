@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.jetbrains.annotations.NotNull;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
 import toutouchien.niveriaapi.utils.ui.MessageUtils;
@@ -24,7 +25,7 @@ public class HologramTeleportCommand extends SubCommand {
 	}
 
 	@Override
-	public void execute(Player player, String[] args, String label) {
+	public void execute(@NotNull Player player, String[] args, @NotNull String label) {
 		if (args.length == 0) {
 			TextComponent errorMessage = MessageUtils.errorMessage(
 					Component.text("Tu dois spécifier le nom de l'hologramme auquel tu veux te téléporter.")
@@ -50,7 +51,7 @@ public class HologramTeleportCommand extends SubCommand {
 	}
 
 	@Override
-	public List<String> complete(Player player, String[] args, int argIndex) {
+	public List<String> complete(@NotNull Player player, String @NotNull [] args, int argIndex) {
 		if (argIndex != 0)
 			return Collections.emptyList();
 

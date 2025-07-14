@@ -6,6 +6,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
 import toutouchien.niveriaapi.utils.ui.ColorUtils;
@@ -29,7 +30,7 @@ public class HologramNearbyCommand extends SubCommand {
 	}
 
 	@Override
-	public void execute(Player player, String[] args, String label) {
+	public void execute(@NotNull Player player, String[] args, @NotNull String label) {
 		if (args.length == 0) {
 			TextComponent errorMessage = MessageUtils.errorMessage(
 					Component.text("Tu dois spécifier le rayon dans lequel chercher les hologrammes.")

@@ -3,6 +3,7 @@ package toutouchien.niveriaholograms.command.hologram.edit.text;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
 import toutouchien.niveriaapi.utils.ui.MessageUtils;
@@ -19,7 +20,7 @@ public class HologramEditAddLineCommand extends SubCommand {
 	}
 
 	@Override
-	public void execute(Player player, String[] args, String[] fullArgs, String label) {
+	public void execute(@NotNull Player player, String @NotNull [] args, String[] fullArgs, @NotNull String label) {
 		HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
 		Hologram hologram = hologramManager.hologramByName(fullArgs[1]);
 		if (hologram == null) {

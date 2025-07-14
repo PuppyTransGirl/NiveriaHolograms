@@ -6,6 +6,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
 import toutouchien.niveriaapi.utils.ui.ColorUtils;
@@ -25,7 +26,7 @@ public class HologramListCommand extends SubCommand {
 	}
 
 	@Override
-	public void execute(CommandSender sender, String[] args, String label) {
+	public void execute(CommandSender sender, String @NotNull [] args, @NotNull String label) {
 		TextComponent infoMessage = MessageUtils.infoMessage(
 				text("Voici la liste des hologrammes:")
 		);

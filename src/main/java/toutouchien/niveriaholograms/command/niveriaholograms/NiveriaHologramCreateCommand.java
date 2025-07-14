@@ -1,6 +1,7 @@
 package toutouchien.niveriaholograms.command.niveriaholograms;
 
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
 import toutouchien.niveriaholograms.NiveriaHolograms;
@@ -16,7 +17,7 @@ public class NiveriaHologramCreateCommand extends SubCommand {
 	}
 
 	@Override
-	public void execute(Player player, String[] args, String label) {
+	public void execute(@NotNull Player player, String @NotNull [] args, @NotNull String label) {
 		HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
 		UUID uuid = UUID.randomUUID();
 		hologramManager.create(player, HologramType.BLOCK, uuid + "_block");

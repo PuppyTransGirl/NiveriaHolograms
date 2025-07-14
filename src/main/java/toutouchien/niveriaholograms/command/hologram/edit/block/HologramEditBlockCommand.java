@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
 import toutouchien.niveriaapi.utils.ui.MessageUtils;
@@ -17,15 +18,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-public class HologramEditBlock extends SubCommand {
-	public HologramEditBlock() {
+public class HologramEditBlockCommand extends SubCommand {
+	public HologramEditBlockCommand() {
 		super(new CommandData("block", "niveriaholograms")
 				.playerRequired(true)
 				.usage("<bloc>"));
 	}
 
 	@Override
-	public void execute(Player player, String[] args, String[] fullArgs, String label) {
+	public void execute(@NotNull Player player, String @NotNull [] args, String[] fullArgs, @NotNull String label) {
 		HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
 		Hologram hologram = hologramManager.hologramByName(fullArgs[1]);
 		if (hologram == null) {
@@ -101,7 +102,7 @@ public class HologramEditBlock extends SubCommand {
 	}
 
 	@Override
-	public List<String> complete(Player player, String[] args, String[] fullArgs, int argIndex) {
+	public List<String> complete(@NotNull Player player, String @NotNull [] args, String @NotNull [] fullArgs, int argIndex) {
 		if (argIndex != 0)
 			return Collections.emptyList();
 

@@ -3,13 +3,14 @@ package toutouchien.niveriaholograms.command.hologram;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
 import toutouchien.niveriaapi.utils.ui.MessageUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.command.hologram.edit.*;
-import toutouchien.niveriaholograms.command.hologram.edit.block.HologramEditBlock;
-import toutouchien.niveriaholograms.command.hologram.edit.item.HologramEditItem;
+import toutouchien.niveriaholograms.command.hologram.edit.block.HologramEditBlockCommand;
+import toutouchien.niveriaholograms.command.hologram.edit.item.HologramEditItemCommand;
 import toutouchien.niveriaholograms.command.hologram.edit.text.*;
 import toutouchien.niveriaholograms.hologram.Hologram;
 import toutouchien.niveriaholograms.hologram.HologramManager;
@@ -26,9 +27,9 @@ public class HologramEditCommand extends SubCommand {
 				.playerRequired(true)
 				.usage("<hologram>")
 				.subCommands(
-						new HologramEditBlock(),
+						new HologramEditBlockCommand(),
 
-						new HologramEditItem(),
+						new HologramEditItemCommand(),
 
 						new HologramEditAddLineCommand(), new HologramEditBackgroundCommand(), new HologramEditInsertAfterCommand(),
 						new HologramEditInsertBeforeCommand(), new HologramEditRemoveLineCommand(), new HologramEditSeeThroughCommand(),
@@ -42,7 +43,7 @@ public class HologramEditCommand extends SubCommand {
 	}
 
 	@Override
-	public void execute(Player player, String[] args, String label) {
+	public void execute(@NotNull Player player, String[] args, @NotNull String label) {
 		if (args.length == 0) {
 			TextComponent errorMessage = MessageUtils.errorMessage(
 					Component.text("Tu dois spécifier le nom de l'hologramme que tu veux modifier.")
@@ -65,7 +66,7 @@ public class HologramEditCommand extends SubCommand {
 	}
 
 	@Override
-	public List<String> complete(Player player, String[] args, int argIndex) {
+	public List<String> complete(@NotNull Player player, String[] args, int argIndex) {
 		String currentArg = args[argIndex].toLowerCase(Locale.ROOT);
 		if (argIndex == 0) {
 			return NiveriaHolograms.instance().hologramManager().holograms().stream()

@@ -6,6 +6,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
 import toutouchien.niveriaapi.utils.ui.MessageUtils;
@@ -28,7 +29,7 @@ public class HologramEditPositionCommand extends SubCommand {
 	}
 
 	@Override
-	public void execute(Player player, String[] args, String[] fullArgs, String label) {
+	public void execute(@NotNull Player player, String @NotNull [] args, String[] fullArgs, @NotNull String label) {
 		HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
 		Hologram hologram = hologramManager.hologramByName(fullArgs[1]);
 		if (hologram == null) {
@@ -140,7 +141,7 @@ public class HologramEditPositionCommand extends SubCommand {
 	}
 
 	@Override
-	public List<String> complete(Player player, String[] args, String[] fullArgs, int argIndex) {
+	public List<String> complete(@NotNull Player player, String @NotNull [] args, String @NotNull [] fullArgs, int argIndex) {
 		List<String> completions = new ArrayList<>();
 
 		if (argIndex == 0) {
