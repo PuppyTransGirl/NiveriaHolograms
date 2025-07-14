@@ -24,6 +24,7 @@ public class HologramSaver {
     private final NiveriaHolograms plugin;
     private final ExecutorService saveExecutor;
     private final Set<String> currentlySaving = ConcurrentHashMap.newKeySet();
+    private final Set<String> currentlyDeleting = ConcurrentHashMap.newKeySet();
     private volatile boolean shutdown = false;
 
     public HologramSaver(NiveriaHolograms plugin) {
@@ -56,7 +57,34 @@ public class HologramSaver {
             } catch (Exception e) {
                 this.plugin.getSLF4JLogger().warn("Failed to save hologram {}: {}", name, e.getMessage(), e);
             } finally {
-                this.currentlySaving.remove(name); // Clean up
+                // Clean up
+                this.currentlySaving.remove(name);
+            }
+        });
+    }
+
+    public void deleteHologram(Hologram hologram) {
+        if (shutdown) {
+            return;
+        }
+
+        String name = hologram.name();
+
+        // Skip if already deleting this hologram
+        if (!currentlyDeleting.add(name)) {
+            return;
+        }
+
+        hologram.deleteForAllPlayers();
+
+        this.saveExecutor.submit(() -> {
+            try {
+                this.deleteFromFile(name);
+            } catch (Exception e) {
+                this.plugin.getSLF4JLogger().warn("Failed to delete hologram {}: {}", name, e.getMessage(), e);
+            } finally {
+                // Clean up
+                this.currentlyDeleting.remove(name);
             }
         });
     }
@@ -78,6 +106,41 @@ public class HologramSaver {
         }
 
         this.save(section, hologram);
+        config.save(tempFile);
+
+        // Delete the original holograms.yml file
+        if (file.exists() && !file.delete()) {
+            throw new Exception("Failed to delete original holograms file: " + file.getAbsolutePath());
+        }
+
+        // Replace the original file with the temporary file by renaming it
+        if (!tempFile.renameTo(file)) {
+            throw new Exception("Failed to rename temporary holograms file to: " + file.getAbsolutePath());
+        }
+    }
+
+    /**
+     * Deletes the hologram data from the YAML file using a temporary file.
+     * This approach ensures that if the process is interrupted or fails midway,
+     * only the temporary file may be corrupted, not the main holograms.yml file.
+     */
+    private void deleteFromFile(String hologramName) throws Exception {
+        File file = new File(plugin.getDataFolder(), "holograms.yml");
+        if (!file.exists()) {
+            plugin.getSLF4JLogger().warn("Holograms file does not exist, nothing to delete: {}", file.getAbsolutePath());
+            return;
+        }
+
+        File tempFile = new File(file.getParent(), file.getName() + ".tmp");
+
+        // Load the configuration
+        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+        if (!config.contains("holograms")) {
+            plugin.getSLF4JLogger().warn("No holograms section found in the configuration file.");
+            return;
+        }
+
+        config.set("holograms." + hologramName, null);
         config.save(tempFile);
 
         // Delete the original holograms.yml file
