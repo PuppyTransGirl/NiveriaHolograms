@@ -26,13 +26,11 @@ public class NiveriaHolograms extends JavaPlugin {
 
 		(this.hologramManager = new HologramManager(this)).initialize();
 
-		NiveriaAPI.instance().commandManager().registerCommands(
-				Arrays.asList(
-						new NiveriaHologramsCommand(),
+		NiveriaAPI.instance().commandManager().registerCommands(Arrays.asList(
+				new NiveriaHologramsCommand(),
 
-						new HologramCommand()
-				)
-		);
+				new HologramCommand()
+		));
 
 		getServer().getPluginManager().registerEvents(new HologramListener(this), this);
 	}

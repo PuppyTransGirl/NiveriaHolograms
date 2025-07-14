@@ -20,6 +20,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class HologramManager {
 	private final NiveriaHolograms plugin;
 	private final HologramLoader hologramLoader;
+	private final HologramSaver hologramSaver;
 
 	private final List<Hologram> holograms;
 	private final Map<String, List<String>> pendingHolograms;
@@ -27,6 +28,7 @@ public class HologramManager {
 	public HologramManager(NiveriaHolograms plugin) {
 		this.plugin = plugin;
 		this.hologramLoader = new HologramLoader(plugin);
+		this.hologramSaver = new HologramSaver(plugin);
 
 		this.holograms = new CopyOnWriteArrayList<>();
 		this.pendingHolograms = new HashMap<>();
@@ -126,19 +128,7 @@ public class HologramManager {
 	}
 
 	public void saveHologram(Hologram hologram) {
-		File file = new File(plugin.getDataFolder(), "holograms.yml");
-		FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-		ConfigurationSection section = config.getConfigurationSection("holograms." + hologram.name());
-		if (section == null)
-			section = config.createSection("holograms." + hologram.name());
-
-		hologramLoader.save(section, hologram);
-
-		try {
-			config.save(file);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		this.hologramSaver.saveHologram(hologram);
 	}
 
 	public Hologram hologramByName(String name) {
@@ -166,6 +156,6 @@ public class HologramManager {
 	}
 
 	public void shutdown() {
-//		saveHolograms();
+		this.hologramSaver.shutdown();
 	}
 }
