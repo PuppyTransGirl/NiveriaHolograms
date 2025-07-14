@@ -13,7 +13,6 @@ import toutouchien.niveriaholograms.configuration.TextHologramConfiguration;
 import toutouchien.niveriaholograms.utils.CustomLocation;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -65,23 +64,8 @@ public class HologramManager {
 	}
 
 	public void delete(Hologram hologram) {
-		File file = new File(plugin.getDataFolder(), "holograms.yml");
-		if (!file.exists())
-			return;
-
-		FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-		if (!config.contains("holograms"))
-			return;
-
-		config.set("holograms." + hologram.name(), null);
-		hologram.deleteForAllPlayers();
 		this.holograms.remove(hologram);
-
-		try {
-			config.save(file);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		this.hologramSaver.deleteHologram(hologram);
 	}
 
 	public void addHologram(Hologram hologram) {
