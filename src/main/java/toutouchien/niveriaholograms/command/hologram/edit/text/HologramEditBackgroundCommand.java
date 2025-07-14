@@ -14,10 +14,7 @@ import toutouchien.niveriaholograms.configuration.TextHologramConfiguration;
 import toutouchien.niveriaholograms.hologram.Hologram;
 import toutouchien.niveriaholograms.hologram.HologramManager;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class HologramEditBackgroundCommand extends SubCommand {
 	public HologramEditBackgroundCommand() {
@@ -59,7 +56,7 @@ public class HologramEditBackgroundCommand extends SubCommand {
 
 		String option = args[0].toLowerCase(Locale.ROOT);
 		switch (option) {
-			case "default" -> configuration.background(null);
+			case "default", "reset" -> configuration.background(null);
 			case "transparent", "none" -> configuration.background(Hologram.TRANSPARENT);
 
 			default -> {
@@ -91,6 +88,10 @@ public class HologramEditBackgroundCommand extends SubCommand {
 			}
 		}
 
+		hologram.update();
+		hologram.updateForAllPlayers();
+		hologramManager.saveHologram(hologram);
+
 		TextComponent successMessage = MessageUtils.successMessage(
 				Component.text()
 						.append(Component.text("La couleur d'arrière plan a été changée à "))
@@ -111,7 +112,7 @@ public class HologramEditBackgroundCommand extends SubCommand {
 		if (hologram == null || !(hologram.configuration() instanceof TextHologramConfiguration configuration))
 			return Collections.emptyList();
 
-		List<String> completion = Arrays.asList("aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white", "yellow");
+		List<String> completion = new ArrayList<>(List.of("aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white", "yellow"));
 		TextColor background = configuration.background();
 		if (background == null) {
 			completion.add("transparent");
