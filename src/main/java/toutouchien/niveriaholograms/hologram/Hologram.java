@@ -106,7 +106,7 @@ public class Hologram {
         if (display instanceof Display.TextDisplay textDisplay)
             textDisplay.setText(PaperAdventure.asVanilla(((TextHologramConfiguration) configuration).serializedText()));
 
-        List<SynchedEntityData.DataValue<?>> values = join ? display.getEntityData().packAll() : display.getEntityData().packDirty();
+        List<SynchedEntityData.DataValue<?>> values = join ? display.getEntityData().getNonDefaultValues() : display.getEntityData().packDirty();
         if (values == null)
             return;
 
