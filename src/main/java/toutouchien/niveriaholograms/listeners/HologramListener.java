@@ -10,6 +10,7 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import toutouchien.niveriaholograms.NiveriaHolograms;
+import toutouchien.niveriaholograms.hologram.Hologram;
 import toutouchien.niveriaholograms.hologram.HologramManager;
 
 import java.io.File;
@@ -51,18 +52,22 @@ public class HologramListener implements Listener {
 			return;
 
 		ConfigurationSection hologramsSection = config.getConfigurationSection("holograms");
-		pendingHolograms.remove(worldName).forEach(hologramName -> {
+		for (String hologramName : pendingHolograms.remove(worldName)) {
 			ConfigurationSection section = hologramsSection.getConfigurationSection(hologramName);
 			if (section == null)
 				return;
 
 			this.hologramManager.loadHologram(section);
-		});
+		}
 	}
 
 	private void sendHolograms(Player player) {
-		this.hologramManager.holograms().stream()
-				.filter(hologram -> hologram.location().world().equals(player.getWorld().getName()))
-				.forEach(hologram -> hologram.create(player));
+		for (Hologram hologram : this.hologramManager.holograms()) {
+			if (hologram.location().world().equals(player.getWorld().getName())) {
+				hologram.create(player);
+			} else {
+				hologram.delete(player);
+			}
+		}
 	}
 }
