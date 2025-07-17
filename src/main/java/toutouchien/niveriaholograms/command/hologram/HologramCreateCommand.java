@@ -6,29 +6,28 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
+import toutouchien.niveriaapi.utils.common.StringUtils;
 import toutouchien.niveriaapi.utils.data.FileUtils;
 import toutouchien.niveriaapi.utils.ui.MessageUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.hologram.Hologram;
 import toutouchien.niveriaholograms.hologram.HologramManager;
+import toutouchien.niveriaholograms.hologram.HologramType;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
-public class HologramCloneCommand extends SubCommand {
-	public HologramCloneCommand() {
-		super(new CommandData("clone", "niveriaholograms")
+public class HologramCreateCommand extends SubCommand {
+	public HologramCreateCommand() {
+		super(new CommandData("create", "niveriaholograms")
 				.playerRequired(true)
-				.usage("<hologram> <nom>"));
+				.usage("<type> <nom>"));
 	}
 
 	@Override
 	public void execute(@NotNull Player player, String[] args, @NotNull String label) {
 		if (args.length == 0) {
 			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Tu dois spécifier le nom de l'hologramme que tu veux cloner.")
+					Component.text("Tu dois spécifier le type d'hologramme que tu veux créer.")
 			);
 
 			player.sendMessage(errorMessage);
@@ -37,24 +36,20 @@ public class HologramCloneCommand extends SubCommand {
 
 		if (args.length != 2) {
 			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Tu dois spécifier le nom du nouvel hologramme.")
+					Component.text("Tu dois spécifier le nom de l'hologramme.")
 			);
 
 			player.sendMessage(errorMessage);
+			return;
+		}
+
+		Optional<HologramType> hologramType = StringUtils.match(args[0], HologramType.class);
+		if (hologramType.isEmpty()) {
+			MessageUtils.sendErrorMessage(player, Component.text("Le type d'hologramme spécifié n'existe pas."));
 			return;
 		}
 
 		HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
-		Hologram hologram = hologramManager.hologramByName(args[0]);
-		if (hologram == null) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Cet hologramme n'existe pas.")
-			);
-
-			player.sendMessage(errorMessage);
-			return;
-		}
-
 		String holoName = args[1];
 		int length = holoName.length();
 		if (length > 64) {
@@ -80,14 +75,8 @@ public class HologramCloneCommand extends SubCommand {
 			return;
 		}
 
-		Hologram clone = new Hologram(hologram, player, holoName);
-		clone.create();
-		clone.createForAllPlayers();
-
-		hologramManager.saveHologram(hologram);
-		hologramManager.addHologram(hologram);
-
-		player.sendMessage(MessageUtils.successMessage(Component.text("Hologramme cloné avec succès !")));
+		hologramManager.create(player, hologramType.get(), holoName);
+		player.sendMessage(MessageUtils.successMessage(Component.text("Hologramme créé avec succès !")));
 	}
 
 	@Override
