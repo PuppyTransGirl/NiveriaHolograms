@@ -32,7 +32,7 @@ public class HologramEditAddLineCommand extends SubCommand {
 			return;
 		}
 
-		if (!(hologram.configuration() instanceof TextHologramConfiguration configuration)) {
+		if (!(hologram.configuration() instanceof TextHologramConfiguration)) {
 			TextComponent errorMessage = MessageUtils.errorMessage(
 					Component.text("Cette comande ne peut être utilisée que sur des hologrammes de texte.")
 			);
@@ -51,11 +51,9 @@ public class HologramEditAddLineCommand extends SubCommand {
 		}
 
 		String newText = String.join(" ", args);
-		configuration.addText(newText);
-
-		hologram.update();
-		hologram.updateForAllPlayers();
-		hologramManager.saveHologram(hologram);
+		hologram.editConfig((TextHologramConfiguration config) -> {
+			config.addText(newText);
+		});
 
 		TextComponent successMessage = MessageUtils.successMessage(
 				Component.text("Le texte a été ajouté avec succès !")

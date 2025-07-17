@@ -25,6 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
 import org.joml.Quaternionf;
 import toutouchien.niveriaapi.utils.game.NMSUtils;
+import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.configuration.BlockHologramConfiguration;
 import toutouchien.niveriaholograms.configuration.HologramConfiguration;
 import toutouchien.niveriaholograms.configuration.ItemHologramConfiguration;
@@ -35,6 +36,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class Hologram {
     public static final TextColor TRANSPARENT = () -> 0;
@@ -184,6 +186,27 @@ public class Hologram {
 
         display.setShadowRadius(configuration.shadowRadius());
         display.setShadowStrength(configuration.shadowStrength());
+    }
+
+    public void editLocation(Consumer<CustomLocation> consumer) {
+        if (consumer == null)
+            return;
+
+        consumer.accept(location);
+        teleportTo(location.bukkitLocation());
+        updateForAllPlayers();
+        NiveriaHolograms.instance().hologramManager().saveHologram(this);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends HologramConfiguration> void editConfig(Consumer<T> consumer) {
+        if (consumer == null)
+            return;
+
+        consumer.accept((T) configuration);
+        update();
+        updateForAllPlayers();
+        NiveriaHolograms.instance().hologramManager().saveHologram(this);
     }
 
     public void teleportTo(Location location) {

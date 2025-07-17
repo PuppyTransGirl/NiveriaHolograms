@@ -54,12 +54,9 @@ public class HologramEditTextShadowCommand extends SubCommand {
 		}
 
 		boolean textShadow = Boolean.parseBoolean(args[0]);
-
-		configuration.textShadow(textShadow);
-
-		hologram.update();
-		hologram.updateForAllPlayers();
-		hologramManager.saveHologram(hologram);
+		hologram.editConfig((TextHologramConfiguration config) -> {
+			config.textShadow(textShadow);
+		});
 
 		TextComponent successMessage = MessageUtils.successMessage(
 				Component.text("L'ombre de texte a été " + (textShadow ? "activée" : "désactivée") + ".")

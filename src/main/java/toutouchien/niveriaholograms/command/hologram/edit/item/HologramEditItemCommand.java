@@ -32,7 +32,7 @@ public class HologramEditItemCommand extends SubCommand {
 			return;
 		}
 
-		if (!(hologram.configuration() instanceof ItemHologramConfiguration configuration)) {
+		if (!(hologram.configuration() instanceof ItemHologramConfiguration)) {
 			TextComponent errorMessage = MessageUtils.errorMessage(
 					Component.text("Cette comande ne peut être utilisée que sur des hologrammes d'item.")
 			);
@@ -51,10 +51,9 @@ public class HologramEditItemCommand extends SubCommand {
 			return;
 		}
 
-		configuration.itemStack(itemStack);
-		hologram.update();
-		hologram.updateForAllPlayers();
-		hologramManager.saveHologram(hologram);
+		hologram.editConfig((ItemHologramConfiguration config) -> {
+			config.itemStack(itemStack);
+		});
 
 		TextComponent successMessage = MessageUtils.successMessage(
 				Component.text()

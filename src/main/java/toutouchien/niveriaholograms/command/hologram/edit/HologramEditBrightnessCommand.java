@@ -78,16 +78,15 @@ public class HologramEditBrightnessCommand extends SubCommand {
             return;
         }
 
-        HologramConfiguration config = hologram.configuration();
+        HologramConfiguration configuration = hologram.configuration();
 
-        Display.Brightness currentBrightness = config.brightness();
+        Display.Brightness currentBrightness = configuration.brightness();
         int blockBrightness = type.equalsIgnoreCase("block") ? value : currentBrightness == null ? 0 : currentBrightness.getBlockLight();
         int skyBrightness = type.equalsIgnoreCase("sky") ? value : currentBrightness == null ? 0 : currentBrightness.getSkyLight();
-        config.brightness(new Display.Brightness(blockBrightness, skyBrightness));
 
-        hologram.update();
-        hologram.updateForAllPlayers();
-        hologramManager.saveHologram(hologram);
+        hologram.editConfig(config -> {
+            config.brightness(new Display.Brightness(blockBrightness, skyBrightness));
+        });
 
         TextComponent successMessage = MessageUtils.successMessage(
                 Component.text()

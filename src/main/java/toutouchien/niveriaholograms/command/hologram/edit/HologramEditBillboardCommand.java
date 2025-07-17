@@ -59,11 +59,9 @@ public class HologramEditBillboardCommand extends SubCommand {
 			return;
 		}
 
-		hologram.configuration().billboard(billboard);
-
-		hologram.update();
-		hologram.updateForAllPlayers();
-		hologramManager.saveHologram(hologram);
+		hologram.editConfig(config -> {
+			config.billboard(billboard);
+		});
 
 		TextComponent successMessage = MessageUtils.successMessage(
 				Component.text()

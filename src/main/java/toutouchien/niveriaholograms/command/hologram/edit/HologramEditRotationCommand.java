@@ -11,7 +11,6 @@ import toutouchien.niveriaapi.utils.ui.MessageUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.hologram.Hologram;
 import toutouchien.niveriaholograms.hologram.HologramManager;
-import toutouchien.niveriaholograms.utils.CustomLocation;
 
 public class HologramEditRotationCommand extends SubCommand {
 	public HologramEditRotationCommand() {
@@ -69,13 +68,10 @@ public class HologramEditRotationCommand extends SubCommand {
 			return;
 		}
 
-		CustomLocation location = hologram.location();
-		location.yaw(yaw)
-				.pitch(pitch);
-
-		hologram.teleportTo(location.bukkitLocation());
-		hologram.updateForAllPlayers();
-		hologramManager.saveHologram(hologram);
+		hologram.editLocation(location -> {
+			location.yaw(yaw)
+					.pitch(pitch);
+		});
 
 		TextComponent successMessage = MessageUtils.successMessage(
 				Component.text("La rotation a été modifiée avec succès !")

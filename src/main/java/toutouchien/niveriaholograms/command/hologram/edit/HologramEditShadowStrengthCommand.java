@@ -37,10 +37,10 @@ public class HologramEditShadowStrengthCommand extends SubCommand {
 			return;
 		}
 
-		float strength;
+		float shadowStrength;
 		try {
-			strength = Float.parseFloat(args[0]);
-			if (!Float.isFinite(strength)) {
+			shadowStrength = Float.parseFloat(args[0]);
+			if (!Float.isFinite(shadowStrength)) {
 				TextComponent errorMessage = MessageUtils.errorMessage(
 						Component.text("La force est invalide.")
 				);
@@ -57,14 +57,12 @@ public class HologramEditShadowStrengthCommand extends SubCommand {
 			return;
 		}
 
-		hologram.configuration().shadowStrength(strength);
-
-		hologram.update();
-		hologram.updateForAllPlayers();
-		hologramManager.saveHologram(hologram);
+		hologram.editConfig(config -> {
+			config.shadowStrength(shadowStrength);
+		});
 
 		TextComponent successMessage = MessageUtils.successMessage(
-				Component.text("La force d'ombre a été mis à " + strength + " avec succès !")
+				Component.text("La force d'ombre a été mis à " + shadowStrength + " avec succès !")
 		);
 
 		player.sendMessage(successMessage);

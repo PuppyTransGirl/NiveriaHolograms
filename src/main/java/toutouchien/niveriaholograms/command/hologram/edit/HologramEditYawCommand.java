@@ -11,7 +11,6 @@ import toutouchien.niveriaapi.utils.ui.MessageUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.hologram.Hologram;
 import toutouchien.niveriaholograms.hologram.HologramManager;
-import toutouchien.niveriaholograms.utils.CustomLocation;
 
 public class HologramEditYawCommand extends SubCommand {
 	public HologramEditYawCommand() {
@@ -58,12 +57,9 @@ public class HologramEditYawCommand extends SubCommand {
 			return;
 		}
 
-		CustomLocation location = hologram.location();
-		location.yaw(yaw);
-
-		hologram.teleportTo(location.bukkitLocation());
-		hologram.updateForAllPlayers();
-		hologramManager.saveHologram(hologram);
+		hologram.editLocation(location -> {
+			location.yaw(yaw);
+		});
 
 		TextComponent successMessage = MessageUtils.successMessage(
 				Component.text("Le yaw a été mis à " + yaw + " avec succès !")

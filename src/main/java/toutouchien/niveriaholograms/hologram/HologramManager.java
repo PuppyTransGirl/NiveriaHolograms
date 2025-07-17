@@ -38,8 +38,8 @@ public class HologramManager {
 		this.loadHolograms();
 	}
 
-	public Hologram createHologram(HologramType type, HologramConfiguration configuration, String name, CustomLocation location, UUID owner) {
-		return new Hologram(type, configuration, name, location, owner);
+	public Hologram createHologram(HologramType type, HologramConfiguration configuration, String name, UUID owner, CustomLocation location) {
+		return new Hologram(type, configuration, name, owner, location);
 	}
 
 	public Hologram create(Player player, HologramType type, String name) {
@@ -49,7 +49,7 @@ public class HologramManager {
 			case TEXT -> new TextHologramConfiguration();
 		};
 
-		Hologram hologram = createHologram(type, configuration, name, new CustomLocation(player.getLocation()), player.getUniqueId());
+		Hologram hologram = createHologram(type, configuration, name, player.getUniqueId(), new CustomLocation(player.getLocation()));
 
 		if (type == HologramType.TEXT)
 			((TextHologramConfiguration) configuration).text(new ArrayList<>(List.of("Utilise /holo edit " + name + " setline 1 <ton texte>")));
