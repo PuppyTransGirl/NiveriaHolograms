@@ -1,39 +1,33 @@
 package toutouchien.niveriaholograms.hologram;
 
-import com.mojang.math.Transformation;
 import io.papermc.paper.adventure.PaperAdventure;
 import net.kyori.adventure.text.format.TextColor;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Brightness;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PositionMoveRotation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.TextDisplay;
-import org.joml.Quaternionf;
 import toutouchien.niveriaapi.utils.game.NMSUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.configuration.BlockHologramConfiguration;
 import toutouchien.niveriaholograms.configuration.HologramConfiguration;
 import toutouchien.niveriaholograms.configuration.ItemHologramConfiguration;
 import toutouchien.niveriaholograms.configuration.TextHologramConfiguration;
+import toutouchien.niveriaholograms.updater.BlockHologramUpdater;
+import toutouchien.niveriaholograms.updater.HologramUpdater;
+import toutouchien.niveriaholograms.updater.ItemHologramUpdater;
+import toutouchien.niveriaholograms.updater.TextHologramUpdater;
 import toutouchien.niveriaholograms.utils.CustomLocation;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -44,14 +38,15 @@ public class Hologram {
     private Display display;
 
     private final HologramType type;
-    private final HologramConfiguration configuration;
+    private final HologramConfiguration config;
+    private HologramUpdater updater;
     private final String name;
     private final UUID owner;
     private CustomLocation location;
 
-    public Hologram(HologramType type, HologramConfiguration configuration, String name, UUID owner, CustomLocation location) {
+    public Hologram(HologramType type, HologramConfiguration config, String name, UUID owner, CustomLocation location) {
         this.type = type;
-        this.configuration = configuration;
+        this.config = config;
         this.name = name;
         this.location = location;
         this.owner = owner;
@@ -61,7 +56,7 @@ public class Hologram {
         this.type = original.type;
         this.name = newName;
         this.owner = original.owner;
-        this.configuration = original.configuration.copy();
+        this.config = original.config.copy();
         this.location = new CustomLocation(player.getLocation());
     }
 
@@ -95,7 +90,7 @@ public class Hologram {
         NMSUtils.sendPacket(player, new ClientboundTeleportEntityPacket(display.getId(), PositionMoveRotation.of(display), Set.of(), false));
 
         if (display instanceof Display.TextDisplay textDisplay)
-            textDisplay.setText(PaperAdventure.asVanilla(((TextHologramConfiguration) configuration).serializedText()));
+            textDisplay.setText(PaperAdventure.asVanilla(((TextHologramConfiguration) config).serializedText()));
 
         // getNonDefaultValues sends less data than packAll
         // It is used when the player haven't received any data from the display yet
@@ -111,11 +106,17 @@ public class Hologram {
 
     public void create() {
         ServerLevel level = ((CraftWorld) location.bukkitLocation().getWorld()).getHandle();
-        switch (type) {
-            case BLOCK -> this.display = new Display.BlockDisplay(EntityType.BLOCK_DISPLAY, level);
-            case ITEM -> this.display = new Display.ItemDisplay(EntityType.ITEM_DISPLAY, level);
-            case TEXT -> this.display = new Display.TextDisplay(EntityType.TEXT_DISPLAY, level);
-        }
+        this.display = switch (type) {
+            case BLOCK -> new Display.BlockDisplay(EntityType.BLOCK_DISPLAY, level);
+            case ITEM -> new Display.ItemDisplay(EntityType.ITEM_DISPLAY, level);
+            case TEXT -> new Display.TextDisplay(EntityType.TEXT_DISPLAY, level);
+        };
+
+        this.updater = switch (type) {
+            case BLOCK -> new BlockHologramUpdater((Display.BlockDisplay) display, (BlockHologramConfiguration) config);
+            case ITEM -> new ItemHologramUpdater((Display.ItemDisplay) display, (ItemHologramConfiguration) config);
+            case TEXT -> new TextHologramUpdater((Display.TextDisplay) display, (TextHologramConfiguration) config);
+        };
 
         display.setTransformationInterpolationDuration(1);
         display.setTransformationInterpolationDelay(0);
@@ -131,47 +132,7 @@ public class Hologram {
     }
 
     public void update() {
-        display.setBillboardConstraints(configuration.billboard());
-
-        if (display instanceof Display.BlockDisplay blockDisplay && configuration instanceof BlockHologramConfiguration blockConfiguration) {
-            ResourceLocation blockResource = ResourceLocation.parse(blockConfiguration.material().key().asString());
-            Optional<Holder.Reference<Block>> blockHolder = BuiltInRegistries.BLOCK.get(blockResource);
-            if (blockHolder.isEmpty())
-                throw new IllegalArgumentException("Invalid block material: " + blockResource);
-
-            Block block = blockHolder.get().value();
-            blockDisplay.setBlockState(block.defaultBlockState());
-        } else if (display instanceof Display.ItemDisplay itemDisplay && configuration instanceof ItemHologramConfiguration itemConfiguration) {
-            itemDisplay.setItemStack(ItemStack.fromBukkitCopy(itemConfiguration.itemStack()));
-        } else if (display instanceof Display.TextDisplay textDisplay && configuration instanceof TextHologramConfiguration textConfiguration) {
-            display.getEntityData().set(Display.TextDisplay.DATA_LINE_WIDTH_ID, MAX_LINE_LENGTH);
-
-            TextColor background = textConfiguration.background();
-            int newBackground = background == null ? Display.TextDisplay.INITIAL_BACKGROUND : background == TRANSPARENT ? 0 : background.value() | 0xC8000000;
-            display.getEntityData().set(Display.TextDisplay.DATA_BACKGROUND_COLOR_ID, newBackground);
-
-            byte flags = textDisplay.getFlags();
-            flags = (byte) (textConfiguration.textShadow() ? flags | Display.TextDisplay.FLAG_SHADOW : (flags & ~Display.TextDisplay.FLAG_SHADOW));
-            flags = (byte) (textConfiguration.textAlignment() == TextDisplay.TextAlignment.LEFT ? (flags | Display.TextDisplay.FLAG_ALIGN_LEFT) : (flags & ~Display.TextDisplay.FLAG_ALIGN_LEFT));
-            flags = (byte) (textConfiguration.seeThrough() ? flags | Display.TextDisplay.FLAG_SEE_THROUGH : (flags & ~Display.TextDisplay.FLAG_SEE_THROUGH));
-            flags = (byte) (textConfiguration.textAlignment() == TextDisplay.TextAlignment.RIGHT ? (flags | Display.TextDisplay.FLAG_ALIGN_RIGHT) : (flags & ~Display.TextDisplay.FLAG_ALIGN_RIGHT));
-            textDisplay.setFlags(flags);
-        }
-
-        Brightness brightness = configuration.brightness();
-        if (brightness != null)
-            display.setBrightnessOverride(new Brightness(brightness.block(), brightness.sky()));
-
-        display.setTransformation(new Transformation(
-                configuration.translation(),
-                new Quaternionf(),
-                configuration.scale(),
-                new Quaternionf()
-        ));
-
-        display.setShadowRadius(configuration.shadowRadius());
-        display.setShadowStrength(configuration.shadowStrength());
-        display.setViewRange(configuration.visibilityDistance());
+        this.updater.update();
     }
 
     public void editLocation(Consumer<CustomLocation> consumer) {
@@ -189,7 +150,7 @@ public class Hologram {
         if (consumer == null)
             return;
 
-        consumer.accept((T) configuration);
+        consumer.accept((T) config);
         update();
         updateForAllPlayers();
         NiveriaHolograms.instance().hologramManager().saveHologram(this);
@@ -217,7 +178,7 @@ public class Hologram {
     }
 
     public HologramConfiguration configuration() {
-        return configuration;
+        return config;
     }
 
     public String name() {
@@ -240,7 +201,7 @@ public class Hologram {
     public Hologram copy() {
         return new Hologram(
                 this.type,
-                this.configuration.copy(),
+                this.config.copy(),
                 this.name,
                 this.owner,
                 this.location.copy()
