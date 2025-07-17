@@ -17,10 +17,7 @@ import toutouchien.niveriaholograms.exception.HologramSaveException;
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class HologramSaver {
     private final NiveriaHolograms plugin;
@@ -31,12 +28,11 @@ public class HologramSaver {
 
     public HologramSaver(NiveriaHolograms plugin) {
         this.plugin = plugin;
-        this.saveExecutor = Executors.newSingleThreadExecutor(r -> {
-            Thread thread = new Thread(r, "NiveriaHolograms-Saver");
-            thread.setDaemon(true);
-            thread.setPriority(Thread.NORM_PRIORITY - 1);
-            return thread;
-        });
+        ThreadFactory vtFactory = Thread.ofVirtual()
+                .name("NiveriaHolograms-Saver-", 0)
+                .factory();
+
+        this.saveExecutor = Executors.newSingleThreadExecutor(vtFactory);
     }
 
     public void saveHologram(Hologram hologram) {
