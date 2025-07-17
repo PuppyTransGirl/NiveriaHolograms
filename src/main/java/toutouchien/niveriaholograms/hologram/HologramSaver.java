@@ -2,10 +2,10 @@ package toutouchien.niveriaholograms.hologram;
 
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import net.minecraft.util.Brightness;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Display;
 import org.joml.Vector3f;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.configuration.BlockHologramConfiguration;
@@ -195,10 +195,10 @@ public class HologramSaver {
         section.set("shadow-strength", configuration.shadowStrength());
         section.set("visibility-distance", configuration.visibilityDistance());
 
-        Display.Brightness brightness = configuration.brightness();
+        Brightness brightness = configuration.brightness();
         if (brightness != null) {
-            section.set("brightness.block", brightness.getBlockLight());
-            section.set("brightness.sky", brightness.getSkyLight());
+            section.set("brightness.block", brightness.block());
+            section.set("brightness.sky", brightness.sky());
         }
 
         switch (type) {

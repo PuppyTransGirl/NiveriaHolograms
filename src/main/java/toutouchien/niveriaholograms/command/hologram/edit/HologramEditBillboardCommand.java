@@ -2,7 +2,7 @@ package toutouchien.niveriaholograms.command.hologram.edit;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import org.bukkit.entity.Display;
+import net.minecraft.world.entity.Display;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import toutouchien.niveriaapi.command.CommandData;
@@ -46,10 +46,10 @@ public class HologramEditBillboardCommand extends SubCommand {
 			return;
 		}
 
-		Display.Billboard billboard;
+		Display.BillboardConstraints billboard;
 
 		try {
-			billboard = Display.Billboard.valueOf(args[0]);
+			billboard = Display.BillboardConstraints.valueOf(args[0]);
 		} catch (IllegalArgumentException e) {
 			TextComponent errorMessage = MessageUtils.errorMessage(
 					Component.text("Ce type de billboard n'existe pas.")
@@ -84,7 +84,7 @@ public class HologramEditBillboardCommand extends SubCommand {
 			return Collections.emptyList();
 
 		String currentArg = args[argIndex].toLowerCase(Locale.ROOT);
-		return Arrays.stream(Display.Billboard.values())
+		return Arrays.stream(Display.BillboardConstraints.values())
 				.filter(billboard -> billboard != hologram.configuration().billboard())
 				.map(Enum::name)
 				.filter(billboard -> billboard.toLowerCase(Locale.ROOT).startsWith(currentArg))

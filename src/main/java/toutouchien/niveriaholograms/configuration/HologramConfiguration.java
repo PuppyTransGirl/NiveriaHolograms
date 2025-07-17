@@ -1,13 +1,14 @@
 package toutouchien.niveriaholograms.configuration;
 
-import org.bukkit.entity.Display;
+import net.minecraft.util.Brightness;
+import net.minecraft.world.entity.Display;
 import org.joml.Vector3f;
 
 public class HologramConfiguration {
 	private Vector3f scale = new Vector3f(1, 1, 1);
 	private Vector3f translation = new Vector3f(0, 0, 0);
-	private Display.Billboard billboard = Display.Billboard.CENTER;
-	private Display.Brightness brightness;
+	private Display.BillboardConstraints billboard = Display.BillboardConstraints.CENTER;
+	private Brightness brightness;
 	private float shadowRadius = 0F;
 	private float shadowStrength = 1F;
 	private int visibilityDistance = -1;
@@ -30,20 +31,20 @@ public class HologramConfiguration {
 		return this;
 	}
 
-	public Display.Billboard billboard() {
+	public Display.BillboardConstraints billboard() {
 		return billboard;
 	}
 
-	public HologramConfiguration billboard(Display.Billboard billboard) {
+	public HologramConfiguration billboard(Display.BillboardConstraints billboard) {
 		this.billboard = billboard;
 		return this;
 	}
 
-	public Display.Brightness brightness() {
+	public Brightness brightness() {
 		return brightness;
 	}
 
-	public HologramConfiguration brightness(Display.Brightness brightness) {
+	public HologramConfiguration brightness(Brightness brightness) {
 		this.brightness = brightness;
 		return this;
 	}
@@ -81,7 +82,7 @@ public class HologramConfiguration {
 		copy.translation = new Vector3f(this.translation);
 		copy.billboard = this.billboard;
 		if (this.brightness != null) {
-			copy.brightness = new Display.Brightness(this.brightness.getBlockLight(), this.brightness.getSkyLight());
+			copy.brightness = new Brightness(this.brightness.block(), this.brightness.sky());
 		}
 		copy.shadowRadius = this.shadowRadius;
 		copy.shadowStrength = this.shadowStrength;
