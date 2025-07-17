@@ -136,7 +136,7 @@ public class Hologram {
         update();
     }
 
-    public void updateLocation() {
+    private void updateLocation() {
         display.setPosRaw(location.x(), location.y(), location.z());
         display.setYRot(location.yaw()); // These are correct Y = Yaw, X = Pitch
         display.setXRot(location.pitch());
