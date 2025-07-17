@@ -3,7 +3,7 @@ package toutouchien.niveriaholograms.configuration;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public class ItemHologramConfiguration extends HologramConfiguration implements Cloneable {
+public class ItemHologramConfiguration extends HologramConfiguration {
 	private ItemStack itemStack = new ItemStack(Material.APPLE);
 
 	public ItemStack itemStack() {
@@ -16,9 +16,9 @@ public class ItemHologramConfiguration extends HologramConfiguration implements 
 	}
 
 	@Override
-	public ItemHologramConfiguration clone() {
-		ItemHologramConfiguration clone = (ItemHologramConfiguration) super.clone();
-		clone.itemStack = itemStack.clone();
-		return clone;
+	public ItemHologramConfiguration copy() {
+		ItemHologramConfiguration copy = new ItemHologramConfiguration();
+		copy.itemStack = this.itemStack.clone();
+		return copy;
 	}
 }

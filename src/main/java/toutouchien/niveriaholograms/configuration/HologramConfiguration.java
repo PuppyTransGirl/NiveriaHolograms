@@ -3,7 +3,7 @@ package toutouchien.niveriaholograms.configuration;
 import org.bukkit.entity.Display;
 import org.joml.Vector3f;
 
-public class HologramConfiguration implements Cloneable {
+public class HologramConfiguration {
 	private Vector3f scale = new Vector3f(1, 1, 1);
 	private Vector3f translation = new Vector3f(0, 0, 0);
 	private Display.Billboard billboard = Display.Billboard.CENTER;
@@ -75,18 +75,17 @@ public class HologramConfiguration implements Cloneable {
 		return this;
 	}
 
-	@Override
-	public HologramConfiguration clone() {
-		try {
-			HologramConfiguration copy = (HologramConfiguration) super.clone();
-			copy.scale = new Vector3f(this.scale);
-			copy.translation = new Vector3f(this.translation);
-			if (this.brightness != null) {
-				copy.brightness = new Display.Brightness(this.brightness.getBlockLight(), this.brightness.getSkyLight());
-			}
-			return copy;
-		} catch (CloneNotSupportedException e) {
-			throw new AssertionError(e);
+	public HologramConfiguration copy() {
+		HologramConfiguration copy = new HologramConfiguration();
+		copy.scale = new Vector3f(this.scale);
+		copy.translation = new Vector3f(this.translation);
+		copy.billboard = this.billboard;
+		if (this.brightness != null) {
+			copy.brightness = new Display.Brightness(this.brightness.getBlockLight(), this.brightness.getSkyLight());
 		}
+		copy.shadowRadius = this.shadowRadius;
+		copy.shadowStrength = this.shadowStrength;
+		copy.visibilityDistance = this.visibilityDistance;
+		return copy;
 	}
 }

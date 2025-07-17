@@ -100,8 +100,8 @@ public class HologramManager {
 	public void loadHologram(ConfigurationSection section) {
 		String worldName = ((CustomLocation) section.get("location")).world();
 		if (Bukkit.getWorld(worldName) == null) {
-			List<String> holograms = pendingHolograms.computeIfAbsent(worldName, w -> new ArrayList<>());
-			holograms.add(section.getName());
+			List<String> loadedHolograms = pendingHolograms.computeIfAbsent(worldName, w -> new ArrayList<>());
+			loadedHolograms.add(section.getName());
 			return;
 		}
 

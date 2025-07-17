@@ -12,8 +12,10 @@ import toutouchien.niveriaholograms.configuration.BlockHologramConfiguration;
 import toutouchien.niveriaholograms.configuration.HologramConfiguration;
 import toutouchien.niveriaholograms.configuration.ItemHologramConfiguration;
 import toutouchien.niveriaholograms.configuration.TextHologramConfiguration;
+import toutouchien.niveriaholograms.exception.HologramSaveException;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -49,7 +51,7 @@ public class HologramSaver {
             return;
         }
 
-        Hologram snapshot = new Hologram(hologram);
+        Hologram snapshot = hologram.copy();
 
         this.saveExecutor.submit(() -> {
             try {
@@ -94,11 +96,10 @@ public class HologramSaver {
      * This approach ensures that if the process is interrupted or fails midway,
      * only the temporary file may be corrupted, not the main holograms.yml file.
      */
-    private void saveToFile(Hologram hologram) throws Exception {
+    private void saveToFile(Hologram hologram) throws HologramSaveException {
         File file = new File(this.plugin.getDataFolder(), "holograms.yml");
         File tempFile = new File(file.getParent(), file.getName() + ".tmp");
 
-        // Load the configuration
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
         ConfigurationSection section = config.getConfigurationSection("holograms." + hologram.name());
         if (section == null) {
@@ -106,16 +107,20 @@ public class HologramSaver {
         }
 
         this.save(section, hologram);
-        config.save(tempFile);
+        try {
+            config.save(tempFile);
+        } catch (IOException e) {
+            throw new HologramSaveException("Failed to save hologram to temporary file: " + tempFile.getAbsolutePath(), e);
+        }
 
         // Delete the original holograms.yml file
         if (file.exists() && !file.delete()) {
-            throw new Exception("Failed to delete original holograms file: " + file.getAbsolutePath());
+            throw new HologramSaveException("Failed to delete original holograms file: " + file.getAbsolutePath());
         }
 
         // Replace the original file with the temporary file by renaming it
         if (!tempFile.renameTo(file)) {
-            throw new Exception("Failed to rename temporary holograms file to: " + file.getAbsolutePath());
+            throw new HologramSaveException("Failed to rename temporary holograms file to: " + file.getAbsolutePath());
         }
     }
 
@@ -124,7 +129,7 @@ public class HologramSaver {
      * This approach ensures that if the process is interrupted or fails midway,
      * only the temporary file may be corrupted, not the main holograms.yml file.
      */
-    private void deleteFromFile(String hologramName) throws Exception {
+    private void deleteFromFile(String hologramName) throws HologramSaveException {
         File file = new File(plugin.getDataFolder(), "holograms.yml");
         if (!file.exists()) {
             plugin.getSLF4JLogger().warn("Holograms file does not exist, nothing to delete: {}", file.getAbsolutePath());
@@ -133,7 +138,6 @@ public class HologramSaver {
 
         File tempFile = new File(file.getParent(), file.getName() + ".tmp");
 
-        // Load the configuration
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
         if (!config.contains("holograms")) {
             plugin.getSLF4JLogger().warn("No holograms section found in the configuration file.");
@@ -141,16 +145,20 @@ public class HologramSaver {
         }
 
         config.set("holograms." + hologramName, null);
-        config.save(tempFile);
+        try {
+            config.save(tempFile);
+        } catch (IOException e) {
+            throw new HologramSaveException("Failed to save hologram deletion to temporary file: " + tempFile.getAbsolutePath(), e);
+        }
 
         // Delete the original holograms.yml file
         if (file.exists() && !file.delete()) {
-            throw new Exception("Failed to delete original holograms file: " + file.getAbsolutePath());
+            throw new HologramSaveException("Failed to delete original holograms file: " + file.getAbsolutePath());
         }
 
         // Replace the original file with the temporary file by renaming it
         if (!tempFile.renameTo(file)) {
-            throw new Exception("Failed to rename temporary holograms file to: " + file.getAbsolutePath());
+            throw new HologramSaveException("Failed to rename temporary holograms file to: " + file.getAbsolutePath());
         }
     }
 

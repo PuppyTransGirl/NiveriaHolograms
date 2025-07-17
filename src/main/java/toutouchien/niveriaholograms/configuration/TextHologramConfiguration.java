@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TextHologramConfiguration extends HologramConfiguration implements Cloneable {
+public class TextHologramConfiguration extends HologramConfiguration {
     private List<String> text = new ArrayList<>();
     private Component serializedText;
     private TextColor background;
@@ -131,10 +131,13 @@ public class TextHologramConfiguration extends HologramConfiguration implements 
     }
 
     @Override
-    public TextHologramConfiguration clone() {
-        TextHologramConfiguration clone = (TextHologramConfiguration) super.clone();
-        clone.text = new ArrayList<>(this.text);
-        clone.serializedText = null;
-        return clone;
+    public TextHologramConfiguration copy() {
+        TextHologramConfiguration copy = new TextHologramConfiguration();
+        copy.text = new ArrayList<>(this.text);
+        copy.background = this.background;
+        copy.textAlignment = this.textAlignment;
+        copy.seeThrough = this.seeThrough;
+        copy.textShadow = this.textShadow;
+        return copy;
     }
 }

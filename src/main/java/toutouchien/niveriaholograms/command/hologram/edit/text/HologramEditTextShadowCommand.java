@@ -35,7 +35,7 @@ public class HologramEditTextShadowCommand extends SubCommand {
 			return;
 		}
 
-		if (!(hologram.configuration() instanceof TextHologramConfiguration configuration)) {
+		if (!(hologram.configuration() instanceof TextHologramConfiguration)) {
 			TextComponent errorMessage = MessageUtils.errorMessage(
 					Component.text("Cette comande ne peut être utilisée que sur des hologrammes de texte.")
 			);
