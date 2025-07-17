@@ -74,34 +74,45 @@ public class Hologram {
     }
 
     public void updateForAllPlayers() {
-        Bukkit.getOnlinePlayers().forEach(player -> update(player, false));
+        if (display instanceof Display.TextDisplay textDisplay)
+            textDisplay.setText(PaperAdventure.asVanilla(((TextHologramConfiguration) config).serializedText()));
+
+        // packDirty sends only the dirty values, which is more efficient when updating
+        // It's a lot more optimized than sending packAll everytime
+        // Reduces packet size by approximately 93.44% per update on a default text hologram
+        List<SynchedEntityData.DataValue<?>> data = display.getEntityData().packDirty();
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!player.getWorld().getName().equals(location.world()))
+                continue;
+
+            update(player, data);
+        }
     }
 
     public void create(Player player) {
         NMSUtils.sendPacket(player, new ClientboundAddEntityPacket(display, 0, display.blockPosition()));
-        update(player, true);
-    }
-
-    public void delete(Player player) {
-        NMSUtils.sendPacket(player, new ClientboundRemoveEntitiesPacket(display.getId()));
-    }
-
-    public void update(Player player, boolean join) {
-        NMSUtils.sendPacket(player, new ClientboundTeleportEntityPacket(display.getId(), PositionMoveRotation.of(display), Set.of(), false));
 
         if (display instanceof Display.TextDisplay textDisplay)
             textDisplay.setText(PaperAdventure.asVanilla(((TextHologramConfiguration) config).serializedText()));
 
         // getNonDefaultValues sends less data than packAll
         // It is used when the player haven't received any data from the display yet
-        // packDirty sends only the dirty values, which is more efficient when updating
-        // It's a lot more optimized than sending packAll everytime
-        // Reduces packet size by approximately 93.44% per update on a default text hologram
-        List<SynchedEntityData.DataValue<?>> values = join ? display.getEntityData().getNonDefaultValues() : display.getEntityData().packDirty();
-        if (values == null)
+        update(player, display.getEntityData().getNonDefaultValues());
+    }
+
+    public void delete(Player player) {
+        NMSUtils.sendPacket(player, new ClientboundRemoveEntitiesPacket(display.getId()));
+    }
+
+    public void update(Player player, List<SynchedEntityData.DataValue<?>> data) {
+        // TODO: Only send the packet if the hologram changes position
+        NMSUtils.sendPacket(player, new ClientboundTeleportEntityPacket(display.getId(), PositionMoveRotation.of(display), Set.of(), false));
+
+        if (data == null)
             return;
 
-        NMSUtils.sendPacket(player, new ClientboundSetEntityDataPacket(display.getId(), values));
+        NMSUtils.sendPacket(player, new ClientboundSetEntityDataPacket(display.getId(), data));
     }
 
     public void create() {
