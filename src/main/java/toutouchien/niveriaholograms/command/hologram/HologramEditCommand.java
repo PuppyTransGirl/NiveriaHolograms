@@ -27,17 +27,22 @@ public class HologramEditCommand extends SubCommand {
 				.playerRequired(true)
 				.usage("<hologram>")
 				.subCommands(
+						// Block Holograms
 						new HologramEditBlockCommand(),
 
+						// Items Holograms
 						new HologramEditItemCommand(),
 
+						// Text Holograms
 						new HologramEditAddLineCommand(), new HologramEditBackgroundCommand(), new HologramEditInsertAfterCommand(),
 						new HologramEditInsertBeforeCommand(), new HologramEditRemoveLineCommand(), new HologramEditSeeThroughCommand(),
 						new HologramEditSetLineCommand(), new HologramEditTextAlignmentCommand(), new HologramEditTextShadowCommand(),
 
+						// General Hologram Edits
 						new HologramEditBillboardCommand(), new HologramEditBrightnessCommand(), new HologramEditPitchCommand(),
 						new HologramEditPositionCommand(), new HologramEditRotationCommand(), new HologramEditScaleCommand(),
-						new HologramEditTranslateCommand(), new HologramEditYawCommand()
+						new HologramEditShadowRadiusCommand(), new HologramEditShadowStrengthCommand(), new HologramEditTranslateCommand(),
+						new HologramEditYawCommand()
 				)
 				.hasParameterBeforeSubcommands(true));
 	}
@@ -63,6 +68,25 @@ public class HologramEditCommand extends SubCommand {
 			player.sendMessage(errorMessage);
 			return;
 		}
+
+		List<String> edits = new ArrayList<>(List.of("billboard", "brightness", "pitch", "position", "rotation", "scale", "shadowradius", "shadowstrength", "translate", "visibility", "visibilitydistance", "yaw"));
+
+		edits.addAll(switch (hologram.type()) {
+			case BLOCK -> List.of("block");
+			case ITEM -> List.of("item");
+			case TEXT -> List.of("addline", "background", "insertafter", "insertbefore", "removeline", "seethrough", "setline", "textalignment", "textshadow", "updatetextinterval");
+		});
+
+		TextComponent errorMessage = MessageUtils.errorMessage(
+				Component.text("Tu n'as pas spécifié de sous-commande.")
+		);
+
+		TextComponent infoMessage = MessageUtils.infoMessage(
+				Component.text("Les sous-commandes possibles sont " + String.join(", ", edits) + ".")
+		);
+
+		player.sendMessage(errorMessage);
+		player.sendMessage(infoMessage);
 	}
 
 	@Override
