@@ -9,8 +9,8 @@ import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
 import toutouchien.niveriaapi.utils.ui.MessageUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
-import toutouchien.niveriaholograms.hologram.Hologram;
-import toutouchien.niveriaholograms.hologram.HologramManager;
+import toutouchien.niveriaholograms.core.Hologram;
+import toutouchien.niveriaholograms.manager.HologramManager;
 
 public class HologramEditShadowRadiusCommand extends SubCommand {
 	public HologramEditShadowRadiusCommand() {

@@ -13,8 +13,8 @@ import toutouchien.niveriaapi.utils.common.MathUtils;
 import toutouchien.niveriaapi.utils.ui.ColorUtils;
 import toutouchien.niveriaapi.utils.ui.MessageUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
-import toutouchien.niveriaholograms.hologram.Hologram;
-import toutouchien.niveriaholograms.hologram.HologramManager;
+import toutouchien.niveriaholograms.core.Hologram;
+import toutouchien.niveriaholograms.manager.HologramManager;
 import toutouchien.niveriaholograms.utils.CustomLocation;
 
 import static net.kyori.adventure.text.Component.text;

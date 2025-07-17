@@ -19,8 +19,8 @@ import toutouchien.niveriaholograms.configuration.BlockHologramConfiguration;
 import toutouchien.niveriaholograms.configuration.HologramConfiguration;
 import toutouchien.niveriaholograms.configuration.ItemHologramConfiguration;
 import toutouchien.niveriaholograms.configuration.TextHologramConfiguration;
-import toutouchien.niveriaholograms.hologram.Hologram;
-import toutouchien.niveriaholograms.hologram.HologramManager;
+import toutouchien.niveriaholograms.core.Hologram;
+import toutouchien.niveriaholograms.manager.HologramManager;
 import toutouchien.niveriaholograms.utils.CustomLocation;
 
 import java.util.Collections;
