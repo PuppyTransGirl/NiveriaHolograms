@@ -34,7 +34,10 @@ public class HologramManager {
 	}
 
 	public void initialize() {
-		this.holograms.forEach(Hologram::deleteForAllPlayers);
+		for (Hologram hologram : this.holograms) {
+			hologram.deleteForAllPlayers(false);
+		}
+
 		this.loadHolograms();
 	}
 
