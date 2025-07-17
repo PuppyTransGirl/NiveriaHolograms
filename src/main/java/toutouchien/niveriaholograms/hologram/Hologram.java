@@ -44,6 +44,8 @@ public class Hologram {
     private final UUID owner;
     private CustomLocation location;
 
+    private boolean locationDirty;
+
     public Hologram(HologramType type, HologramConfiguration config, String name, UUID owner, CustomLocation location) {
         this.type = type;
         this.config = config;
@@ -58,61 +60,6 @@ public class Hologram {
         this.owner = original.owner;
         this.config = original.config.copy();
         this.location = new CustomLocation(player.getLocation());
-    }
-
-    public void createForAllPlayers() {
-        Bukkit.getOnlinePlayers().forEach(player -> {
-            if (!player.getWorld().getName().equals(location.world()))
-                return;
-
-            this.create(player);
-        });
-    }
-
-    public void deleteForAllPlayers() {
-        Bukkit.getOnlinePlayers().forEach(this::delete);
-    }
-
-    public void updateForAllPlayers() {
-        if (display instanceof Display.TextDisplay textDisplay)
-            textDisplay.setText(PaperAdventure.asVanilla(((TextHologramConfiguration) config).serializedText()));
-
-        // packDirty sends only the dirty values, which is more efficient when updating
-        // It's a lot more optimized than sending packAll everytime
-        // Reduces packet size by approximately 93.44% per update on a default text hologram
-        List<SynchedEntityData.DataValue<?>> data = display.getEntityData().packDirty();
-
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (!player.getWorld().getName().equals(location.world()))
-                continue;
-
-            update(player, data);
-        }
-    }
-
-    public void create(Player player) {
-        NMSUtils.sendPacket(player, new ClientboundAddEntityPacket(display, 0, display.blockPosition()));
-
-        if (display instanceof Display.TextDisplay textDisplay)
-            textDisplay.setText(PaperAdventure.asVanilla(((TextHologramConfiguration) config).serializedText()));
-
-        // getNonDefaultValues sends less data than packAll
-        // It is used when the player haven't received any data from the display yet
-        update(player, display.getEntityData().getNonDefaultValues());
-    }
-
-    public void delete(Player player) {
-        NMSUtils.sendPacket(player, new ClientboundRemoveEntitiesPacket(display.getId()));
-    }
-
-    public void update(Player player, List<SynchedEntityData.DataValue<?>> data) {
-        // TODO: Only send the packet if the hologram changes position
-        NMSUtils.sendPacket(player, new ClientboundTeleportEntityPacket(display.getId(), PositionMoveRotation.of(display), Set.of(), false));
-
-        if (data == null)
-            return;
-
-        NMSUtils.sendPacket(player, new ClientboundSetEntityDataPacket(display.getId(), data));
     }
 
     public void create() {
@@ -136,14 +83,100 @@ public class Hologram {
         update();
     }
 
-    private void updateLocation() {
-        display.setPosRaw(location.x(), location.y(), location.z());
-        display.setYRot(location.yaw()); // These are correct Y = Yaw, X = Pitch
-        display.setXRot(location.pitch());
+    public void create(Player player) {
+        ClientboundAddEntityPacket addEntityPacket = new ClientboundAddEntityPacket(display, 0, display.blockPosition());
+
+        ClientboundTeleportEntityPacket teleportPacket = new ClientboundTeleportEntityPacket(
+                display.getId(),
+                PositionMoveRotation.of(display),
+                Set.of(),
+                false
+        );
+
+        // getNonDefaultValues sends less data than packAll
+        // It is used when the player haven't received any data from the display yet
+        List<SynchedEntityData.DataValue<?>> data = display.getEntityData().getNonDefaultValues();
+        ClientboundSetEntityDataPacket dataPacket = data != null ? new ClientboundSetEntityDataPacket(display.getId(), data) : null;
+
+        if (display instanceof Display.TextDisplay textDisplay)
+            textDisplay.setText(PaperAdventure.asVanilla(((TextHologramConfiguration) config).serializedText()));
+
+        NMSUtils.sendNonNullPackets(player, addEntityPacket, teleportPacket, dataPacket);
+    }
+
+    public void createForAllPlayers() {
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            if (!player.getWorld().getName().equals(location.world()))
+                return;
+
+            this.create(player);
+        });
+    }
+
+    public void delete(Player player) {
+        NMSUtils.sendPacket(player, new ClientboundRemoveEntitiesPacket(display.getId()));
+    }
+
+    public void deleteForAllPlayers() {
+        Bukkit.getOnlinePlayers().forEach(this::delete);
     }
 
     public void update() {
         this.updater.update();
+    }
+
+    public void updateForAllPlayers() {
+        if (display instanceof Display.TextDisplay textDisplay)
+            textDisplay.setText(PaperAdventure.asVanilla(((TextHologramConfiguration) config).serializedText()));
+
+        ClientboundTeleportEntityPacket teleportPacket = null;
+        if (locationDirty) {
+            teleportPacket = new ClientboundTeleportEntityPacket(
+                    display.getId(),
+                    PositionMoveRotation.of(display),
+                    Set.of(),
+                    false
+            );
+
+            locationDirty = false;
+        }
+
+        // packDirty sends only the dirty values, which is more efficient when updating
+        // It's a lot more optimized than sending packAll everytime
+        // Reduces packet size by approximately 93.44% per update on a default text hologram
+        List<SynchedEntityData.DataValue<?>> data = display.getEntityData().packDirty();
+        ClientboundSetEntityDataPacket dataPacket = data != null ? new ClientboundSetEntityDataPacket(display.getId(), data) : null;
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!player.getWorld().getName().equals(location.world()))
+                continue;
+
+            NMSUtils.sendNonNullPackets(player, teleportPacket, dataPacket);
+        }
+    }
+
+    private void updateLocation() {
+        display.setPosRaw(location.x(), location.y(), location.z());
+        display.setYRot(location.yaw()); // These are correct Y = Yaw, X = Pitch
+        display.setXRot(location.pitch());
+        locationDirty = true;
+    }
+
+    public void teleportTo(Location location) {
+        boolean worldChanged = !this.location.world().equals(location.getWorld().getName());
+        this.location = new CustomLocation(location);
+        this.updateLocation();
+
+        if (!worldChanged)
+            return;
+
+        this.deleteForAllPlayers();
+        Bukkit.getOnlinePlayers().stream()
+                .filter(player -> player.getWorld().getName().equals(location.getWorld().getName()))
+                .forEach(player -> {
+                    this.create();
+                    this.create(player);
+                });
     }
 
     public void editLocation(Consumer<CustomLocation> consumer) {
@@ -165,23 +198,6 @@ public class Hologram {
         update();
         updateForAllPlayers();
         NiveriaHolograms.instance().hologramManager().saveHologram(this);
-    }
-
-    public void teleportTo(Location location) {
-        boolean worldChanged = !this.location.world().equals(location.getWorld().getName());
-        this.location = new CustomLocation(location);
-        this.updateLocation();
-
-        if (!worldChanged)
-            return;
-
-        this.deleteForAllPlayers();
-        Bukkit.getOnlinePlayers().stream()
-                .filter(player -> player.getWorld().getName().equals(location.getWorld().getName()))
-                .forEach(player -> {
-                    this.create();
-                    this.create(player);
-                });
     }
 
     public HologramType type() {
