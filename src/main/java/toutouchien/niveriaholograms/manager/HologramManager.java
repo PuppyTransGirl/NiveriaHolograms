@@ -1,4 +1,4 @@
-package toutouchien.niveriaholograms.hologram;
+package toutouchien.niveriaholograms.manager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -10,6 +10,10 @@ import toutouchien.niveriaholograms.configuration.BlockHologramConfiguration;
 import toutouchien.niveriaholograms.configuration.HologramConfiguration;
 import toutouchien.niveriaholograms.configuration.ItemHologramConfiguration;
 import toutouchien.niveriaholograms.configuration.TextHologramConfiguration;
+import toutouchien.niveriaholograms.core.Hologram;
+import toutouchien.niveriaholograms.core.HologramType;
+import toutouchien.niveriaholograms.persistence.HologramLoader;
+import toutouchien.niveriaholograms.persistence.HologramSaver;
 import toutouchien.niveriaholograms.utils.CustomLocation;
 
 import java.io.File;

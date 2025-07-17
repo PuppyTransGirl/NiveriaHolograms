@@ -1,4 +1,4 @@
-package toutouchien.niveriaholograms.hologram;
+package toutouchien.niveriaholograms.persistence;
 
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -13,6 +13,9 @@ import toutouchien.niveriaholograms.configuration.BlockHologramConfiguration;
 import toutouchien.niveriaholograms.configuration.HologramConfiguration;
 import toutouchien.niveriaholograms.configuration.ItemHologramConfiguration;
 import toutouchien.niveriaholograms.configuration.TextHologramConfiguration;
+import toutouchien.niveriaholograms.core.Hologram;
+import toutouchien.niveriaholograms.core.HologramType;
+import toutouchien.niveriaholograms.manager.HologramManager;
 import toutouchien.niveriaholograms.utils.CustomLocation;
 
 import java.util.List;

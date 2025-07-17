@@ -1,4 +1,4 @@
-package toutouchien.niveriaholograms.hologram;
+package toutouchien.niveriaholograms.core;
 
 public enum HologramType {
 	BLOCK,

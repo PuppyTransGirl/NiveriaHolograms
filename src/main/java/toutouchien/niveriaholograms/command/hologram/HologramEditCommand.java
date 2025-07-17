@@ -12,8 +12,8 @@ import toutouchien.niveriaholograms.command.hologram.edit.*;
 import toutouchien.niveriaholograms.command.hologram.edit.block.HologramEditBlockCommand;
 import toutouchien.niveriaholograms.command.hologram.edit.item.HologramEditItemCommand;
 import toutouchien.niveriaholograms.command.hologram.edit.text.*;
-import toutouchien.niveriaholograms.hologram.Hologram;
-import toutouchien.niveriaholograms.hologram.HologramManager;
+import toutouchien.niveriaholograms.core.Hologram;
+import toutouchien.niveriaholograms.manager.HologramManager;
 
 import java.util.ArrayList;
 import java.util.Collections;

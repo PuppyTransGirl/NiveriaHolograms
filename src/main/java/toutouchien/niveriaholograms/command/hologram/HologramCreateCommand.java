@@ -10,9 +10,9 @@ import toutouchien.niveriaapi.utils.common.StringUtils;
 import toutouchien.niveriaapi.utils.data.FileUtils;
 import toutouchien.niveriaapi.utils.ui.MessageUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
-import toutouchien.niveriaholograms.hologram.Hologram;
-import toutouchien.niveriaholograms.hologram.HologramManager;
-import toutouchien.niveriaholograms.hologram.HologramType;
+import toutouchien.niveriaholograms.core.Hologram;
+import toutouchien.niveriaholograms.core.HologramType;
+import toutouchien.niveriaholograms.manager.HologramManager;
 
 import java.util.*;
 

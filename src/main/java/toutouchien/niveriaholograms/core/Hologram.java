@@ -1,4 +1,4 @@
-package toutouchien.niveriaholograms.hologram;
+package toutouchien.niveriaholograms.core;
 
 import io.papermc.paper.adventure.PaperAdventure;
 import net.kyori.adventure.text.format.TextColor;
