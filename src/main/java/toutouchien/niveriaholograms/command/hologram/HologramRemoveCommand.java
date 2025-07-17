@@ -18,6 +18,7 @@ import java.util.Locale;
 public class HologramRemoveCommand extends SubCommand {
 	public HologramRemoveCommand() {
 		super(new CommandData("remove", "niveriaholograms")
+				.aliases("r")
 				.playerRequired(true)
 				.usage("<hologram>"));
 	}
