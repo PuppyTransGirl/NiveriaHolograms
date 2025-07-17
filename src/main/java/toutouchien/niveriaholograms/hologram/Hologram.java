@@ -249,39 +249,4 @@ public class Hologram {
         this.owner = owner;
         return this;
     }
-
-    private static class PacketStats {
-        private final AtomicLong totalSize = new AtomicLong();
-        private final AtomicInteger count = new AtomicInteger();
-        private final AtomicLong minSize = new AtomicLong(Long.MAX_VALUE);
-        private final AtomicLong maxSize = new AtomicLong();
-
-        public void update(long packetSize) {
-            totalSize.addAndGet(packetSize);
-            count.incrementAndGet();
-
-            minSize.updateAndGet(currentMin -> Math.min(currentMin, packetSize));
-            maxSize.updateAndGet(currentMax -> Math.max(currentMax, packetSize));
-        }
-
-        public long getTotalSize() {
-            return totalSize.get();
-        }
-
-        public int getCount() {
-            return count.get();
-        }
-
-        public long getMinSize() {
-            return (count.get() == 0) ? 0 : minSize.get();
-        }
-
-        public long getMaxSize() {
-            return maxSize.get();
-        }
-
-        public double getAverageSize() {
-            return (count.get() == 0) ? 0 : (double) totalSize.get() / count.get();
-        }
-    }
 }
