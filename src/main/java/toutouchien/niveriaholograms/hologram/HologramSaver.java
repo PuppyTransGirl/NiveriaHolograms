@@ -77,7 +77,7 @@ public class HologramSaver {
             return;
         }
 
-        hologram.deleteForAllPlayers();
+        hologram.deleteForAllPlayers(false);
 
         this.saveExecutor.submit(() -> {
             try {

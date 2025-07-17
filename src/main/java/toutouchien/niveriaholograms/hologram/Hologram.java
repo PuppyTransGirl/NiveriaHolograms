@@ -105,20 +105,25 @@ public class Hologram {
     }
 
     public void createForAllPlayers() {
-        Bukkit.getOnlinePlayers().forEach(player -> {
+        for (Player player : Bukkit.getOnlinePlayers()) {
             if (!player.getWorld().getName().equals(location.world()))
-                return;
+                continue;
 
             this.create(player);
-        });
+        }
     }
 
     public void delete(Player player) {
         NMSUtils.sendPacket(player, new ClientboundRemoveEntitiesPacket(display.getId()));
     }
 
-    public void deleteForAllPlayers() {
-        Bukkit.getOnlinePlayers().forEach(this::delete);
+    public void deleteForAllPlayers(boolean worldChanged) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!worldChanged && !player.getWorld().getName().equals(location.world()))
+                continue;
+
+            this.delete(player);
+        }
     }
 
     public void update() {
@@ -170,13 +175,18 @@ public class Hologram {
         if (!worldChanged)
             return;
 
-        this.deleteForAllPlayers();
-        Bukkit.getOnlinePlayers().stream()
-                .filter(player -> player.getWorld().getName().equals(location.getWorld().getName()))
-                .forEach(player -> {
-                    this.create();
-                    this.create(player);
-                });
+        this.deleteForAllPlayers(worldChanged);
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!player.getWorld().getName().equals(location.getWorld().getName()))
+                continue;
+
+            NMSUtils.sendPacket(player, new ClientboundTeleportEntityPacket(
+                    display.getId(),
+                    PositionMoveRotation.of(display),
+                    Set.of(),
+                    false
+            ));
+        }
     }
 
     public void editLocation(Consumer<CustomLocation> consumer) {
