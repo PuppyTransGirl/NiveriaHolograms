@@ -15,9 +15,9 @@ public class HologramCommand extends Command {
 				.description("Gère les hologrammes")
 				.usage("<list|nearby|teleport|create|remove|clone|edit|info>")
 				.subCommands(
-						new HologramCloneCommand(), new HologramEditCommand(), new HologramListCommand(),
-						new HologramNearbyCommand(), new HologramRemoveCommand(), new HologramTeleportCommand(),
-						new HologramInfoCommand()
+						new HologramCloneCommand(), new HologramCreateCommand(), new HologramEditCommand(),
+						new HologramListCommand(), new HologramNearbyCommand(), new HologramRemoveCommand(),
+						new HologramTeleportCommand(), new HologramInfoCommand()
 				));
 	}
 

@@ -13,7 +13,7 @@ public class NiveriaHologramsCommand extends Command {
 		super(new CommandData("niveriaholograms", "niveriaholograms")
 				.description("Permet de gérer le plugin d'hologrammes de Niveria.")
 				.usage("<reload>")
-				.subCommands(new NiveriaHologramsReloadCommand(), new NiveriaHologramsTestCommand(), new NiveriaHologramCreateCommand()));
+				.subCommands(new NiveriaHologramsReloadCommand(), new NiveriaHologramsTestCommand()));
 	}
 
 	@Override
