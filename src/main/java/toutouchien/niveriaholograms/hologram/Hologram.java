@@ -30,20 +30,29 @@ import toutouchien.niveriaholograms.utils.CustomLocation;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class Hologram {
     public static final TextColor TRANSPARENT = TextColor.color(0);
     public static final int MAX_LINE_LENGTH = 1403;
-    private Display display;
 
+    private static final ThreadFactory VIRTUAL_THREAD_FACTORY = Thread.ofVirtual()
+            .name("NiveriaHolograms-Hologram-Sender-", 0)
+            .factory();
+
+    private static final ExecutorService EXECUTOR = Executors.newThreadPerTaskExecutor(VIRTUAL_THREAD_FACTORY);
+
+    private Display display;
     private final HologramType type;
     private final HologramConfiguration config;
     private HologramUpdater updater;
     private final String name;
     private final UUID owner;
     private CustomLocation location;
-
     private boolean locationDirty;
 
     public Hologram(HologramType type, HologramConfiguration config, String name, UUID owner, CustomLocation location) {
@@ -105,12 +114,15 @@ public class Hologram {
     }
 
     public void createForAllPlayers() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (!player.getWorld().getName().equals(location.world()))
-                continue;
+        List<Player> targets = Bukkit.getOnlinePlayers().stream()
+                .filter(p -> p.getWorld().getName().equals(location.world()))
+                .collect(Collectors.toList());
 
-            this.create(player);
-        }
+        EXECUTOR.submit(() -> {
+            for (Player player : targets) {
+                this.create(player);
+            }
+        });
     }
 
     public void delete(Player player) {
@@ -118,12 +130,15 @@ public class Hologram {
     }
 
     public void deleteForAllPlayers(boolean worldChanged) {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (!worldChanged && !player.getWorld().getName().equals(location.world()))
-                continue;
+        List<Player> targets = Bukkit.getOnlinePlayers().stream()
+                .filter(p -> worldChanged || p.getWorld().getName().equals(location.world()))
+                .collect(Collectors.toList());
 
-            this.delete(player);
-        }
+        EXECUTOR.submit(() -> {
+            for (Player player : targets) {
+                this.delete(player);
+            }
+        });
     }
 
     public void update() {
@@ -134,7 +149,7 @@ public class Hologram {
         if (display instanceof Display.TextDisplay textDisplay)
             textDisplay.setText(PaperAdventure.asVanilla(((TextHologramConfiguration) config).serializedText()));
 
-        ClientboundTeleportEntityPacket teleportPacket = null;
+        ClientboundTeleportEntityPacket teleportPacket;
         if (locationDirty) {
             teleportPacket = new ClientboundTeleportEntityPacket(
                     display.getId(),
@@ -144,6 +159,8 @@ public class Hologram {
             );
 
             locationDirty = false;
+        } else {
+            teleportPacket = null;
         }
 
         // packDirty sends only the dirty values, which is more efficient when updating
@@ -152,12 +169,15 @@ public class Hologram {
         List<SynchedEntityData.DataValue<?>> data = display.getEntityData().packDirty();
         ClientboundSetEntityDataPacket dataPacket = data != null ? new ClientboundSetEntityDataPacket(display.getId(), data) : null;
 
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (!player.getWorld().getName().equals(location.world()))
-                continue;
+        List<Player> targets = Bukkit.getOnlinePlayers().stream()
+                .filter(p -> p.getWorld().getName().equals(location.world()))
+                .collect(Collectors.toList());
 
-            NMSUtils.sendNonNullPackets(player, teleportPacket, dataPacket);
-        }
+        EXECUTOR.submit(() -> {
+            for (Player player : targets) {
+                NMSUtils.sendNonNullPackets(player, teleportPacket, dataPacket);
+            }
+        });
     }
 
     private void updateLocation() {
