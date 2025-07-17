@@ -131,12 +131,7 @@ public class Hologram {
     }
 
     public void update() {
-        display.setBillboardConstraints(switch (configuration.billboard()) {
-            case FIXED -> Display.BillboardConstraints.FIXED;
-            case VERTICAL -> Display.BillboardConstraints.VERTICAL;
-            case HORIZONTAL -> Display.BillboardConstraints.HORIZONTAL;
-            case CENTER -> Display.BillboardConstraints.CENTER;
-        });
+        display.setBillboardConstraints(configuration.billboard());
 
         if (display instanceof Display.BlockDisplay blockDisplay && configuration instanceof BlockHologramConfiguration blockConfiguration) {
             ResourceLocation blockResource = ResourceLocation.parse(blockConfiguration.material().key().asString());
@@ -163,9 +158,9 @@ public class Hologram {
             textDisplay.setFlags(flags);
         }
 
-        org.bukkit.entity.Display.Brightness brightness = configuration.brightness();
+        Brightness brightness = configuration.brightness();
         if (brightness != null)
-            display.setBrightnessOverride(new Brightness(brightness.getBlockLight(), brightness.getSkyLight()));
+            display.setBrightnessOverride(new Brightness(brightness.block(), brightness.sky()));
 
         display.setTransformation(new Transformation(
                 configuration.translation(),

@@ -3,7 +3,7 @@ package toutouchien.niveriaholograms.command.hologram.edit;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.entity.Display;
+import net.minecraft.util.Brightness;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import toutouchien.niveriaapi.command.CommandData;
@@ -80,12 +80,12 @@ public class HologramEditBrightnessCommand extends SubCommand {
 
         HologramConfiguration configuration = hologram.configuration();
 
-        Display.Brightness currentBrightness = configuration.brightness();
-        int blockBrightness = type.equalsIgnoreCase("block") ? value : currentBrightness == null ? 0 : currentBrightness.getBlockLight();
-        int skyBrightness = type.equalsIgnoreCase("sky") ? value : currentBrightness == null ? 0 : currentBrightness.getSkyLight();
+        Brightness currentBrightness = configuration.brightness();
+        int blockBrightness = type.equalsIgnoreCase("block") ? value : currentBrightness == null ? 0 : currentBrightness.block();
+        int skyBrightness = type.equalsIgnoreCase("sky") ? value : currentBrightness == null ? 0 : currentBrightness.sky();
 
         hologram.editConfig(config -> {
-            config.brightness(new Display.Brightness(blockBrightness, skyBrightness));
+            config.brightness(new Brightness(blockBrightness, skyBrightness));
         });
 
         TextComponent successMessage = MessageUtils.successMessage(
