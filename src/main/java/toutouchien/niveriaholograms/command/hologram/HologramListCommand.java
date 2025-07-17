@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
+import toutouchien.niveriaapi.utils.common.MathUtils;
 import toutouchien.niveriaapi.utils.ui.ColorUtils;
 import toutouchien.niveriaapi.utils.ui.MessageUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
@@ -17,7 +18,6 @@ import toutouchien.niveriaholograms.hologram.HologramManager;
 import toutouchien.niveriaholograms.utils.CustomLocation;
 
 import static net.kyori.adventure.text.Component.text;
-import static toutouchien.niveriaholograms.utils.MathUtils.decimalRound;
 
 public class HologramListCommand extends SubCommand {
 	HologramListCommand() {
@@ -43,11 +43,11 @@ public class HologramListCommand extends SubCommand {
 					.content(" - ").color(NamedTextColor.DARK_GRAY)
 					.append(text(hologram.name(), ColorUtils.primaryColor()))
 					.append(text(" (", NamedTextColor.DARK_GRAY))
-					.append(text(decimalRound(location.x(), 2), ColorUtils.secondaryColor()))
+					.append(text(MathUtils.decimalRound(location.x(), 2), ColorUtils.secondaryColor()))
 					.append(text("/", NamedTextColor.GRAY))
-					.append(text(decimalRound(location.y(), 2), ColorUtils.secondaryColor()))
+					.append(text(MathUtils.decimalRound(location.y(), 2), ColorUtils.secondaryColor()))
 					.append(text("/", NamedTextColor.GRAY))
-					.append(text(decimalRound(location.z(), 2), ColorUtils.secondaryColor()))
+					.append(text(MathUtils.decimalRound(location.z(), 2), ColorUtils.secondaryColor()))
 					.append(text(" in ", NamedTextColor.GRAY))
 					.append(text(location.world(), ColorUtils.secondaryColor()))
 					.append(text(")", NamedTextColor.DARK_GRAY))
