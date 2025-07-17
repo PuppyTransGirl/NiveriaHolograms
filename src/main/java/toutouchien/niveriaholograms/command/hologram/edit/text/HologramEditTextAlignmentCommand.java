@@ -69,11 +69,9 @@ public class HologramEditTextAlignmentCommand extends SubCommand {
 			return;
 		}
 
-		configuration.textAlignment(textAlignment);
-
-		hologram.update();
-		hologram.updateForAllPlayers();
-		hologramManager.saveHologram(hologram);
+		hologram.editConfig((TextHologramConfiguration config) -> {
+			config.textAlignment(textAlignment);
+		});
 
 		TextComponent successMessage = MessageUtils.successMessage(
 				Component.text()

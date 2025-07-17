@@ -5,7 +5,6 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Vector3f;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
 import toutouchien.niveriaapi.utils.ui.MessageUtils;
@@ -40,14 +39,10 @@ public class HologramEditScaleCommand extends SubCommand {
 
 		if (args.length == 1) {
 			try {
-				Vector3f currentScale = hologram.configuration().scale();
 				double scale = parseScale(args[0]);
-
-				currentScale.set(scale, scale, scale);
-
-				hologram.update();
-				hologram.updateForAllPlayers();
-				hologramManager.saveHologram(hologram);
+				hologram.editConfig(config -> {
+					config.scale().set(scale, scale, scale);
+				});
 
 				TextComponent successMessage = MessageUtils.successMessage(
 						Component.text("La taille de l'hologramme a été modifiée avec succès !")
@@ -68,16 +63,13 @@ public class HologramEditScaleCommand extends SubCommand {
 		// New coordinate parsing logic
 		if (args.length == 3) {
 			try {
-				Vector3f currentScale = hologram.configuration().scale();
 				double x = parseScale(args[0]);
 				double y = parseScale(args[1]);
 				double z = parseScale(args[2]);
 
-				currentScale.set(x, y, z);
-
-				hologram.update();
-				hologram.updateForAllPlayers();
-				hologramManager.saveHologram(hologram);
+				hologram.editConfig(config -> {
+					config.scale().set(x, y, z);
+				});
 
 				TextComponent successMessage = MessageUtils.successMessage(
 						Component.text("La taille de l'hologramme a été modifiée avec succès !")

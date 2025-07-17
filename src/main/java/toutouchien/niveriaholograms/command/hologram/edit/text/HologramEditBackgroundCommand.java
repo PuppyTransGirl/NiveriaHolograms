@@ -36,7 +36,7 @@ public class HologramEditBackgroundCommand extends SubCommand {
 			return;
 		}
 
-		if (!(hologram.configuration() instanceof TextHologramConfiguration configuration)) {
+		if (!(hologram.configuration() instanceof TextHologramConfiguration)) {
 			TextComponent errorMessage = MessageUtils.errorMessage(
 					Component.text("Cette comande ne peut être utilisée que sur des hologrammes de texte.")
 			);
@@ -55,17 +55,16 @@ public class HologramEditBackgroundCommand extends SubCommand {
 		}
 
 		String option = args[0].toLowerCase(Locale.ROOT);
+		TextColor background;
 		switch (option) {
-			case "default", "reset" -> configuration.background(null);
-			case "transparent", "none" -> configuration.background(Hologram.TRANSPARENT);
+			case "default", "reset" -> background = null;
+			case "transparent", "none" -> background = Hologram.TRANSPARENT;
 
 			default -> {
 				try {
-					TextColor textColor;
-					if (option.startsWith("#"))
-						textColor = TextColor.fromHexString(option);
-					else
-						textColor = NamedTextColor.NAMES.value(option);
+					TextColor textColor = option.startsWith("#")
+							? TextColor.fromHexString(option)
+							: NamedTextColor.NAMES.value(option);
 
 					if (textColor == null) {
 						TextComponent errorMessage = MessageUtils.errorMessage(
@@ -76,7 +75,7 @@ public class HologramEditBackgroundCommand extends SubCommand {
 						return;
 					}
 
-					configuration.background(textColor);
+					background = textColor;
 				} catch (Exception e) {
 					TextComponent errorMessage = MessageUtils.errorMessage(
 							Component.text("Cette couleur est invalide.")
@@ -88,9 +87,9 @@ public class HologramEditBackgroundCommand extends SubCommand {
 			}
 		}
 
-		hologram.update();
-		hologram.updateForAllPlayers();
-		hologramManager.saveHologram(hologram);
+		hologram.editConfig((TextHologramConfiguration config) -> {
+			config.background(background);
+		});
 
 		TextComponent successMessage = MessageUtils.successMessage(
 				Component.text()

@@ -37,10 +37,10 @@ public class HologramEditShadowRadiusCommand extends SubCommand {
 			return;
 		}
 
-		float radius;
+		float shadowRadius;
 		try {
-			radius = Float.parseFloat(args[0]);
-			if (!Float.isFinite(radius)) {
+			shadowRadius = Float.parseFloat(args[0]);
+			if (!Float.isFinite(shadowRadius)) {
 				TextComponent errorMessage = MessageUtils.errorMessage(
 						Component.text("Le rayon est invalide.")
 				);
@@ -57,14 +57,12 @@ public class HologramEditShadowRadiusCommand extends SubCommand {
 			return;
 		}
 
-		hologram.configuration().shadowRadius(radius);
-
-		hologram.update();
-		hologram.updateForAllPlayers();
-		hologramManager.saveHologram(hologram);
+		hologram.editConfig(config -> {
+			config.shadowRadius(shadowRadius);
+		});
 
 		TextComponent successMessage = MessageUtils.successMessage(
-				Component.text("Le rayon d'ombre a été mis à " + radius + " avec succès !")
+				Component.text("Le rayon d'ombre a été mis à " + shadowRadius + " avec succès !")
 		);
 
 		player.sendMessage(successMessage);

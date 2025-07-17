@@ -4,7 +4,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import toutouchien.niveriaapi.command.CommandData;
@@ -50,14 +49,11 @@ public class HologramEditPositionCommand extends SubCommand {
 
 		if (arg.equalsIgnoreCase("here")) {
 			// Don't change the rotation
-			Location playerLocation = player.getLocation().clone();
-			CustomLocation hologramLocation = hologram.location();
-			playerLocation.setYaw(hologramLocation.yaw());
-			playerLocation.setPitch(hologramLocation.pitch());
-
-			hologram.teleportTo(playerLocation);
-			hologram.updateForAllPlayers();
-			hologramManager.saveHologram(hologram);
+			hologram.editLocation(location -> {
+				location.x(player.getLocation().x())
+						.y(player.getLocation().y())
+						.z(player.getLocation().z());
+			});
 
 			TextComponent successMessage = MessageUtils.successMessage(
 					Component.text("L'hologramme a été déplacé avec succès !")
@@ -70,14 +66,11 @@ public class HologramEditPositionCommand extends SubCommand {
 		Player p = Bukkit.getPlayerExact(arg);
 		if (p != null) {
 			// Don't change the rotation
-			Location playerLocation = p.getLocation().clone();
-			CustomLocation hologramLocation = hologram.location();
-			playerLocation.setYaw(hologramLocation.yaw());
-			playerLocation.setPitch(hologramLocation.pitch());
-
-			hologram.teleportTo(playerLocation);
-			hologram.updateForAllPlayers();
-			hologramManager.saveHologram(hologram);
+			hologram.editLocation(location -> {
+				location.x(player.getLocation().x())
+						.y(player.getLocation().y())
+						.z(player.getLocation().z());
+			});
 
 			TextComponent successMessage = MessageUtils.successMessage(
 					Component.text("L'hologramme a été déplacé avec succès !")
@@ -95,13 +88,11 @@ public class HologramEditPositionCommand extends SubCommand {
 				double y = parseCoordinate(args[1], currentLocation.y());
 				double z = parseCoordinate(args[2], currentLocation.z());
 
-				currentLocation.x(x);
-				currentLocation.y(y);
-				currentLocation.z(z);
-
-				hologram.teleportTo(currentLocation.bukkitLocation());
-				hologram.updateForAllPlayers();
-				hologramManager.saveHologram(hologram);
+				hologram.editLocation(location -> {
+					location.x(x)
+							.y(y)
+							.z(z);
+				});
 
 				TextComponent successMessage = MessageUtils.successMessage(
 						Component.text("L'hologramme a été déplacé avec succès !")

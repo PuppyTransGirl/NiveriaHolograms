@@ -75,10 +75,9 @@ public class HologramEditRemoveLineCommand extends SubCommand {
 			return;
 		}
 
-		configuration.removeText(lineNumber - 1);
-		hologram.update();
-		hologram.updateForAllPlayers();
-		hologramManager.saveHologram(hologram);
+		hologram.editConfig((TextHologramConfiguration config) -> {
+			config.removeText(lineNumber - 1);
+		});
 
 		TextComponent successMessage = MessageUtils.successMessage(
 				Component.text()

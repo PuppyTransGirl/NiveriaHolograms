@@ -11,7 +11,6 @@ import toutouchien.niveriaapi.utils.ui.MessageUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.hologram.Hologram;
 import toutouchien.niveriaholograms.hologram.HologramManager;
-import toutouchien.niveriaholograms.utils.CustomLocation;
 
 public class HologramEditPitchCommand extends SubCommand {
 	public HologramEditPitchCommand() {
@@ -58,12 +57,9 @@ public class HologramEditPitchCommand extends SubCommand {
 			return;
 		}
 
-		CustomLocation location = hologram.location();
-		location.pitch(pitch);
-
-		hologram.teleportTo(location.bukkitLocation());
-		hologram.updateForAllPlayers();
-		hologramManager.saveHologram(hologram);
+		hologram.editLocation(location -> {
+			location.pitch(pitch);
+		});
 
 		TextComponent successMessage = MessageUtils.successMessage(
 				Component.text("Le pitch a été mis à " + pitch + " avec succès !")

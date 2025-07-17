@@ -38,7 +38,7 @@ public class HologramEditBlockCommand extends SubCommand {
 			return;
 		}
 
-		if (!(hologram.configuration() instanceof BlockHologramConfiguration configuration)) {
+		if (!(hologram.configuration() instanceof BlockHologramConfiguration)) {
 			TextComponent errorMessage = MessageUtils.errorMessage(
 					Component.text("Cette comande ne peut être utilisée que sur des hologrammes de bloc")
 			);
@@ -84,11 +84,9 @@ public class HologramEditBlockCommand extends SubCommand {
 			return;
 		}
 
-		configuration.material(material);
-
-		hologram.update();
-		hologram.updateForAllPlayers();
-		hologramManager.saveHologram(hologram);
+		hologram.editConfig((BlockHologramConfiguration config) -> {
+			config.material(material);
+		});
 
 		TextComponent successMessage = MessageUtils.successMessage(
 				Component.text()

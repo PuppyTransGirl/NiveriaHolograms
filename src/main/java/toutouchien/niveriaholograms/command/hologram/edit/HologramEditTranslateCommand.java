@@ -5,7 +5,6 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Vector3f;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
 import toutouchien.niveriaapi.utils.ui.MessageUtils;
@@ -39,16 +38,13 @@ public class HologramEditTranslateCommand extends SubCommand {
 		}
 
 		try {
-			Vector3f currentTranslation = hologram.configuration().translation();
 			double x = parseDouble(args[0]);
 			double y = parseDouble(args[1]);
 			double z = parseDouble(args[2]);
 
-			currentTranslation.set(x, y, z);
-
-			hologram.update();
-			hologram.updateForAllPlayers();
-			hologramManager.saveHologram(hologram);
+			hologram.editConfig(config -> {
+				config.translation().set(x, y, z);
+			});
 
 			TextComponent successMessage = MessageUtils.successMessage(
 					Component.text("La translation de l'hologramme a été modifiée avec succès !")

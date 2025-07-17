@@ -33,7 +33,7 @@ public class HologramLoader {
 		HologramConfiguration configuration = type == HologramType.BLOCK ? new BlockHologramConfiguration() : type == HologramType.ITEM ? new ItemHologramConfiguration() : new TextHologramConfiguration();
 
 		HologramManager hologramManager = this.plugin.hologramManager();
-		Hologram hologram = hologramManager.createHologram(type, configuration, name, location, owner);
+		Hologram hologram = hologramManager.createHologram(type, configuration, name, owner, location);
 
 		loadConfiguration(section, configuration);
 

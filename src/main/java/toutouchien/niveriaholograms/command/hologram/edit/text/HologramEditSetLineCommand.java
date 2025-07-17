@@ -87,11 +87,9 @@ public class HologramEditSetLineCommand extends SubCommand {
 		}
 
 		String newText = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-		configuration.text(lineNumber - 1, newText);
-
-		hologram.update();
-		hologram.updateForAllPlayers();
-		hologramManager.saveHologram(hologram);
+		hologram.editConfig((TextHologramConfiguration config) -> {
+			config.text(lineNumber - 1, newText);
+		});
 
 		TextComponent successMessage = MessageUtils.successMessage(
 				Component.text()

@@ -54,12 +54,9 @@ public class HologramEditSeeThroughCommand extends SubCommand {
 		}
 
 		boolean seeThrough = Boolean.parseBoolean(args[0]);
-
-		configuration.seeThrough(seeThrough);
-
-		hologram.update();
-		hologram.updateForAllPlayers();
-		hologramManager.saveHologram(hologram);
+		hologram.editConfig((TextHologramConfiguration config) -> {
+			config.seeThrough(seeThrough);
+		});
 
 		TextComponent successMessage = MessageUtils.successMessage(
 				Component.text("La transparence a été " + (seeThrough ? "activée" : "désactivée") + ".")
