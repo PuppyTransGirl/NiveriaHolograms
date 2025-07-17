@@ -1,15 +1,10 @@
 package toutouchien.niveriaholograms.hologram;
 
 import com.mojang.math.Transformation;
-import io.netty.buffer.Unpooled;
 import io.papermc.paper.adventure.PaperAdventure;
 import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.core.Holder;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
@@ -26,27 +21,24 @@ import net.minecraft.world.level.block.Block;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
 import org.joml.Quaternionf;
+import toutouchien.niveriaapi.utils.game.NMSUtils;
 import toutouchien.niveriaholograms.configuration.BlockHologramConfiguration;
 import toutouchien.niveriaholograms.configuration.HologramConfiguration;
 import toutouchien.niveriaholograms.configuration.ItemHologramConfiguration;
 import toutouchien.niveriaholograms.configuration.TextHologramConfiguration;
 import toutouchien.niveriaholograms.utils.CustomLocation;
-import toutouchien.niveriaholograms.utils.ReflectionUtils;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Hologram {
-    private static final ConcurrentHashMap<UUID, PacketStats> playerPacketStats = new ConcurrentHashMap<>();
     public static final TextColor TRANSPARENT = () -> 0;
     public static final int MAX_LINE_LENGTH = 1403;
     private Display display = null;
@@ -101,25 +93,30 @@ public class Hologram {
     }
 
     public void create(Player player) {
-        send(player, new ClientboundAddEntityPacket(display, 0, display.blockPosition()));
+        NMSUtils.sendPacket(player, new ClientboundAddEntityPacket(display, 0, display.blockPosition()));
         update(player, true);
     }
 
     public void delete(Player player) {
-        send(player, new ClientboundRemoveEntitiesPacket(display.getId()));
+        NMSUtils.sendPacket(player, new ClientboundRemoveEntitiesPacket(display.getId()));
     }
 
     public void update(Player player, boolean join) {
-        send(player, new ClientboundTeleportEntityPacket(display.getId(), PositionMoveRotation.of(display), Set.of(), false));
+        NMSUtils.sendPacket(player, new ClientboundTeleportEntityPacket(display.getId(), PositionMoveRotation.of(display), Set.of(), false));
 
         if (display instanceof Display.TextDisplay textDisplay)
             textDisplay.setText(PaperAdventure.asVanilla(((TextHologramConfiguration) configuration).serializedText()));
 
+        // getNonDefaultValues sends less data than packAll
+        // It is used when the player haven't received any data from the display yet
+        // packDirty sends only the dirty values, which is more efficient when updating
+        // It's a lot more optimized than sending packAll everytime
+        // Reduces packet size by approximately 93.44% per update on a default text hologram
         List<SynchedEntityData.DataValue<?>> values = join ? display.getEntityData().getNonDefaultValues() : display.getEntityData().packDirty();
         if (values == null)
             return;
 
-        send(player, new ClientboundSetEntityDataPacket(display.getId(), values));
+        NMSUtils.sendPacket(player, new ClientboundSetEntityDataPacket(display.getId(), values));
     }
 
     public void create() {
@@ -189,37 +186,6 @@ public class Hologram {
 
         display.setShadowRadius(configuration.shadowRadius());
         display.setShadowStrength(configuration.shadowStrength());
-    }
-
-    private void send(Player player, Packet<?> packet) {
-        if (packet instanceof ClientboundSetEntityDataPacket setEntityDataPacket) {
-            ServerLevel level = ((CraftWorld) player.getWorld()).getHandle();
-            RegistryAccess registryAccess = level.registryAccess();
-            RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(new FriendlyByteBuf(Unpooled.buffer()), registryAccess);
-            ReflectionUtils.callMethod(setEntityDataPacket, "write", Set.of(RegistryFriendlyByteBuf.class), buf);
-            int packetSize = buf.readableBytes();
-
-            playerPacketStats.computeIfAbsent(player.getUniqueId(), id -> new PacketStats()).update(packetSize);
-
-            System.out.println("[Hologram] Sent Data Packet to " + player.getName() + " | Size: " + packetSize + " bytes");
-        }
-
-        ((CraftPlayer) player).getHandle().connection.send(packet);
-    }
-
-    public static void printPacketStats() {
-        System.out.println("[Hologram] Packet Statistics:");
-        playerPacketStats.forEach((uuid, stats) -> {
-            Player player = Bukkit.getPlayer(uuid);
-            if (player != null) {
-                System.out.println("  - " + player.getName() + ":");
-                System.out.println("      Total Size: " + stats.getTotalSize() + " bytes");
-                System.out.println("      Count: " + stats.getCount());
-                System.out.println("      Min: " + stats.getMinSize() + " bytes");
-                System.out.println("      Max: " + stats.getMaxSize() + " bytes");
-                System.out.println("      Avg: " + String.format("%.2f", stats.getAverageSize()) + " bytes");
-            }
-        });
     }
 
     public void teleportTo(Location location) {
