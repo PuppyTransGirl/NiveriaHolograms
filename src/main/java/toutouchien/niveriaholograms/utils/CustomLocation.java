@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SerializableAs("CustomLocation")
-public class CustomLocation implements ConfigurationSerializable, Cloneable {
+public class CustomLocation implements ConfigurationSerializable {
     private final String world;
     private double x, y, z;
     private float yaw, pitch;
@@ -157,15 +157,11 @@ public class CustomLocation implements ConfigurationSerializable, Cloneable {
         );
     }
 
-    @Override
-    public CustomLocation clone() {
+    public CustomLocation copy() {
         return new CustomLocation(
                 this.world,
-                this.x,
-                this.y,
-                this.z,
-                this.yaw,
-                this.pitch
+                this.x, this.y, this.z,
+                this.yaw, this.pitch
         );
     }
 }

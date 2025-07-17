@@ -39,9 +39,9 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 public class Hologram {
-    public static final TextColor TRANSPARENT = () -> 0;
+    public static final TextColor TRANSPARENT = TextColor.color(0);
     public static final int MAX_LINE_LENGTH = 1403;
-    private Display display = null;
+    private Display display;
 
     private final HologramType type;
     private final HologramConfiguration configuration;
@@ -57,22 +57,12 @@ public class Hologram {
         this.owner = owner;
     }
 
-    public Hologram(Hologram original) {
-        this.type = original.type;
-        this.name = original.name;
-        this.owner = original.owner;
-        this.configuration = original.configuration.clone();
-        this.location = original.location.clone();
-        this.display = null;
-    }
-
     public Hologram(Hologram original, Player player, String newName) {
         this.type = original.type;
         this.name = newName;
         this.owner = original.owner;
-        this.configuration = original.configuration.clone();
+        this.configuration = original.configuration.copy();
         this.location = new CustomLocation(player.getLocation());
-        this.display = null;
     }
 
     public void createForAllPlayers() {
@@ -186,6 +176,7 @@ public class Hologram {
 
         display.setShadowRadius(configuration.shadowRadius());
         display.setShadowStrength(configuration.shadowStrength());
+        display.setViewRange(configuration.visibilityDistance());
     }
 
     public void editLocation(Consumer<CustomLocation> consumer) {
@@ -249,5 +240,15 @@ public class Hologram {
     public Hologram location(CustomLocation location) {
         this.location = location;
         return this;
+    }
+
+    public Hologram copy() {
+        return new Hologram(
+                this.type,
+                this.configuration.copy(),
+                this.name,
+                this.owner,
+                this.location.copy()
+        );
     }
 }

@@ -2,7 +2,7 @@ package toutouchien.niveriaholograms.configuration;
 
 import org.bukkit.Material;
 
-public class BlockHologramConfiguration extends HologramConfiguration implements Cloneable {
+public class BlockHologramConfiguration extends HologramConfiguration {
 	private Material material = Material.GRASS_BLOCK;
 
 	public Material material() {
@@ -14,8 +14,10 @@ public class BlockHologramConfiguration extends HologramConfiguration implements
 		return this;
 	}
 
-    @Override
-    public BlockHologramConfiguration clone() {
-		return (BlockHologramConfiguration) super.clone();
-    }
+	@Override
+	public BlockHologramConfiguration copy() {
+		BlockHologramConfiguration copy = new BlockHologramConfiguration();
+		copy.material = this.material;
+		return copy;
+	}
 }
