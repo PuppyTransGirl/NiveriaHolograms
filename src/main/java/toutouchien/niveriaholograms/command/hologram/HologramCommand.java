@@ -13,10 +13,11 @@ public class HologramCommand extends Command {
 		super(new CommandData("hologram", "niveriaholograms")
 				.aliases("holo", "nholo")
 				.description("Gère les hologrammes")
-				.usage("<list|nearby|teleport|create|remove|clone|edit>")
+				.usage("<list|nearby|teleport|create|remove|clone|edit|info>")
 				.subCommands(
 						new HologramCloneCommand(), new HologramEditCommand(), new HologramListCommand(),
-						new HologramNearbyCommand(), new HologramRemoveCommand(), new HologramTeleportCommand()
+						new HologramNearbyCommand(), new HologramRemoveCommand(), new HologramTeleportCommand(),
+						new HologramInfoCommand()
 				));
 	}
 
