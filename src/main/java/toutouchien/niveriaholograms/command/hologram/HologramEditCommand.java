@@ -42,7 +42,7 @@ public class HologramEditCommand extends SubCommand {
 						new HologramEditBillboardCommand(), new HologramEditBrightnessCommand(), new HologramEditPitchCommand(),
 						new HologramEditPositionCommand(), new HologramEditRotationCommand(), new HologramEditScaleCommand(),
 						new HologramEditShadowRadiusCommand(), new HologramEditShadowStrengthCommand(), new HologramEditTranslateCommand(),
-						new HologramEditYawCommand()
+						new HologramEditVisibilityDistanceCommand(), new HologramEditYawCommand()
 				)
 				.hasParameterBeforeSubcommands(true));
 	}
