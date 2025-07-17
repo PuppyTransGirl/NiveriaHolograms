@@ -9,12 +9,12 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
+import toutouchien.niveriaapi.utils.common.MathUtils;
 import toutouchien.niveriaapi.utils.ui.MessageUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.hologram.Hologram;
 import toutouchien.niveriaholograms.hologram.HologramManager;
 import toutouchien.niveriaholograms.utils.CustomLocation;
-import toutouchien.niveriaholograms.utils.MathUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
