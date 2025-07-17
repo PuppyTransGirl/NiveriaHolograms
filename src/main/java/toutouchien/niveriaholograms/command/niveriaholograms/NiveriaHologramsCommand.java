@@ -23,7 +23,7 @@ public class NiveriaHologramsCommand extends Command {
 		);
 
 		TextComponent infoMessage = MessageUtils.infoMessage(
-				Component.text("Les sous-commandes possibles sont reload, test.")
+				Component.text("Les sous-commandes possibles sont reload.")
 		);
 
 		sender.sendMessage(errorMessage);
