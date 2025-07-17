@@ -35,21 +35,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class Hologram {
     public static final TextColor TRANSPARENT = () -> 0;
     public static final int MAX_LINE_LENGTH = 1403;
     private Display display = null;
 
-    private HologramType type;
-    private HologramConfiguration configuration;
-    private String name;
+    private final HologramType type;
+    private final HologramConfiguration configuration;
+    private final String name;
+    private final UUID owner;
     private CustomLocation location;
-    private UUID owner;
 
-    public Hologram(HologramType type, HologramConfiguration configuration, String name, CustomLocation location, UUID owner) {
+    public Hologram(HologramType type, HologramConfiguration configuration, String name, UUID owner, CustomLocation location) {
         this.type = type;
         this.configuration = configuration;
         this.name = name;
@@ -61,8 +59,8 @@ public class Hologram {
         this.type = original.type;
         this.name = original.name;
         this.owner = original.owner;
-        this.location = original.location.clone();
         this.configuration = original.configuration.clone();
+        this.location = original.location.clone();
         this.display = null;
     }
 
@@ -70,8 +68,8 @@ public class Hologram {
         this.type = original.type;
         this.name = newName;
         this.owner = original.owner;
-        this.location = new CustomLocation(player.getLocation());
         this.configuration = original.configuration.clone();
+        this.location = new CustomLocation(player.getLocation());
         this.display = null;
     }
 
@@ -209,27 +207,16 @@ public class Hologram {
         return type;
     }
 
-    public Hologram type(HologramType type) {
-        this.type = type;
-        return this;
-    }
-
     public HologramConfiguration configuration() {
         return configuration;
-    }
-
-    public Hologram configuration(HologramConfiguration configuration) {
-        this.configuration = configuration;
-        return this;
     }
 
     public String name() {
         return name;
     }
 
-    public Hologram name(String name) {
-        this.name = name;
-        return this;
+    public UUID owner() {
+        return owner;
     }
 
     public CustomLocation location() {
@@ -238,15 +225,6 @@ public class Hologram {
 
     public Hologram location(CustomLocation location) {
         this.location = location;
-        return this;
-    }
-
-    public UUID owner() {
-        return owner;
-    }
-
-    public Hologram owner(UUID owner) {
-        this.owner = owner;
         return this;
     }
 }
