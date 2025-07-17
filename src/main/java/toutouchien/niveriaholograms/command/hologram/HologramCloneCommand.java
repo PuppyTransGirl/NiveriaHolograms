@@ -20,6 +20,7 @@ import java.util.Locale;
 public class HologramCloneCommand extends SubCommand {
 	public HologramCloneCommand() {
 		super(new CommandData("clone", "niveriaholograms")
+				.aliases("c")
 				.playerRequired(true)
 				.usage("<hologram> <nom>"));
 	}
