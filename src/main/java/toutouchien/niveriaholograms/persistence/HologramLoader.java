@@ -67,10 +67,28 @@ public class HologramLoader {
 
     private void loadBlockConfiguration(ConfigurationSection section, BlockHologramConfiguration configuration) {
         configuration.material(Material.valueOf(section.getString("material")));
+
+        TextColor glowingColor = loadGlowing(section);
+        if (glowingColor == null) {
+            configuration.glowing(false);
+            return;
+        }
+
+        configuration.glowing(true)
+                .glowingColor(glowingColor);
     }
 
     private void loadItemConfiguration(ConfigurationSection section, ItemHologramConfiguration configuration) {
         configuration.itemStack(section.getItemStack("itemstack"));
+
+        TextColor glowingColor = loadGlowing(section);
+        if (glowingColor == null) {
+            configuration.glowing(false);
+            return;
+        }
+
+        configuration.glowing(true)
+                .glowingColor(glowingColor);
     }
 
     private void loadTextConfiguration(ConfigurationSection section, TextHologramConfiguration configuration) {
@@ -100,6 +118,18 @@ public class HologramLoader {
         return switch (background.toLowerCase()) {
             case "default" -> null;
             case "transparent" -> Hologram.TRANSPARENT;
+            default -> background.startsWith("#")
+                    ? TextColor.fromHexString(background)
+                    : NamedTextColor.NAMES.value(background);
+        };
+    }
+
+    private TextColor loadGlowing(ConfigurationSection section) {
+        String background = section.getString("glowing", "none");
+
+        return switch (background.toLowerCase()) {
+            case "none" -> null;
+            case "default" -> NamedTextColor.WHITE;
             default -> background.startsWith("#")
                     ? TextColor.fromHexString(background)
                     : NamedTextColor.NAMES.value(background);

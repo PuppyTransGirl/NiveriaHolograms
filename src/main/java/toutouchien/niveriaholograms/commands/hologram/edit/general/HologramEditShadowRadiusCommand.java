@@ -1,4 +1,4 @@
-package toutouchien.niveriaholograms.commands.hologram.edit;
+package toutouchien.niveriaholograms.commands.hologram.edit.general;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -12,11 +12,11 @@ import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
-public class HologramEditShadowStrengthCommand extends SubCommand {
-	public HologramEditShadowStrengthCommand() {
-		super(new CommandData("shadowstrength", "niveriaholograms")
+public class HologramEditShadowRadiusCommand extends SubCommand {
+	public HologramEditShadowRadiusCommand() {
+		super(new CommandData("shadowradius", "niveriaholograms")
 				.playerRequired(true)
-				.usage("<strength>"));
+				.usage("<radius>"));
 	}
 
 	@Override
@@ -33,16 +33,16 @@ public class HologramEditShadowStrengthCommand extends SubCommand {
 		}
 
 		if (args.length == 0) {
-			player.sendMessage(Component.text("/" + label + " " + String.join(" ", fullArgs) + " <strength>", NamedTextColor.RED));
+			player.sendMessage(Component.text("/" + label + " " + String.join(" ", fullArgs) + " <radius>", NamedTextColor.RED));
 			return;
 		}
 
-		float shadowStrength;
+		float shadowRadius;
 		try {
-			shadowStrength = Float.parseFloat(args[0]);
-			if (!Float.isFinite(shadowStrength)) {
+			shadowRadius = Float.parseFloat(args[0]);
+			if (!Float.isFinite(shadowRadius)) {
 				TextComponent errorMessage = MessageUtils.errorMessage(
-						Component.text("La force est invalide.")
+						Component.text("Le rayon est invalide.")
 				);
 
 				player.sendMessage(errorMessage);
@@ -50,7 +50,7 @@ public class HologramEditShadowStrengthCommand extends SubCommand {
 			}
 		} catch (NumberFormatException e) {
 			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("La force est invalide.")
+					Component.text("Le rayon est invalide.")
 			);
 
 			player.sendMessage(errorMessage);
@@ -58,11 +58,11 @@ public class HologramEditShadowStrengthCommand extends SubCommand {
 		}
 
 		hologram.editConfig(config -> {
-			config.shadowStrength(shadowStrength);
+			config.shadowRadius(shadowRadius);
 		});
 
 		TextComponent successMessage = MessageUtils.successMessage(
-				Component.text("La force d'ombre a été mis à " + shadowStrength + " avec succès !")
+				Component.text("Le rayon d'ombre a été mis à " + shadowRadius + " avec succès !")
 		);
 
 		player.sendMessage(successMessage);

@@ -1,4 +1,4 @@
-package toutouchien.niveriaholograms.commands.hologram.edit;
+package toutouchien.niveriaholograms.commands.hologram.edit.general;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -12,11 +12,11 @@ import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
-public class HologramEditShadowRadiusCommand extends SubCommand {
-	public HologramEditShadowRadiusCommand() {
-		super(new CommandData("shadowradius", "niveriaholograms")
+public class HologramEditPitchCommand extends SubCommand {
+	public HologramEditPitchCommand() {
+		super(new CommandData("pitch", "niveriaholograms")
 				.playerRequired(true)
-				.usage("<radius>"));
+				.usage("<pitch>"));
 	}
 
 	@Override
@@ -33,16 +33,16 @@ public class HologramEditShadowRadiusCommand extends SubCommand {
 		}
 
 		if (args.length == 0) {
-			player.sendMessage(Component.text("/" + label + " " + String.join(" ", fullArgs) + " <radius>", NamedTextColor.RED));
+			player.sendMessage(Component.text("/" + label + " " + String.join(" ", fullArgs) + " <pitch>", NamedTextColor.RED));
 			return;
 		}
 
-		float shadowRadius;
+		float pitch;
 		try {
-			shadowRadius = Float.parseFloat(args[0]);
-			if (!Float.isFinite(shadowRadius)) {
+			pitch = Float.parseFloat(args[0]);
+			if (pitch < -90 || pitch > 90 || !Float.isFinite(pitch)) {
 				TextComponent errorMessage = MessageUtils.errorMessage(
-						Component.text("Le rayon est invalide.")
+						Component.text("Le pitch doit être entre -90 et 90.")
 				);
 
 				player.sendMessage(errorMessage);
@@ -50,19 +50,19 @@ public class HologramEditShadowRadiusCommand extends SubCommand {
 			}
 		} catch (NumberFormatException e) {
 			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Le rayon est invalide.")
+					Component.text("Le pitch doit être entre -90 et 90.")
 			);
 
 			player.sendMessage(errorMessage);
 			return;
 		}
 
-		hologram.editConfig(config -> {
-			config.shadowRadius(shadowRadius);
+		hologram.editLocation(location -> {
+			location.pitch(pitch);
 		});
 
 		TextComponent successMessage = MessageUtils.successMessage(
-				Component.text("Le rayon d'ombre a été mis à " + shadowRadius + " avec succès !")
+				Component.text("Le pitch a été mis à " + pitch + " avec succès !")
 		);
 
 		player.sendMessage(successMessage);

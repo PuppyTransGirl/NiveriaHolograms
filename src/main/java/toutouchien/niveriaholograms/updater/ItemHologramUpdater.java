@@ -14,9 +14,21 @@ public class ItemHologramUpdater extends HologramUpdater {
         this.config = config;
     }
 
-
     @Override
     protected void updateDisplaySpecifics() {
+        updateItemStack();
+        updateGlowing();
+    }
+
+    private void updateItemStack() {
         display.setItemStack(ItemStack.fromBukkitCopy(config.itemStack()));
+    }
+
+    private void updateGlowing() {
+        display.setGlowingTag(config.glowing());
+
+        if (config.glowingColor() != null) {
+            display.setGlowColorOverride(config.glowingColor().value());
+        }
     }
 }

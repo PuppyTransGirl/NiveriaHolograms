@@ -1,4 +1,4 @@
-package toutouchien.niveriaholograms.commands.hologram.edit;
+package toutouchien.niveriaholograms.commands.hologram.edit.general;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -12,11 +12,11 @@ import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
-public class HologramEditYawCommand extends SubCommand {
-	public HologramEditYawCommand() {
-		super(new CommandData("yaw", "niveriaholograms")
+public class HologramEditShadowStrengthCommand extends SubCommand {
+	public HologramEditShadowStrengthCommand() {
+		super(new CommandData("shadowstrength", "niveriaholograms")
 				.playerRequired(true)
-				.usage("<yaw>"));
+				.usage("<strength>"));
 	}
 
 	@Override
@@ -33,16 +33,16 @@ public class HologramEditYawCommand extends SubCommand {
 		}
 
 		if (args.length == 0) {
-			player.sendMessage(Component.text("/" + label + " " + String.join(" ", fullArgs) + " <yaw>", NamedTextColor.RED));
+			player.sendMessage(Component.text("/" + label + " " + String.join(" ", fullArgs) + " <strength>", NamedTextColor.RED));
 			return;
 		}
 
-		float yaw;
+		float shadowStrength;
 		try {
-			yaw = Float.parseFloat(args[0]);
-			if (yaw < -180 || yaw > 180 || !Float.isFinite(yaw)) {
+			shadowStrength = Float.parseFloat(args[0]);
+			if (!Float.isFinite(shadowStrength)) {
 				TextComponent errorMessage = MessageUtils.errorMessage(
-						Component.text("Le yaw doit être entre -180 et 180.")
+						Component.text("La force est invalide.")
 				);
 
 				player.sendMessage(errorMessage);
@@ -50,19 +50,19 @@ public class HologramEditYawCommand extends SubCommand {
 			}
 		} catch (NumberFormatException e) {
 			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Le yaw doit être entre -180 et 180.")
+					Component.text("La force est invalide.")
 			);
 
 			player.sendMessage(errorMessage);
 			return;
 		}
 
-		hologram.editLocation(location -> {
-			location.yaw(yaw);
+		hologram.editConfig(config -> {
+			config.shadowStrength(shadowStrength);
 		});
 
 		TextComponent successMessage = MessageUtils.successMessage(
-				Component.text("Le yaw a été mis à " + yaw + " avec succès !")
+				Component.text("La force d'ombre a été mis à " + shadowStrength + " avec succès !")
 		);
 
 		player.sendMessage(successMessage);

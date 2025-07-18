@@ -1,4 +1,4 @@
-package toutouchien.niveriaholograms.commands.hologram.edit;
+package toutouchien.niveriaholograms.commands.hologram.edit.general;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
