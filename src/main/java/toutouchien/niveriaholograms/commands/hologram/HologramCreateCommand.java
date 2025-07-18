@@ -10,7 +10,6 @@ import toutouchien.niveriaapi.utils.common.StringUtils;
 import toutouchien.niveriaapi.utils.data.FileUtils;
 import toutouchien.niveriaapi.utils.ui.MessageUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
-import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.core.HologramType;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
@@ -85,10 +84,9 @@ public class HologramCreateCommand extends SubCommand {
             return Collections.emptyList();
 
 		String currentArg = args[argIndex].toLowerCase(Locale.ROOT);
-        return NiveriaHolograms.instance().hologramManager().holograms().stream()
-                .map(Hologram::name)
-                .filter(hologramName -> hologramName.toLowerCase(Locale.ROOT).startsWith(currentArg))
+        return Arrays.stream(HologramType.values())
+                .map(hologramType -> StringUtils.capitalize(hologramType.name()))
+                .filter(hologramName -> hologramName.startsWith(currentArg))
                 .toList();
-
     }
 }
