@@ -19,7 +19,6 @@ public class BlockHologramUpdater extends HologramUpdater {
         this.config = config;
     }
 
-
     @Override
     protected void updateDisplaySpecifics() {
         updateBlock();
