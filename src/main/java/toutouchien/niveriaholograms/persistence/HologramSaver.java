@@ -208,10 +208,12 @@ public class HologramSaver {
 
     private void saveBlockConfiguration(ConfigurationSection section, BlockHologramConfiguration configuration) {
         section.set("material", configuration.material().name());
+        section.set("glowing", glowingColor(configuration.glowingColor()));
     }
 
     private void saveItemConfiguration(ConfigurationSection section, ItemHologramConfiguration configuration) {
         section.set("itemstack", configuration.itemStack());
+        section.set("glowing", glowingColor(configuration.glowingColor()));
     }
 
     private void saveTextConfiguration(ConfigurationSection section, TextHologramConfiguration configuration) {
@@ -232,12 +234,25 @@ public class HologramSaver {
     private String backgroundColor(TextColor backgroundColor) {
         if (backgroundColor == null) {
             return "default";
-        } else if (backgroundColor == Hologram.TRANSPARENT) {
-            return "transparent";
-        } else if (backgroundColor instanceof NamedTextColor namedTextColor) {
-            return namedTextColor.toString();
-        } else {
-            return backgroundColor.asHexString();
         }
+
+        if (backgroundColor == Hologram.TRANSPARENT) {
+            return "transparent";
+        }
+
+        if (backgroundColor instanceof NamedTextColor namedTextColor) {
+            return namedTextColor.toString();
+        }
+
+        return backgroundColor.asHexString();
+    }
+
+    private String glowingColor(TextColor glowingColor) {
+        // "default" is NamedTextColor.WHITE so NamedTextColor case is used for "default"
+        return switch (glowingColor) {
+            case null -> "none";
+            case NamedTextColor namedTextColor -> namedTextColor.toString();
+            default -> glowingColor.asHexString();
+        };
     }
 }

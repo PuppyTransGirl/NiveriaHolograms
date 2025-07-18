@@ -1,4 +1,4 @@
-package toutouchien.niveriaholograms.commands.hologram.edit;
+package toutouchien.niveriaholograms.commands.hologram.edit.general;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -12,11 +12,11 @@ import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
-public class HologramEditPitchCommand extends SubCommand {
-	public HologramEditPitchCommand() {
-		super(new CommandData("pitch", "niveriaholograms")
+public class HologramEditYawCommand extends SubCommand {
+	public HologramEditYawCommand() {
+		super(new CommandData("yaw", "niveriaholograms")
 				.playerRequired(true)
-				.usage("<pitch>"));
+				.usage("<yaw>"));
 	}
 
 	@Override
@@ -33,16 +33,16 @@ public class HologramEditPitchCommand extends SubCommand {
 		}
 
 		if (args.length == 0) {
-			player.sendMessage(Component.text("/" + label + " " + String.join(" ", fullArgs) + " <pitch>", NamedTextColor.RED));
+			player.sendMessage(Component.text("/" + label + " " + String.join(" ", fullArgs) + " <yaw>", NamedTextColor.RED));
 			return;
 		}
 
-		float pitch;
+		float yaw;
 		try {
-			pitch = Float.parseFloat(args[0]);
-			if (pitch < -90 || pitch > 90 || !Float.isFinite(pitch)) {
+			yaw = Float.parseFloat(args[0]);
+			if (yaw < -180 || yaw > 180 || !Float.isFinite(yaw)) {
 				TextComponent errorMessage = MessageUtils.errorMessage(
-						Component.text("Le pitch doit être entre -90 et 90.")
+						Component.text("Le yaw doit être entre -180 et 180.")
 				);
 
 				player.sendMessage(errorMessage);
@@ -50,7 +50,7 @@ public class HologramEditPitchCommand extends SubCommand {
 			}
 		} catch (NumberFormatException e) {
 			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Le pitch doit être entre -90 et 90.")
+					Component.text("Le yaw doit être entre -180 et 180.")
 			);
 
 			player.sendMessage(errorMessage);
@@ -58,11 +58,11 @@ public class HologramEditPitchCommand extends SubCommand {
 		}
 
 		hologram.editLocation(location -> {
-			location.pitch(pitch);
+			location.yaw(yaw);
 		});
 
 		TextComponent successMessage = MessageUtils.successMessage(
-				Component.text("Le pitch a été mis à " + pitch + " avec succès !")
+				Component.text("Le yaw a été mis à " + yaw + " avec succès !")
 		);
 
 		player.sendMessage(successMessage);

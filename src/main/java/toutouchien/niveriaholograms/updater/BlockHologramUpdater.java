@@ -22,6 +22,11 @@ public class BlockHologramUpdater extends HologramUpdater {
 
     @Override
     protected void updateDisplaySpecifics() {
+        updateBlock();
+        updateGlowing();
+    }
+
+    private void updateBlock() {
         ResourceLocation blockResource = ResourceLocation.parse(config.material().key().asString());
         Optional<Holder.Reference<Block>> blockHolder = BuiltInRegistries.BLOCK.get(blockResource);
         if (blockHolder.isEmpty())
@@ -29,5 +34,13 @@ public class BlockHologramUpdater extends HologramUpdater {
 
         Block block = blockHolder.get().value();
         display.setBlockState(block.defaultBlockState());
+    }
+
+    private void updateGlowing() {
+        display.setGlowingTag(config.glowing());
+
+        if (config.glowingColor() != null) {
+            display.setGlowColorOverride(config.glowingColor().value());
+        }
     }
 }
