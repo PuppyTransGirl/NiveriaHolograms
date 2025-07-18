@@ -71,7 +71,7 @@ public class HologramManager {
     }
 
     public void delete(Hologram hologram) {
-        this.holograms.remove(hologram);
+        this.holograms.remove(hologram.name());
         this.hologramSaver.deleteHologram(hologram);
     }
 
