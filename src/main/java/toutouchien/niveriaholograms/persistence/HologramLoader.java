@@ -9,13 +9,13 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.TextDisplay;
 import org.joml.Vector3f;
 import toutouchien.niveriaholograms.NiveriaHolograms;
-import toutouchien.niveriaholograms.configuration.BlockHologramConfiguration;
-import toutouchien.niveriaholograms.configuration.HologramConfiguration;
-import toutouchien.niveriaholograms.configuration.ItemHologramConfiguration;
-import toutouchien.niveriaholograms.configuration.TextHologramConfiguration;
+import toutouchien.niveriaholograms.configurations.BlockHologramConfiguration;
+import toutouchien.niveriaholograms.configurations.HologramConfiguration;
+import toutouchien.niveriaholograms.configurations.ItemHologramConfiguration;
+import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.core.HologramType;
-import toutouchien.niveriaholograms.manager.HologramManager;
+import toutouchien.niveriaholograms.managers.HologramManager;
 import toutouchien.niveriaholograms.utils.CustomLocation;
 
 import java.util.List;

@@ -8,13 +8,13 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.joml.Vector3f;
 import toutouchien.niveriaholograms.NiveriaHolograms;
-import toutouchien.niveriaholograms.configuration.BlockHologramConfiguration;
-import toutouchien.niveriaholograms.configuration.HologramConfiguration;
-import toutouchien.niveriaholograms.configuration.ItemHologramConfiguration;
-import toutouchien.niveriaholograms.configuration.TextHologramConfiguration;
+import toutouchien.niveriaholograms.configurations.BlockHologramConfiguration;
+import toutouchien.niveriaholograms.configurations.HologramConfiguration;
+import toutouchien.niveriaholograms.configurations.ItemHologramConfiguration;
+import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.core.HologramType;
-import toutouchien.niveriaholograms.exception.HologramSaveException;
+import toutouchien.niveriaholograms.exceptions.HologramSaveException;
 
 import java.io.File;
 import java.io.IOException;

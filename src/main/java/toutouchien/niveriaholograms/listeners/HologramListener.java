@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.Hologram;
-import toutouchien.niveriaholograms.manager.HologramManager;
+import toutouchien.niveriaholograms.managers.HologramManager;
 
 import java.io.File;
 import java.util.List;
