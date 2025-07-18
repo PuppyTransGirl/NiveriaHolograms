@@ -30,20 +30,30 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - name: Configure Bytecode Space Maven repo
+      - name: Configure Bytecode Space repo in settings.xml
         run: |
           mkdir -p ~/.m2
-          cat > ~/.m2/settings.xml <<'EOF'
+          cat > ~/.m2/settings.xml << 'EOF'
           <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                     xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
                                         https://maven.apache.org/xsd/settings-1.0.0.xsd">
-            <pluginRepositories>
-              <pluginRepository>
+            <profiles>
+              <profile>
                 <id>bytecode-space</id>
-                <url>https://repo.bytecode.space/repository/maven-public/</url>
-              </pluginRepository>
-            </pluginRepositories>
+                <pluginRepositories>
+                  <pluginRepository>
+                    <id>bytecode-space</id>
+                    <url>https://repo.bytecode.space/repository/maven-public/</url>
+                    <releases><enabled>true</enabled></releases>
+                    <snapshots><enabled>true</enabled></snapshots>
+                  </pluginRepository>
+                </pluginRepositories>
+              </profile>
+            </profiles>
+            <activeProfiles>
+              <activeProfile>bytecode-space</activeProfile>
+            </activeProfiles>
           </settings>
           EOF
 
@@ -56,8 +66,9 @@ jobs:
             ${{ runner.os }}-m2-
 
       - name: Initialize paper-nms mappings for NiveriaAPI
-        run: mvn -B -f NiveriaAPI/pom.xml \
-          ca.bkaw:paper-nms-maven-plugin:1.4.5:init
+        run: |
+          mvn -B -f NiveriaAPI/pom.xml \
+              ca.bkaw:paper-nms-maven-plugin:1.4.5:init
 
       - name: Build NiveriaAPI
         run: mvn -B -f NiveriaAPI/pom.xml clean install
