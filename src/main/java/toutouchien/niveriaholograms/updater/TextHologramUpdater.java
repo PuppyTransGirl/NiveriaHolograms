@@ -3,7 +3,7 @@ package toutouchien.niveriaholograms.updater;
 import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.world.entity.Display;
 import org.bukkit.entity.TextDisplay;
-import toutouchien.niveriaholograms.configuration.TextHologramConfiguration;
+import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
 import toutouchien.niveriaholograms.core.Hologram;
 
 public class TextHologramUpdater extends HologramUpdater {

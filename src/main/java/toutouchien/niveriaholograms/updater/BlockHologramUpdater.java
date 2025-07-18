@@ -5,7 +5,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.level.block.Block;
-import toutouchien.niveriaholograms.configuration.BlockHologramConfiguration;
+import toutouchien.niveriaholograms.configurations.BlockHologramConfiguration;
 
 import java.util.Optional;
 

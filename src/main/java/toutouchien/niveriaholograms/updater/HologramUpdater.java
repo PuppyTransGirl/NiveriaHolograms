@@ -4,7 +4,7 @@ import com.mojang.math.Transformation;
 import net.minecraft.util.Brightness;
 import net.minecraft.world.entity.Display;
 import org.joml.Quaternionf;
-import toutouchien.niveriaholograms.configuration.HologramConfiguration;
+import toutouchien.niveriaholograms.configurations.HologramConfiguration;
 
 public abstract class HologramUpdater {
     private final Display display;

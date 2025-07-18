@@ -3,10 +3,10 @@ package toutouchien.niveriaholograms;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 import toutouchien.niveriaapi.NiveriaAPI;
-import toutouchien.niveriaholograms.command.hologram.HologramCommand;
-import toutouchien.niveriaholograms.command.niveriaholograms.NiveriaHologramsCommand;
+import toutouchien.niveriaholograms.commands.hologram.HologramCommand;
+import toutouchien.niveriaholograms.commands.niveriaholograms.NiveriaHologramsCommand;
 import toutouchien.niveriaholograms.listeners.HologramListener;
-import toutouchien.niveriaholograms.manager.HologramManager;
+import toutouchien.niveriaholograms.managers.HologramManager;
 import toutouchien.niveriaholograms.utils.CustomLocation;
 
 import java.util.Arrays;
