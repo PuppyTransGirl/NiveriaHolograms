@@ -1,6 +1,5 @@
 package toutouchien.niveriaholograms.core;
 
-import io.papermc.paper.adventure.PaperAdventure;
 import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
@@ -107,9 +106,6 @@ public class Hologram {
         List<SynchedEntityData.DataValue<?>> data = display.getEntityData().getNonDefaultValues();
         ClientboundSetEntityDataPacket dataPacket = data != null ? new ClientboundSetEntityDataPacket(display.getId(), data) : null;
 
-        if (display instanceof Display.TextDisplay textDisplay)
-            textDisplay.setText(PaperAdventure.asVanilla(((TextHologramConfiguration) config).serializedText()));
-
         NMSUtils.sendNonNullPackets(player, addEntityPacket, teleportPacket, dataPacket);
     }
 
@@ -146,9 +142,6 @@ public class Hologram {
     }
 
     public void updateForAllPlayers() {
-        if (display instanceof Display.TextDisplay textDisplay)
-            textDisplay.setText(PaperAdventure.asVanilla(((TextHologramConfiguration) config).serializedText()));
-
         ClientboundTeleportEntityPacket teleportPacket;
         if (locationDirty) {
             teleportPacket = new ClientboundTeleportEntityPacket(

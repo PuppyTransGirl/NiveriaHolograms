@@ -1,5 +1,6 @@
 package toutouchien.niveriaholograms.updater;
 
+import io.papermc.paper.adventure.PaperAdventure;
 import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.world.entity.Display;
 import org.bukkit.entity.TextDisplay;
@@ -18,9 +19,14 @@ public class TextHologramUpdater extends HologramUpdater {
 
     @Override
     protected void updateDisplaySpecifics() {
+        updateText();
         updateMaxLineLength();
         updateBackgroundColor();
         updateFlags();
+    }
+
+    private void updateText() {
+        display.setText(PaperAdventure.asVanilla(config.serializedText()));
     }
 
     private void updateMaxLineLength() {
