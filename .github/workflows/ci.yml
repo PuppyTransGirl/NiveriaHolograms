@@ -78,3 +78,9 @@ jobs:
 
       - name: Build NiveriaHolograms
         run: mvn -B clean verify
+
+      - name: Upload NiveriaHolograms JAR
+        uses: actions/upload-artifact@v3
+        with:
+          name: NiveriaHolograms
+          path: target/*.jar
