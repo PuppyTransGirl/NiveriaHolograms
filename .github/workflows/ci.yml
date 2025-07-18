@@ -1,4 +1,4 @@
-name: Core CI
+name: NiveriaHolograms CI
 
 permissions:
   contents: read
@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Core
+      - name: Checkout NiveriaHolograms
         uses: actions/checkout@v3
 
       - name: Checkout NiveriaAPI
@@ -38,10 +38,14 @@ jobs:
           distribution: temurin
           java-version: '21'
 
+      - name: Initialize paper-nms mappings for NiveriaAPI
+        run: mvn -B -f NiveriaAPI/pom.xml \
+          ca.bkaw:paper-nms-maven-plugin:1.4.5:init
+
       - name: Build NiveriaAPI
         run: mvn -B -f NiveriaAPI/pom.xml clean install
 
-      - name: Initialize paper-nms mappings
+      - name: Initialize paper-nms mappings for NiveriaHolograms
         run: mvn -B ca.bkaw:paper-nms-maven-plugin:1.4.5:init
 
       - name: Build NiveriaHolograms
