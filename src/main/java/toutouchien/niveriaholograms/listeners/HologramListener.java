@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.Hologram;
@@ -27,13 +28,20 @@ public class HologramListener implements Listener {
 	}
 
 	@EventHandler
-	public void onJoin(PlayerJoinEvent event) {
+	public void onPlayerJoin(PlayerJoinEvent event) {
 		sendHolograms(event.getPlayer());
 	}
 
 	@EventHandler
-	public void onWorldChange(PlayerChangedWorldEvent event) {
-		sendHolograms(event.getPlayer());
+	public void onPlayerLeave(PlayerQuitEvent event) {
+		this.hologramManager.clearCache(event.getPlayer());
+	}
+
+	@EventHandler
+	public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
+		Player player = event.getPlayer();
+		this.hologramManager.clearCache(player);
+		sendHolograms(player);
 	}
 
 	@EventHandler
