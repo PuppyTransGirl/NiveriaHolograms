@@ -38,6 +38,7 @@ public class HologramEditCommand extends SubCommand {
 						new HologramEditAddLineCommand(), new HologramEditBackgroundCommand(), new HologramEditInsertAfterCommand(),
 						new HologramEditInsertBeforeCommand(), new HologramEditRemoveLineCommand(), new HologramEditSeeThroughCommand(),
 						new HologramEditSetLineCommand(), new HologramEditTextAlignmentCommand(), new HologramEditTextShadowCommand(),
+						new HologramEditUpdateIntervalCommand(),
 
 						// General Hologram Edits
 						new HologramEditBillboardCommand(), new HologramEditBrightnessCommand(), new HologramEditPitchCommand(),
@@ -78,7 +79,7 @@ public class HologramEditCommand extends SubCommand {
 		edits.addAll(switch (hologram.type()) {
 			case BLOCK -> List.of("block", "glowing");
 			case ITEM -> List.of("item", "glowing");
-			case TEXT -> List.of("addline", "background", "insertafter", "insertbefore", "removeline", "seethrough", "setline", "textalignment", "textshadow", "updatetextinterval");
+			case TEXT -> List.of("addline", "background", "insertafter", "insertbefore", "removeline", "seethrough", "setline", "textalignment", "textshadow", "updateinterval");
 		});
 
 		TextComponent errorMessage = MessageUtils.errorMessage(
@@ -113,7 +114,7 @@ public class HologramEditCommand extends SubCommand {
 			edits.addAll(switch (hologram.type()) {
 				case BLOCK -> List.of("block", "glowing");
 				case ITEM -> List.of("item", "glowing");
-				case TEXT -> List.of("addline", "background", "insertafter", "insertbefore", "removeline", "seethrough", "setline", "textalignment", "textshadow", "updatetextinterval");
+				case TEXT -> List.of("addline", "background", "insertafter", "insertbefore", "removeline", "seethrough", "setline", "textalignment", "textshadow", "updateinterval");
 			});
 
 			return edits.stream()

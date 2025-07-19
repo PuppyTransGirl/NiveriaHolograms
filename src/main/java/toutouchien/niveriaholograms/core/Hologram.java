@@ -15,6 +15,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
+import toutouchien.niveriaapi.utils.base.Task;
 import toutouchien.niveriaapi.utils.game.NMSUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.configurations.BlockHologramConfiguration;
@@ -32,7 +34,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -40,11 +41,11 @@ public class Hologram {
     public static final TextColor TRANSPARENT = TextColor.color(0);
     public static final int MAX_LINE_LENGTH = 1403;
 
-    private static final ThreadFactory VIRTUAL_THREAD_FACTORY = Thread.ofVirtual()
+    private static final ExecutorService EXECUTOR = Executors.newThreadPerTaskExecutor(
+            Thread.ofVirtual()
             .name("NiveriaHolograms-Hologram-Sender-", 0)
-            .factory();
-
-    private static final ExecutorService EXECUTOR = Executors.newThreadPerTaskExecutor(VIRTUAL_THREAD_FACTORY);
+            .factory()
+    );
 
     private Display display;
     private final HologramType type;
@@ -54,6 +55,8 @@ public class Hologram {
     private final UUID owner;
     private CustomLocation location;
     private boolean locationDirty;
+
+    private BukkitTask updateTask;
 
     public Hologram(HologramType type, HologramConfiguration config, String name, UUID owner, CustomLocation location) {
         this.type = type;
@@ -90,6 +93,15 @@ public class Hologram {
 
         updateLocation();
         update();
+
+        if (config instanceof TextHologramConfiguration textConfig) {
+            updateTask = Task.asyncRepeat(
+                    this::updateForAllPlayers,
+                    NiveriaHolograms.instance(),
+                    Math.max(40L, textConfig.updateInterval()),
+                    textConfig.updateInterval()
+            );
+        }
     }
 
     public void create(Player player) {
@@ -164,6 +176,21 @@ public class Hologram {
         List<Player> targets = Bukkit.getOnlinePlayers().stream()
                 .filter(p -> p.getWorld().getName().equals(location.world()))
                 .collect(Collectors.toList());
+
+        if (config instanceof TextHologramConfiguration textConfig && (textConfig.textDirty() || textConfig.updateIntervalDirty())) {
+            if (updateTask != null && !updateTask.isCancelled()) {
+                updateTask.cancel();
+            }
+
+            updateTask = Task.asyncRepeat(
+                    this::updateForAllPlayers,
+                    NiveriaHolograms.instance(),
+                    Math.max(40L, textConfig.updateInterval()),
+                    textConfig.updateInterval()
+            );
+
+            textConfig.updateIntervalDirty(false);
+        }
 
         EXECUTOR.submit(() -> {
             for (Player player : targets) {
@@ -266,5 +293,11 @@ public class Hologram {
                 this.owner,
                 this.location.copy()
         );
+    }
+
+    public void cleanCache(Player player) {
+        if (config instanceof TextHologramConfiguration textConfig) {
+            textConfig.cleanCache(player);
+        }
     }
 }
