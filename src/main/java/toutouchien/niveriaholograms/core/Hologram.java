@@ -143,6 +143,9 @@ public class Hologram {
     }
 
     public void deleteForAllPlayers(boolean worldChanged) {
+        if (Bukkit.getOnlinePlayers().isEmpty())
+            return;
+
         List<Player> targets = Bukkit.getOnlinePlayers().stream()
                 .filter(p -> worldChanged || p.getWorld().getName().equals(location.world()))
                 .collect(Collectors.toList());
@@ -159,6 +162,9 @@ public class Hologram {
     }
 
     public void updateForAllPlayers() {
+        if (Bukkit.getOnlinePlayers().isEmpty())
+            return;
+
         ClientboundTeleportEntityPacket teleportPacket;
         if (locationDirty) {
             teleportPacket = new ClientboundTeleportEntityPacket(
