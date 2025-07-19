@@ -3,16 +3,20 @@ package toutouchien.niveriaholograms.configurations;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
+import toutouchien.niveriaapi.NiveriaAPI;
+import toutouchien.niveriaapi.hook.HookManager;
+import toutouchien.niveriaapi.hook.HookType;
+import toutouchien.niveriaapi.hook.impl.PlaceholderAPIHook;
 import toutouchien.niveriaapi.utils.ui.ComponentUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TextHologramConfiguration extends HologramConfiguration {
     private List<String> text = new ArrayList<>();
-    private Component serializedText;
+    private final Map<UUID, Component> serializedText = new ConcurrentHashMap<>();
     private TextColor background;
     private TextDisplay.TextAlignment textAlignment = TextDisplay.TextAlignment.CENTER;
     private boolean seeThrough = false;
@@ -20,7 +24,7 @@ public class TextHologramConfiguration extends HologramConfiguration {
 
     public TextHologramConfiguration text(List<String> text) {
         this.text = text;
-        this.serializedText = null;
+        this.serializedText.clear();
         return this;
     }
 
@@ -29,13 +33,13 @@ public class TextHologramConfiguration extends HologramConfiguration {
             throw new IndexOutOfBoundsException("Index " + index + " is out of bounds for text list of size " + this.text.size());
 
         this.text.set(index, text);
-        this.serializedText = null;
+        this.serializedText.clear();
         return this;
     }
 
     public TextHologramConfiguration addText(String text) {
         this.text.add(text);
-        this.serializedText = null;
+        this.serializedText.clear();
         return this;
     }
 
@@ -44,7 +48,7 @@ public class TextHologramConfiguration extends HologramConfiguration {
             throw new IndexOutOfBoundsException("Index " + index + " is out of bounds for text list of size " + this.text.size());
 
         this.text.remove(index);
-        this.serializedText = null;
+        this.serializedText.clear();
         return this;
     }
 
@@ -53,7 +57,7 @@ public class TextHologramConfiguration extends HologramConfiguration {
             throw new IndexOutOfBoundsException("Index " + index + " is out of bounds for text list of size " + this.text.size());
 
         this.text.add(index + 1, text);
-        this.serializedText = null;
+        this.serializedText.clear();
         return this;
     }
 
@@ -62,7 +66,7 @@ public class TextHologramConfiguration extends HologramConfiguration {
             throw new IndexOutOfBoundsException("Index " + index + " is out of bounds for text list of size " + this.text.size());
 
         this.text.add(index, text);
-        this.serializedText = null;
+        this.serializedText.clear();
         return this;
     }
 
@@ -90,9 +94,10 @@ public class TextHologramConfiguration extends HologramConfiguration {
         return Collections.unmodifiableList(text);
     }
 
-    public Component serializedText() {
-        if (serializedText != null)
-            return serializedText;
+    public Component serializedText(Player player) {
+        UUID uuid = player.getUniqueId();
+        if (serializedText.containsKey(uuid))
+            return serializedText.get(uuid);
 
         List<String> textLines = this.text;
         TextComponent.Builder builder = Component.text();
@@ -101,10 +106,19 @@ public class TextHologramConfiguration extends HologramConfiguration {
             if (i > 0)
                 builder.appendNewline();
 
-            builder.append(ComponentUtils.deserializeMiniMessage(textLines.get(i)));
+            String line = textLines.get(i);
+
+            HookManager hookManager = NiveriaAPI.instance().hookManager();
+            PlaceholderAPIHook hook = hookManager.hook(HookType.PlaceholderAPIHook);
+            if (hook != null) {
+                line = hook.replacePlaceholders(player, line);
+            }
+
+            builder.append(ComponentUtils.deserializeMiniMessage(line));
         }
 
-        return this.serializedText = builder.build();
+        this.serializedText.put(uuid, builder.build());
+        return builder.build();
     }
 
     public String text(int index) {
