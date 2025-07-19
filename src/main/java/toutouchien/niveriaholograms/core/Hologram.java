@@ -1,5 +1,6 @@
 package toutouchien.niveriaholograms.core;
 
+import io.papermc.paper.adventure.PaperAdventure;
 import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
@@ -101,6 +102,10 @@ public class Hologram {
                 false
         );
 
+        if (display instanceof Display.TextDisplay textDisplay && config instanceof TextHologramConfiguration textConfig) {
+            textDisplay.setText(PaperAdventure.asVanilla(textConfig.serializedText(player)));
+        }
+
         // getNonDefaultValues sends less data than packAll
         // It is used when the player haven't received any data from the display yet
         List<SynchedEntityData.DataValue<?>> data = display.getEntityData().getNonDefaultValues();
@@ -156,18 +161,23 @@ public class Hologram {
             teleportPacket = null;
         }
 
-        // packDirty sends only the dirty values, which is more efficient when updating
-        // It's a lot more optimized than sending packAll everytime
-        // Reduces packet size by approximately 93.44% per update on a default text hologram
-        List<SynchedEntityData.DataValue<?>> data = display.getEntityData().packDirty();
-        ClientboundSetEntityDataPacket dataPacket = data != null ? new ClientboundSetEntityDataPacket(display.getId(), data) : null;
-
         List<Player> targets = Bukkit.getOnlinePlayers().stream()
                 .filter(p -> p.getWorld().getName().equals(location.world()))
                 .collect(Collectors.toList());
 
         EXECUTOR.submit(() -> {
             for (Player player : targets) {
+                if (display instanceof Display.TextDisplay textDisplay && config instanceof TextHologramConfiguration textConfig) {
+                    textDisplay.setText(PaperAdventure.asVanilla(textConfig.serializedText(player)));
+                }
+
+                // packDirty sends only the dirty values, which is more efficient when updating
+                // It's a lot more optimized than sending packAll everytime
+                // Reduces packet size by approximately 93.44% per update on a default text hologram
+                List<SynchedEntityData.DataValue<?>> data = display.getEntityData().packDirty();
+                // This packet can't be created before because the text is unique to each player
+                ClientboundSetEntityDataPacket dataPacket = data != null ? new ClientboundSetEntityDataPacket(display.getId(), data) : null;
+
                 NMSUtils.sendNonNullPackets(player, teleportPacket, dataPacket);
             }
         });
