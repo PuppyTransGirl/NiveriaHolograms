@@ -189,7 +189,7 @@ public class TextHologramConfiguration extends HologramConfiguration {
         return copy;
     }
 
-    public void cleanCache(Player player) {
+    public void clearCache(Player player) {
         this.serializedText.remove(player.getUniqueId());
     }
 }
