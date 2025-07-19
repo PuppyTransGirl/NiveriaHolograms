@@ -221,6 +221,7 @@ public class HologramSaver {
         section.set("text-alignment", configuration.textAlignment().name());
         section.set("see-through", configuration.seeThrough());
         section.set("text-shadow", configuration.textShadow());
+        section.set("update-interval", configuration.updateInterval());
 
         section.set("text", configuration.text());
     }

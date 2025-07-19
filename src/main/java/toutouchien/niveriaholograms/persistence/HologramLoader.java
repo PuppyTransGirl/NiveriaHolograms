@@ -95,7 +95,8 @@ public class HologramLoader {
         configuration.background(loadBackground(section))
                 .textAlignment(TextDisplay.TextAlignment.valueOf(section.getString("text-alignment")))
                 .seeThrough(section.getBoolean("see-through"))
-                .textShadow(section.getBoolean("text-shadow"));
+                .textShadow(section.getBoolean("text-shadow"))
+                .updateInterval(section.getInt("update-interval", 0));
 
         List<String> text = section.getStringList("text");
         if (text.isEmpty())

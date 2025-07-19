@@ -21,10 +21,14 @@ public class TextHologramConfiguration extends HologramConfiguration {
     private TextDisplay.TextAlignment textAlignment = TextDisplay.TextAlignment.CENTER;
     private boolean seeThrough = false;
     private boolean textShadow = false;
+    private int updateInterval;
+    private boolean textDirty = true;
+    private boolean updateIntervalDirty = true;
 
     public TextHologramConfiguration text(List<String> text) {
         this.text = text;
         this.serializedText.clear();
+        this.textDirty = true;
         return this;
     }
 
@@ -34,12 +38,14 @@ public class TextHologramConfiguration extends HologramConfiguration {
 
         this.text.set(index, text);
         this.serializedText.clear();
+        this.textDirty = true;
         return this;
     }
 
     public TextHologramConfiguration addText(String text) {
         this.text.add(text);
         this.serializedText.clear();
+        this.textDirty = true;
         return this;
     }
 
@@ -49,6 +55,7 @@ public class TextHologramConfiguration extends HologramConfiguration {
 
         this.text.remove(index);
         this.serializedText.clear();
+        this.textDirty = true;
         return this;
     }
 
@@ -58,6 +65,7 @@ public class TextHologramConfiguration extends HologramConfiguration {
 
         this.text.add(index + 1, text);
         this.serializedText.clear();
+        this.textDirty = true;
         return this;
     }
 
@@ -67,6 +75,7 @@ public class TextHologramConfiguration extends HologramConfiguration {
 
         this.text.add(index, text);
         this.serializedText.clear();
+        this.textDirty = true;
         return this;
     }
 
@@ -90,13 +99,24 @@ public class TextHologramConfiguration extends HologramConfiguration {
         return this;
     }
 
+    public TextHologramConfiguration updateInterval(int updateInterval) {
+        this.updateInterval = updateInterval;
+        this.updateIntervalDirty = true;
+        return this;
+    }
+
+    public TextHologramConfiguration updateIntervalDirty(boolean updateIntervalDirty) {
+        this.updateIntervalDirty = updateIntervalDirty;
+        return this;
+    }
+
     public List<String> text() {
         return Collections.unmodifiableList(text);
     }
 
     public Component serializedText(Player player) {
         UUID uuid = player.getUniqueId();
-        if (serializedText.containsKey(uuid))
+        if (serializedText.containsKey(uuid) && updateInterval == 0)
             return serializedText.get(uuid);
 
         List<String> textLines = this.text;
@@ -118,6 +138,7 @@ public class TextHologramConfiguration extends HologramConfiguration {
         }
 
         this.serializedText.put(uuid, builder.build());
+        this.textDirty = false;
         return builder.build();
     }
 
@@ -144,6 +165,18 @@ public class TextHologramConfiguration extends HologramConfiguration {
         return textShadow;
     }
 
+    public int updateInterval() {
+        return updateInterval;
+    }
+
+    public boolean textDirty() {
+        return textDirty;
+    }
+
+    public boolean updateIntervalDirty() {
+        return updateIntervalDirty;
+    }
+
     @Override
     public TextHologramConfiguration copy() {
         TextHologramConfiguration copy = new TextHologramConfiguration();
@@ -152,6 +185,11 @@ public class TextHologramConfiguration extends HologramConfiguration {
         copy.textAlignment = this.textAlignment;
         copy.seeThrough = this.seeThrough;
         copy.textShadow = this.textShadow;
+        copy.updateInterval = this.updateInterval;
         return copy;
+    }
+
+    public void cleanCache(Player player) {
+        this.serializedText.remove(player.getUniqueId());
     }
 }
