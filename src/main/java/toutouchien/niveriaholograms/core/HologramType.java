@@ -30,6 +30,13 @@ public enum HologramType {
                     (ItemHologramConfiguration) config
             )
     ),
+    LEADERBOARD(
+            level -> new Display.TextDisplay(EntityType.TEXT_DISPLAY, level),
+            (display, config) -> new TextHologramUpdater(
+                    (Display.TextDisplay) display,
+                    (TextHologramConfiguration) config
+            )
+    ),
     TEXT(
             level -> new Display.TextDisplay(EntityType.TEXT_DISPLAY, level),
             (display, config) -> new TextHologramUpdater(
