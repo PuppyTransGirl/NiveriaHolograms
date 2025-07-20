@@ -155,7 +155,7 @@ public class LeaderboardHologramConfiguration extends HologramConfiguration {
     }
 
     public Component serializedText() {
-        if (serializedText != null && updateInterval == 0)
+        if (serializedText != null && updateInterval == 0 && !textDirty)
             return serializedText;
 
         List<PlayerEntry> entries = new ArrayList<>();
@@ -170,26 +170,32 @@ public class LeaderboardHologramConfiguration extends HologramConfiguration {
                     ? raw + (showSuffix ? " " + suffix : "")
                     : "N/A";
             Integer score = isNum ? Integer.valueOf(raw) : null;
-            entries.add(new PlayerEntry(player, score, display));
+            entries.add(new PlayerEntry(player.getName(), score, display));
         }
 
         Comparator<Integer> numCmp = reverseOrder
-                ? Comparator.naturalOrder()
-                : Comparator.reverseOrder();
+                ? Comparator.reverseOrder()
+                : Comparator.naturalOrder();
+
         entries.sort(
                 Comparator.comparing(
                                 PlayerEntry::score,
                                 Comparator.nullsLast(numCmp)
                         )
-                        .thenComparing(e -> e.player().getName())
+                        .thenComparing(playerEntry -> playerEntry.playerName())
         );
 
         if (entries.size() > maxLines) {
             entries = entries.subList(0, maxLines);
         }
 
+        while (entries.size() < maxLines) {
+            entries.add(new PlayerEntry("Unknown", null, "N/A"));
+        }
+
         TextComponent.Builder builder = Component.text()
                 .append(Component.text(title, mainColor))
+                .appendNewline()
                 .appendNewline();
 
         for (int i = 0; i < entries.size(); i++) {
@@ -203,12 +209,16 @@ public class LeaderboardHologramConfiguration extends HologramConfiguration {
             };
 
             builder.append(Component.text((i + 1) + ". ", lineColor))
+                    .append(Component.text(e.playerName()))
+                    .appendSpace()
                     .append(Component.text(e.score() != null ? Integer.toString(e.score()) : "N/A", valueColor))
-                            .appendSpace();
+                    .appendSpace();
 
             if (showSuffix) {
                 builder.append(Component.text(suffix, suffixColor));
             }
+
+            builder.appendNewline();
         }
 
         return this.serializedText = builder.build();
@@ -315,6 +325,6 @@ public class LeaderboardHologramConfiguration extends HologramConfiguration {
         return copy;
     }
 
-    private record PlayerEntry(OfflinePlayer player, Integer score, String display) {
+    private record PlayerEntry(String playerName, Integer score, String display) {
     }
 }

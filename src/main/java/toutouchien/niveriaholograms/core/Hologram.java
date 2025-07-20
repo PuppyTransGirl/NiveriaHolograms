@@ -19,6 +19,7 @@ import toutouchien.niveriaapi.utils.base.Task;
 import toutouchien.niveriaapi.utils.game.NMSUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.configurations.HologramConfiguration;
+import toutouchien.niveriaholograms.configurations.LeaderboardHologramConfiguration;
 import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
 import toutouchien.niveriaholograms.updater.HologramUpdater;
 import toutouchien.niveriaholograms.utils.CustomLocation;
@@ -78,6 +79,15 @@ public class Hologram {
         updateLocation();
         update();
 
+        if (config instanceof LeaderboardHologramConfiguration leaderboardConfig) {
+            updateTask = Task.asyncRepeat(
+                    this::updateForAllPlayers,
+                    NiveriaHolograms.instance(),
+                    Math.max(40L, leaderboardConfig.updateInterval()),
+                    leaderboardConfig.updateInterval()
+            );
+        }
+
         if (config instanceof TextHologramConfiguration textConfig) {
             updateTask = Task.asyncRepeat(
                     this::updateForAllPlayers,
@@ -97,6 +107,10 @@ public class Hologram {
                 Set.of(),
                 false
         );
+
+        if (display instanceof Display.TextDisplay textDisplay && config instanceof LeaderboardHologramConfiguration leaderboardConfiguration) {
+            textDisplay.setText(PaperAdventure.asVanilla(leaderboardConfiguration.serializedText()));
+        }
 
         if (display instanceof Display.TextDisplay textDisplay && config instanceof TextHologramConfiguration textConfig) {
             textDisplay.setText(PaperAdventure.asVanilla(textConfig.serializedText(player)));
@@ -167,6 +181,22 @@ public class Hologram {
                 .filter(p -> p.getWorld().getName().equals(location.world()))
                 .collect(Collectors.toList());
 
+        if (config instanceof LeaderboardHologramConfiguration leaderboardConfig && (leaderboardConfig.textDirty() || leaderboardConfig.updateIntervalDirty())) {
+            if (updateTask != null && !updateTask.isCancelled()) {
+                updateTask.cancel();
+            }
+
+            updateTask = Task.asyncRepeat(
+                    this::updateForAllPlayers,
+                    NiveriaHolograms.instance(),
+                    Math.max(40L, leaderboardConfig.updateInterval()),
+                    leaderboardConfig.updateInterval()
+            );
+
+            leaderboardConfig.updateIntervalDirty(false)
+                    .textDirty(false);
+        }
+
         if (config instanceof TextHologramConfiguration textConfig && (textConfig.textDirty() || textConfig.updateIntervalDirty())) {
             if (updateTask != null && !updateTask.isCancelled()) {
                 updateTask.cancel();
@@ -181,6 +211,10 @@ public class Hologram {
 
             textConfig.updateIntervalDirty(false)
                     .textDirty(false);
+        }
+
+        if (display instanceof Display.TextDisplay textDisplay && config instanceof LeaderboardHologramConfiguration leaderboardConfiguration) {
+            textDisplay.setText(PaperAdventure.asVanilla(leaderboardConfiguration.serializedText()));
         }
 
         EXECUTOR.submit(() -> {
