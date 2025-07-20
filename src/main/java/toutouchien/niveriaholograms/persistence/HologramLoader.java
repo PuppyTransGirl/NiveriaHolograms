@@ -9,16 +9,14 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.TextDisplay;
 import org.joml.Vector3f;
 import toutouchien.niveriaholograms.NiveriaHolograms;
-import toutouchien.niveriaholograms.configurations.BlockHologramConfiguration;
-import toutouchien.niveriaholograms.configurations.HologramConfiguration;
-import toutouchien.niveriaholograms.configurations.ItemHologramConfiguration;
-import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
+import toutouchien.niveriaholograms.configurations.*;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.core.HologramType;
 import toutouchien.niveriaholograms.managers.HologramManager;
 import toutouchien.niveriaholograms.utils.CustomLocation;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class HologramLoader {
@@ -34,7 +32,13 @@ public class HologramLoader {
         CustomLocation location = (CustomLocation) section.get("location");
         UUID owner = UUID.fromString(section.getString("owner", UUID.randomUUID().toString()));
 
-        HologramConfiguration configuration = type == HologramType.BLOCK ? new BlockHologramConfiguration() : type == HologramType.ITEM ? new ItemHologramConfiguration() : new TextHologramConfiguration();
+        HologramConfiguration configuration = type == HologramType.BLOCK
+                ? new BlockHologramConfiguration()
+                : type == HologramType.ITEM
+                ? new ItemHologramConfiguration()
+                : type == HologramType.LEADERBOARD
+                ? new LeaderboardHologramConfiguration()
+                : new TextHologramConfiguration();
 
         HologramManager hologramManager = this.plugin.hologramManager();
         Hologram hologram = hologramManager.createHologram(type, configuration, name, owner, location);
@@ -44,6 +48,7 @@ public class HologramLoader {
         switch (type) {
             case BLOCK -> loadBlockConfiguration(section, (BlockHologramConfiguration) configuration);
             case ITEM -> loadItemConfiguration(section, (ItemHologramConfiguration) configuration);
+            case LEADERBOARD -> loadLeaderboardConfiguration(section, (LeaderboardHologramConfiguration) configuration);
             case TEXT -> loadTextConfiguration(section, (TextHologramConfiguration) configuration);
         }
 
@@ -91,6 +96,60 @@ public class HologramLoader {
                 .glowingColor(glowingColor);
     }
 
+    private void loadLeaderboardConfiguration(ConfigurationSection section, LeaderboardHologramConfiguration configuration) {
+        configuration.background(loadBackground(section))
+                .seeThrough(section.getBoolean("see-through"))
+                .textShadow(section.getBoolean("text-shadow"))
+                .updateInterval(section.getInt("update-interval", 0))
+                .placeholder(section.getString("placeholder", "%statistic_player_kills%"))
+                .title(section.getString("title", "Kills Leaderboard"))
+                .suffix(section.getString("suffix", "kills"))
+                .showSuffix(section.getBoolean("show-suffix", true))
+                .showEmptyPlaces(section.getBoolean("show-empty-places", true))
+                .maxLines(section.getInt("max-lines", 10))
+                .reverseOrder(section.getBoolean("reverse-order", false));
+
+        TextColor background = loadBackground(section);
+        if (background != null) {
+            configuration.background(background);
+        }
+
+        TextColor mainColor = loadColor(section, "main-color");
+        if (mainColor != null) {
+            configuration.mainColor(mainColor);
+        }
+
+        TextColor firstColor = loadColor(section, "first-color");
+        if (firstColor != null) {
+            configuration.firstColor(firstColor);
+        }
+
+        TextColor secondColor = loadColor(section, "second-color");
+        if (secondColor != null) {
+            configuration.secondColor(secondColor);
+        }
+
+        TextColor thirdColor = loadColor(section, "third-color");
+        if (thirdColor != null) {
+            configuration.thirdColor(thirdColor);
+        }
+
+        TextColor otherColor = loadColor(section, "other-color");
+        if (otherColor != null) {
+            configuration.otherColor(otherColor);
+        }
+
+        TextColor valueColor = loadColor(section, "value-color");
+        if (valueColor != null) {
+            configuration.valueColor(valueColor);
+        }
+
+        TextColor suffixColor = loadColor(section, "suffix-color");
+        if (suffixColor != null) {
+            configuration.suffixColor(suffixColor);
+        }
+    }
+
     private void loadTextConfiguration(ConfigurationSection section, TextHologramConfiguration configuration) {
         configuration.background(loadBackground(section))
                 .textAlignment(TextDisplay.TextAlignment.valueOf(section.getString("text-alignment")))
@@ -123,6 +182,20 @@ public class HologramLoader {
                     ? TextColor.fromHexString(background)
                     : NamedTextColor.NAMES.value(background);
         };
+    }
+
+    private TextColor loadColor(ConfigurationSection section, String key) {
+        String background = section.getString(key, "default").toLowerCase(Locale.ROOT);
+
+        if (background.equals("default")) {
+            return null;
+        }
+
+        if (background.startsWith("#")) {
+            return TextColor.fromHexString(background);
+        }
+
+        return NamedTextColor.NAMES.value(background);
     }
 
     private TextColor loadGlowing(ConfigurationSection section) {

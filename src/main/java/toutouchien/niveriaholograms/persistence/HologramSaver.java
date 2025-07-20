@@ -8,10 +8,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.joml.Vector3f;
 import toutouchien.niveriaholograms.NiveriaHolograms;
-import toutouchien.niveriaholograms.configurations.BlockHologramConfiguration;
-import toutouchien.niveriaholograms.configurations.HologramConfiguration;
-import toutouchien.niveriaholograms.configurations.ItemHologramConfiguration;
-import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
+import toutouchien.niveriaholograms.configurations.*;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.core.HologramType;
 import toutouchien.niveriaholograms.exceptions.HologramSaveException;
@@ -202,6 +199,7 @@ public class HologramSaver {
         switch (type) {
             case BLOCK -> saveBlockConfiguration(section, (BlockHologramConfiguration) configuration);
             case ITEM -> saveItemConfiguration(section, (ItemHologramConfiguration) configuration);
+            case LEADERBOARD -> saveLeaderboardConfiguration(section, (LeaderboardHologramConfiguration) configuration);
             case TEXT -> saveTextConfiguration(section, (TextHologramConfiguration) configuration);
         }
     }
@@ -214,6 +212,28 @@ public class HologramSaver {
     private void saveItemConfiguration(ConfigurationSection section, ItemHologramConfiguration configuration) {
         section.set("itemstack", configuration.itemStack());
         section.set("glowing", glowingColor(configuration.glowingColor()));
+    }
+
+    private void saveLeaderboardConfiguration(ConfigurationSection section, LeaderboardHologramConfiguration configuration) {
+        section.set("text-background", backgroundColor(configuration.background()));
+        section.set("see-through", configuration.seeThrough());
+        section.set("text-shadow", configuration.textShadow());
+        section.set("update-interval", configuration.updateInterval());
+
+        section.set("placeholder", configuration.placeholder());
+        section.set("main-color", color(configuration.mainColor()));
+        section.set("first-color", color(configuration.firstColor()));
+        section.set("second-color", color(configuration.secondColor()));
+        section.set("third-color", color(configuration.thirdColor()));
+        section.set("other-color", color(configuration.otherColor()));
+        section.set("value-color", color(configuration.valueColor()));
+        section.set("suffix-color", color(configuration.suffixColor()));
+        section.set("title", configuration.title());
+        section.set("suffix", configuration.suffix());
+        section.set("show-suffix", configuration.showSuffix());
+        section.set("show-empty-places", configuration.showEmptyPlaces());
+        section.set("max-lines", configuration.maxLines());
+        section.set("reverse-order", configuration.reverseOrder());
     }
 
     private void saveTextConfiguration(ConfigurationSection section, TextHologramConfiguration configuration) {
@@ -246,6 +266,18 @@ public class HologramSaver {
         }
 
         return backgroundColor.asHexString();
+    }
+
+    private String color(TextColor color) {
+        if (color == null) {
+            return "default";
+        }
+
+        if (color instanceof NamedTextColor namedTextColor) {
+            return namedTextColor.toString();
+        }
+
+        return color.asHexString();
     }
 
     private String glowingColor(TextColor glowingColor) {
