@@ -9,7 +9,6 @@ import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Display;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PositionMoveRotation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -19,14 +18,9 @@ import org.bukkit.scheduler.BukkitTask;
 import toutouchien.niveriaapi.utils.base.Task;
 import toutouchien.niveriaapi.utils.game.NMSUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
-import toutouchien.niveriaholograms.configurations.BlockHologramConfiguration;
 import toutouchien.niveriaholograms.configurations.HologramConfiguration;
-import toutouchien.niveriaholograms.configurations.ItemHologramConfiguration;
 import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
-import toutouchien.niveriaholograms.updater.BlockHologramUpdater;
 import toutouchien.niveriaholograms.updater.HologramUpdater;
-import toutouchien.niveriaholograms.updater.ItemHologramUpdater;
-import toutouchien.niveriaholograms.updater.TextHologramUpdater;
 import toutouchien.niveriaholograms.utils.CustomLocation;
 
 import java.util.List;
@@ -46,13 +40,12 @@ public class Hologram {
             .name("NiveriaHolograms-Hologram-Sender-", 0)
             .factory()
     );
-
-    private Display display;
     private final HologramType type;
     private final HologramConfiguration config;
-    private HologramUpdater updater;
     private final String name;
     private final UUID owner;
+    private Display display;
+    private HologramUpdater updater;
     private CustomLocation location;
     private boolean locationDirty;
 
@@ -76,17 +69,8 @@ public class Hologram {
 
     public void create() {
         ServerLevel level = ((CraftWorld) location.bukkitLocation().getWorld()).getHandle();
-        this.display = switch (type) {
-            case BLOCK -> new Display.BlockDisplay(EntityType.BLOCK_DISPLAY, level);
-            case ITEM -> new Display.ItemDisplay(EntityType.ITEM_DISPLAY, level);
-            case TEXT -> new Display.TextDisplay(EntityType.TEXT_DISPLAY, level);
-        };
-
-        this.updater = switch (type) {
-            case BLOCK -> new BlockHologramUpdater((Display.BlockDisplay) display, (BlockHologramConfiguration) config);
-            case ITEM -> new ItemHologramUpdater((Display.ItemDisplay) display, (ItemHologramConfiguration) config);
-            case TEXT -> new TextHologramUpdater((Display.TextDisplay) display, (TextHologramConfiguration) config);
-        };
+        this.display = type.createDisplay(level);
+        this.updater = type.createUpdater(display, config);
 
         display.setTransformationInterpolationDuration(1);
         display.setTransformationInterpolationDelay(0);
