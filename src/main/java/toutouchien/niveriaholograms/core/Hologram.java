@@ -179,7 +179,8 @@ public class Hologram {
                     textConfig.updateInterval()
             );
 
-            textConfig.updateIntervalDirty(false);
+            textConfig.updateIntervalDirty(false)
+                    .textDirty(false);
         }
 
         EXECUTOR.submit(() -> {
