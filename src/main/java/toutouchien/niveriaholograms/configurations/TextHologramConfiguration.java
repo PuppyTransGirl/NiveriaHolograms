@@ -142,13 +142,6 @@ public class TextHologramConfiguration extends HologramConfiguration {
         return builder.build();
     }
 
-    public String text(int index) {
-        if (index < 0 || index >= text.size())
-            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds for text list of size " + text.size());
-
-        return text.get(index);
-    }
-
     public TextColor background() {
         return background;
     }
