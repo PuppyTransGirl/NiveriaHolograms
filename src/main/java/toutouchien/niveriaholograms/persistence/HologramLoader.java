@@ -32,13 +32,7 @@ public class HologramLoader {
         CustomLocation location = (CustomLocation) section.get("location");
         UUID owner = UUID.fromString(section.getString("owner", UUID.randomUUID().toString()));
 
-        HologramConfiguration configuration = type == HologramType.BLOCK
-                ? new BlockHologramConfiguration()
-                : type == HologramType.ITEM
-                ? new ItemHologramConfiguration()
-                : type == HologramType.LEADERBOARD
-                ? new LeaderboardHologramConfiguration()
-                : new TextHologramConfiguration();
+        HologramConfiguration configuration = type.createConfiguration();
 
         HologramManager hologramManager = this.plugin.hologramManager();
         Hologram hologram = hologramManager.createHologram(type, configuration, name, owner, location);
