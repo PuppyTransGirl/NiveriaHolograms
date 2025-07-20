@@ -11,7 +11,7 @@ import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.commands.hologram.edit.block.HologramEditBlockCommand;
 import toutouchien.niveriaholograms.commands.hologram.edit.general.*;
 import toutouchien.niveriaholograms.commands.hologram.edit.item.HologramEditItemCommand;
-import toutouchien.niveriaholograms.commands.hologram.edit.other.HologramEditGlowingCommand;
+import toutouchien.niveriaholograms.commands.hologram.edit.other.*;
 import toutouchien.niveriaholograms.commands.hologram.edit.text.*;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
@@ -35,10 +35,8 @@ public class HologramEditCommand extends SubCommand {
 						new HologramEditItemCommand(),
 
 						// Text Holograms
-						new HologramEditAddLineCommand(), new HologramEditBackgroundCommand(), new HologramEditInsertAfterCommand(),
-						new HologramEditInsertBeforeCommand(), new HologramEditRemoveLineCommand(), new HologramEditSeeThroughCommand(),
-						new HologramEditSetLineCommand(), new HologramEditTextAlignmentCommand(), new HologramEditTextShadowCommand(),
-						new HologramEditUpdateIntervalCommand(),
+						new HologramEditAddLineCommand(), new HologramEditInsertAfterCommand(), new HologramEditInsertBeforeCommand(),
+						new HologramEditRemoveLineCommand(), new HologramEditSetLineCommand(), new HologramEditTextAlignmentCommand(),
 
 						// General Hologram Edits
 						new HologramEditBillboardCommand(), new HologramEditBrightnessCommand(), new HologramEditPitchCommand(),
@@ -47,7 +45,8 @@ public class HologramEditCommand extends SubCommand {
 						new HologramEditVisibilityDistanceCommand(), new HologramEditYawCommand(),
 
 						// Other Hologram Edits
-						new HologramEditGlowingCommand()
+						new HologramEditBackgroundCommand(), new HologramEditGlowingCommand(), new HologramEditSeeThroughCommand(),
+						new HologramEditTextShadowCommand(), new HologramEditUpdateIntervalCommand()
 				)
 				.hasParameterBeforeSubcommands(true));
 	}
@@ -79,6 +78,7 @@ public class HologramEditCommand extends SubCommand {
 		edits.addAll(switch (hologram.type()) {
 			case BLOCK -> List.of("block", "glowing");
 			case ITEM -> List.of("item", "glowing");
+			case LEADERBOARD -> List.of("background", "seethrough", "textshadow", "updateinterval");
 			case TEXT -> List.of("addline", "background", "insertafter", "insertbefore", "removeline", "seethrough", "setline", "textalignment", "textshadow", "updateinterval");
 		});
 
@@ -114,6 +114,7 @@ public class HologramEditCommand extends SubCommand {
 			edits.addAll(switch (hologram.type()) {
 				case BLOCK -> List.of("block", "glowing");
 				case ITEM -> List.of("item", "glowing");
+				case LEADERBOARD -> List.of("background", "seethrough", "textshadow", "updateinterval");
 				case TEXT -> List.of("addline", "background", "insertafter", "insertbefore", "removeline", "seethrough", "setline", "textalignment", "textshadow", "updateinterval");
 			});
 

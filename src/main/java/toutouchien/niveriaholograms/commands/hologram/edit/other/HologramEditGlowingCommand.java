@@ -81,6 +81,7 @@ public class HologramEditGlowingCommand extends SubCommand {
                 glowingColor = textColor;
             }
         }
+
         if (hologram.configuration() instanceof BlockHologramConfiguration) {
             hologram.editConfig((BlockHologramConfiguration config) -> {
                 if (glowingColor == null) {

@@ -1,4 +1,4 @@
-package toutouchien.niveriaholograms.commands.hologram.edit.text;
+package toutouchien.niveriaholograms.commands.hologram.edit.other;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -8,6 +8,7 @@ import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
 import toutouchien.niveriaapi.utils.ui.MessageUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
+import toutouchien.niveriaholograms.configurations.LeaderboardHologramConfiguration;
 import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
@@ -15,9 +16,9 @@ import toutouchien.niveriaholograms.managers.HologramManager;
 import java.util.Collections;
 import java.util.List;
 
-public class HologramEditSeeThroughCommand extends SubCommand {
-	public HologramEditSeeThroughCommand() {
-		super(new CommandData("seethrough", "niveriaholograms")
+public class HologramEditTextShadowCommand extends SubCommand {
+	public HologramEditTextShadowCommand() {
+		super(new CommandData("textshadow", "niveriaholograms")
 				.playerRequired(true)
 				.usage("<true|false>"));
 	}
@@ -35,9 +36,9 @@ public class HologramEditSeeThroughCommand extends SubCommand {
 			return;
 		}
 
-		if (!(hologram.configuration() instanceof TextHologramConfiguration)) {
+		if (!(hologram.configuration() instanceof LeaderboardHologramConfiguration) && !(hologram.configuration() instanceof TextHologramConfiguration)) {
 			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Cette comande ne peut être utilisée que sur des hologrammes de texte.")
+					Component.text("Cette comande ne peut être utilisée que sur des hologrammes de classement et de texte.")
 			);
 
 			player.sendMessage(errorMessage);
@@ -46,20 +47,26 @@ public class HologramEditSeeThroughCommand extends SubCommand {
 
 		if (args.length == 0) {
 			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Tu dois spécifier si tu veux que l'on voit à travers l'hologramme ou non.")
+					Component.text("Tu dois spécifier si tu veux mettre l'ombre du texte ou non.")
 			);
 
 			player.sendMessage(errorMessage);
 			return;
 		}
 
-		boolean seeThrough = Boolean.parseBoolean(args[0]);
-		hologram.editConfig((TextHologramConfiguration config) -> {
-			config.seeThrough(seeThrough);
-		});
+		boolean textShadow = Boolean.parseBoolean(args[0]);
+		if (hologram.configuration() instanceof LeaderboardHologramConfiguration) {
+			hologram.editConfig((LeaderboardHologramConfiguration config) -> {
+				config.textShadow(textShadow);
+			});
+		} else if (hologram.configuration() instanceof TextHologramConfiguration) {
+			hologram.editConfig((TextHologramConfiguration config) -> {
+				config.textShadow(textShadow);
+			});
+		}
 
 		TextComponent successMessage = MessageUtils.successMessage(
-				Component.text("La transparence a été " + (seeThrough ? "activée" : "désactivée") + ".")
+				Component.text("L'ombre de texte a été " + (textShadow ? "activée" : "désactivée") + ".")
 		);
 
 		player.sendMessage(successMessage);
@@ -71,9 +78,13 @@ public class HologramEditSeeThroughCommand extends SubCommand {
 			return Collections.emptyList();
 
 		Hologram hologram = NiveriaHolograms.instance().hologramManager().hologramByName(fullArgs[1]);
-		if (hologram == null || !(hologram.configuration() instanceof TextHologramConfiguration configuration))
+		if (hologram == null || (!(hologram.configuration() instanceof LeaderboardHologramConfiguration) && !(hologram.configuration() instanceof TextHologramConfiguration)))
 			return Collections.emptyList();
 
-		return Collections.singletonList(String.valueOf(!configuration.seeThrough()));
+		return Collections.singletonList(String.valueOf(
+				hologram.configuration() instanceof LeaderboardHologramConfiguration
+						? !((LeaderboardHologramConfiguration) hologram.configuration()).textShadow()
+						: !((TextHologramConfiguration) hologram.configuration()).textShadow()
+		));
 	}
 }

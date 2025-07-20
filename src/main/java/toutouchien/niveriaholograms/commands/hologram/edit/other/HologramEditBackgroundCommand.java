@@ -1,4 +1,4 @@
-package toutouchien.niveriaholograms.commands.hologram.edit.text;
+package toutouchien.niveriaholograms.commands.hologram.edit.other;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -10,6 +10,7 @@ import toutouchien.niveriaapi.command.CommandData;
 import toutouchien.niveriaapi.command.SubCommand;
 import toutouchien.niveriaapi.utils.ui.MessageUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
+import toutouchien.niveriaholograms.configurations.LeaderboardHologramConfiguration;
 import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
@@ -36,9 +37,9 @@ public class HologramEditBackgroundCommand extends SubCommand {
             return;
         }
 
-        if (!(hologram.configuration() instanceof TextHologramConfiguration)) {
+        if (!(hologram.configuration() instanceof LeaderboardHologramConfiguration) && !(hologram.configuration() instanceof TextHologramConfiguration)) {
             TextComponent errorMessage = MessageUtils.errorMessage(
-                    Component.text("Cette comande ne peut être utilisée que sur des hologrammes de texte.")
+                    Component.text("Cette comande ne peut être utilisée que sur des hologrammes de classement et de texte.")
             );
 
             player.sendMessage(errorMessage);
@@ -78,9 +79,15 @@ public class HologramEditBackgroundCommand extends SubCommand {
             }
         }
 
-        hologram.editConfig((TextHologramConfiguration config) -> {
-            config.background(background);
-        });
+        if (hologram.configuration() instanceof LeaderboardHologramConfiguration) {
+            hologram.editConfig((LeaderboardHologramConfiguration config) -> {
+                config.background(background);
+            });
+        } else if (hologram.configuration() instanceof TextHologramConfiguration) {
+            hologram.editConfig((TextHologramConfiguration config) -> {
+                config.background(background);
+            });
+        }
 
         TextComponent successMessage = MessageUtils.successMessage(
                 Component.text()
@@ -99,11 +106,14 @@ public class HologramEditBackgroundCommand extends SubCommand {
             return Collections.emptyList();
 
         Hologram hologram = NiveriaHolograms.instance().hologramManager().hologramByName(fullArgs[1]);
-        if (hologram == null || !(hologram.configuration() instanceof TextHologramConfiguration configuration))
+        if (hologram == null || (!(hologram.configuration() instanceof LeaderboardHologramConfiguration) && !(hologram.configuration() instanceof TextHologramConfiguration)))
             return Collections.emptyList();
 
         List<String> completion = new ArrayList<>(List.of("aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white", "yellow"));
-        TextColor background = configuration.background();
+        TextColor background = hologram.configuration() instanceof LeaderboardHologramConfiguration
+                ? ((LeaderboardHologramConfiguration) hologram.configuration()).background()
+                : ((TextHologramConfiguration) hologram.configuration()).background();
+
         if (background == null) {
             completion.add("transparent");
             return completion;
