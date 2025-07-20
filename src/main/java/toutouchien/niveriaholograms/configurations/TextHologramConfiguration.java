@@ -110,6 +110,11 @@ public class TextHologramConfiguration extends HologramConfiguration {
         return this;
     }
 
+    public TextHologramConfiguration textDirty(boolean textDirty) {
+        this.textDirty = textDirty;
+        return this;
+    }
+
     public List<String> text() {
         return Collections.unmodifiableList(text);
     }
@@ -138,7 +143,6 @@ public class TextHologramConfiguration extends HologramConfiguration {
         }
 
         this.serializedText.put(uuid, builder.build());
-        this.textDirty = false;
         return builder.build();
     }
 
