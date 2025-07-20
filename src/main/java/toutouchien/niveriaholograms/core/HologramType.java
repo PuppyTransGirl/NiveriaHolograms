@@ -3,14 +3,8 @@ package toutouchien.niveriaholograms.core;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
-import toutouchien.niveriaholograms.configurations.BlockHologramConfiguration;
-import toutouchien.niveriaholograms.configurations.HologramConfiguration;
-import toutouchien.niveriaholograms.configurations.ItemHologramConfiguration;
-import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
-import toutouchien.niveriaholograms.updater.BlockHologramUpdater;
-import toutouchien.niveriaholograms.updater.HologramUpdater;
-import toutouchien.niveriaholograms.updater.ItemHologramUpdater;
-import toutouchien.niveriaholograms.updater.TextHologramUpdater;
+import toutouchien.niveriaholograms.configurations.*;
+import toutouchien.niveriaholograms.updater.*;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -32,9 +26,9 @@ public enum HologramType {
     ),
     LEADERBOARD(
             level -> new Display.TextDisplay(EntityType.TEXT_DISPLAY, level),
-            (display, config) -> new TextHologramUpdater(
+            (display, config) -> new LeaderboardHologramUpdater(
                     (Display.TextDisplay) display,
-                    (TextHologramConfiguration) config
+                    (LeaderboardHologramConfiguration) config
             )
     ),
     TEXT(

@@ -1,21 +1,22 @@
 package toutouchien.niveriaholograms.configurations;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.entity.Player;
-import toutouchien.niveriaapi.NiveriaAPI;
-import toutouchien.niveriaapi.hook.HookManager;
-import toutouchien.niveriaapi.hook.HookType;
-import toutouchien.niveriaapi.hook.impl.PlaceholderAPIHook;
-import toutouchien.niveriaapi.utils.ui.ComponentUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import toutouchien.niveriaapi.utils.ui.ColorUtils;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public class LeaderboardHologramConfiguration extends HologramConfiguration {
-    private final Map<UUID, Component> serializedText = new ConcurrentHashMap<>();
-    private List<String> text = new ArrayList<>();
+    private static final Pattern NUMBER_PATTERN = Pattern.compile("^[0-9]+$");
+    private Component serializedText;
     private TextColor background;
     private boolean seeThrough = false;
     private boolean textShadow = false;
@@ -24,14 +25,19 @@ public class LeaderboardHologramConfiguration extends HologramConfiguration {
     private boolean updateIntervalDirty = true;
 
     private String placeholder = "%statistic_player_kills%";
+    private TextColor mainColor = ColorUtils.primaryColor();
     private TextColor firstColor = TextColor.fromHexString("#FEE101");
     private TextColor secondColor = TextColor.fromHexString("#A7A7AD");
     private TextColor thirdColor = TextColor.fromHexString("#A77044");
+    private TextColor otherColor = NamedTextColor.GRAY;
+    private TextColor valueColor = NamedTextColor.GRAY;
+    private TextColor suffixColor = NamedTextColor.WHITE;
     private String title = "Kills Leaderboard";
     private String suffix = "kills";
     private boolean showSuffix = true;
     private boolean showEmptyPlaces = true;
     private int maxLines = 10;
+    private boolean reverseOrder;
 
     public LeaderboardHologramConfiguration background(TextColor background) {
         this.background = background;
@@ -59,81 +65,153 @@ public class LeaderboardHologramConfiguration extends HologramConfiguration {
         return this;
     }
 
+    public LeaderboardHologramConfiguration textDirty(boolean textDirty) {
+        this.textDirty = textDirty;
+        return this;
+    }
+
     public LeaderboardHologramConfiguration placeholder(String placeholder) {
         this.placeholder = placeholder;
+        this.textDirty = true;
+        return this;
+    }
+
+    public LeaderboardHologramConfiguration mainColor(TextColor mainColor) {
+        this.mainColor = mainColor;
+        this.textDirty = true;
         return this;
     }
 
     public LeaderboardHologramConfiguration firstColor(TextColor firstColor) {
         this.firstColor = firstColor;
+        this.textDirty = true;
         return this;
     }
 
     public LeaderboardHologramConfiguration secondColor(TextColor secondColor) {
         this.secondColor = secondColor;
+        this.textDirty = true;
         return this;
     }
 
     public LeaderboardHologramConfiguration thirdColor(TextColor thirdColor) {
         this.thirdColor = thirdColor;
+        this.textDirty = true;
+        return this;
+    }
+
+    public LeaderboardHologramConfiguration otherColor(TextColor otherColor) {
+        this.otherColor = otherColor;
+        this.textDirty = true;
+        return this;
+    }
+
+    public LeaderboardHologramConfiguration valueColor(TextColor valueColor) {
+        this.valueColor = valueColor;
+        this.textDirty = true;
+        return this;
+    }
+
+    public LeaderboardHologramConfiguration suffixColor(TextColor suffixColor) {
+        this.suffixColor = suffixColor;
+        this.textDirty = true;
         return this;
     }
 
     public LeaderboardHologramConfiguration title(String title) {
         this.title = title;
+        this.textDirty = true;
         return this;
     }
 
     public LeaderboardHologramConfiguration suffix(String suffix) {
         this.suffix = suffix;
+        this.textDirty = true;
         return this;
     }
 
     public LeaderboardHologramConfiguration showSuffix(boolean showSuffix) {
         this.showSuffix = showSuffix;
+        this.textDirty = true;
         return this;
     }
 
     public LeaderboardHologramConfiguration showEmptyPlaces(boolean showEmptyPlaces) {
         this.showEmptyPlaces = showEmptyPlaces;
+        this.textDirty = true;
         return this;
     }
 
     public LeaderboardHologramConfiguration maxLines(int maxLines) {
         this.maxLines = maxLines;
+        this.textDirty = true;
         return this;
     }
 
-    public List<String> text() {
-        return Collections.unmodifiableList(text);
+    public LeaderboardHologramConfiguration reverseOrder(boolean reverseOrder) {
+        this.reverseOrder = reverseOrder;
+        this.textDirty = true;
+        return this;
     }
 
-    public Component serializedText(Player player) {
-        UUID uuid = player.getUniqueId();
-        if (serializedText.containsKey(uuid) && updateInterval == 0)
-            return serializedText.get(uuid);
+    public Component serializedText() {
+        if (serializedText != null && updateInterval == 0)
+            return serializedText;
 
-        List<String> textLines = this.text;
-        TextComponent.Builder builder = Component.text();
-
-        for (int i = 0; i < textLines.size(); i++) {
-            if (i > 0)
-                builder.appendNewline();
-
-            String line = textLines.get(i);
-
-            HookManager hookManager = NiveriaAPI.instance().hookManager();
-            PlaceholderAPIHook hook = hookManager.hook(HookType.PlaceholderAPIHook);
-            if (hook != null) {
-                line = hook.replacePlaceholders(player, line);
+        List<PlayerEntry> entries = new ArrayList<>();
+        for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+            String raw = PlaceholderAPI.setPlaceholders(player, placeholder);
+            boolean isNum = NUMBER_PATTERN.matcher(raw).matches();
+            if (!isNum && !showEmptyPlaces) {
+                continue;
             }
 
-            builder.append(ComponentUtils.deserializeMiniMessage(line));
+            String display = isNum
+                    ? raw + (showSuffix ? " " + suffix : "")
+                    : "N/A";
+            Integer score = isNum ? Integer.valueOf(raw) : null;
+            entries.add(new PlayerEntry(player, score, display));
         }
 
-        this.serializedText.put(uuid, builder.build());
-        this.textDirty = false;
-        return builder.build();
+        Comparator<Integer> numCmp = reverseOrder
+                ? Comparator.naturalOrder()
+                : Comparator.reverseOrder();
+        entries.sort(
+                Comparator.comparing(
+                                PlayerEntry::score,
+                                Comparator.nullsLast(numCmp)
+                        )
+                        .thenComparing(e -> e.player().getName())
+        );
+
+        if (entries.size() > maxLines) {
+            entries = entries.subList(0, maxLines);
+        }
+
+        TextComponent.Builder builder = Component.text()
+                .append(Component.text(title, mainColor))
+                .appendNewline();
+
+        for (int i = 0; i < entries.size(); i++) {
+            PlayerEntry e = entries.get(i);
+            TextColor lineColor;
+            lineColor = switch (i) {
+                case 0 -> firstColor;
+                case 1 -> secondColor;
+                case 2 -> thirdColor;
+                default -> otherColor;
+            };
+
+            builder.append(Component.text((i + 1) + ". ", lineColor))
+                    .append(Component.text(e.score() != null ? Integer.toString(e.score()) : "N/A", valueColor))
+                            .appendSpace();
+
+            if (showSuffix) {
+                builder.append(Component.text(suffix, suffixColor));
+            }
+        }
+
+        return this.serializedText = builder.build();
     }
 
     public TextColor background() {
@@ -164,6 +242,10 @@ public class LeaderboardHologramConfiguration extends HologramConfiguration {
         return placeholder;
     }
 
+    public TextColor mainColor() {
+        return mainColor;
+    }
+
     public TextColor firstColor() {
         return firstColor;
     }
@@ -174,6 +256,18 @@ public class LeaderboardHologramConfiguration extends HologramConfiguration {
 
     public TextColor thirdColor() {
         return thirdColor;
+    }
+
+    public TextColor otherColor() {
+        return otherColor;
+    }
+
+    public TextColor valueColor() {
+        return valueColor;
+    }
+
+    public TextColor suffixColor() {
+        return suffixColor;
     }
 
     public String title() {
@@ -196,15 +290,19 @@ public class LeaderboardHologramConfiguration extends HologramConfiguration {
         return maxLines;
     }
 
+    public boolean reverseOrder() {
+        return reverseOrder;
+    }
+
     @Override
     public LeaderboardHologramConfiguration copy() {
         LeaderboardHologramConfiguration copy = new LeaderboardHologramConfiguration();
-        copy.text = new ArrayList<>(this.text);
         copy.background = this.background;
         copy.seeThrough = this.seeThrough;
         copy.textShadow = this.textShadow;
         copy.updateInterval = this.updateInterval;
         copy.placeholder = this.placeholder;
+        copy.mainColor = this.mainColor;
         copy.firstColor = this.firstColor;
         copy.secondColor = this.secondColor;
         copy.thirdColor = this.thirdColor;
@@ -213,10 +311,10 @@ public class LeaderboardHologramConfiguration extends HologramConfiguration {
         copy.showSuffix = this.showSuffix;
         copy.showEmptyPlaces = this.showEmptyPlaces;
         copy.maxLines = this.maxLines;
+        copy.reverseOrder = this.reverseOrder;
         return copy;
     }
 
-    public void clearCache(Player player) {
-        this.serializedText.remove(player.getUniqueId());
+    private record PlayerEntry(OfflinePlayer player, Integer score, String display) {
     }
 }

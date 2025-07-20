@@ -2,15 +2,14 @@ package toutouchien.niveriaholograms.updater;
 
 import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.world.entity.Display;
-import org.bukkit.entity.TextDisplay;
-import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
+import toutouchien.niveriaholograms.configurations.LeaderboardHologramConfiguration;
 import toutouchien.niveriaholograms.core.Hologram;
 
 public class LeaderboardHologramUpdater extends HologramUpdater {
     private final Display.TextDisplay display;
-    private final TextHologramConfiguration config;
+    private final LeaderboardHologramConfiguration config;
 
-    public LeaderboardHologramUpdater(Display.TextDisplay display, TextHologramConfiguration config) {
+    public LeaderboardHologramUpdater(Display.TextDisplay display, LeaderboardHologramConfiguration config) {
         super(display, config);
         this.display = display;
         this.config = config;
@@ -36,9 +35,7 @@ public class LeaderboardHologramUpdater extends HologramUpdater {
     private void updateFlags() {
         byte flags = display.getFlags();
         flags = (byte) (config.textShadow() ? flags | Display.TextDisplay.FLAG_SHADOW : (flags & ~Display.TextDisplay.FLAG_SHADOW));
-        flags = (byte) (config.textAlignment() == TextDisplay.TextAlignment.LEFT ? (flags | Display.TextDisplay.FLAG_ALIGN_LEFT) : (flags & ~Display.TextDisplay.FLAG_ALIGN_LEFT));
         flags = (byte) (config.seeThrough() ? flags | Display.TextDisplay.FLAG_SEE_THROUGH : (flags & ~Display.TextDisplay.FLAG_SEE_THROUGH));
-        flags = (byte) (config.textAlignment() == TextDisplay.TextAlignment.RIGHT ? (flags | Display.TextDisplay.FLAG_ALIGN_RIGHT) : (flags & ~Display.TextDisplay.FLAG_ALIGN_RIGHT));
         display.setFlags(flags);
     }
 }
