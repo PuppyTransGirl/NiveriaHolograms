@@ -80,7 +80,7 @@ public class HologramEditCommand extends SubCommand {
 			case BLOCK -> List.of("block", "glowing");
 			case ITEM -> List.of("item", "glowing");
 			case TEXT -> List.of("addline", "background", "insertafter", "insertbefore", "removeline", "seethrough", "setline", "textalignment", "textshadow", "updateinterval");
-		});
+        });
 
 		TextComponent errorMessage = MessageUtils.errorMessage(
 				Component.text("Tu n'as pas spécifié de sous-commande.")

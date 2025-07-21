@@ -14,9 +14,11 @@ import toutouchien.niveriaholograms.updater.TextHologramUpdater;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public enum HologramType {
     BLOCK(
+            BlockHologramConfiguration::new,
             level -> new Display.BlockDisplay(EntityType.BLOCK_DISPLAY, level),
             (display, config) -> new BlockHologramUpdater(
                     (Display.BlockDisplay) display,
@@ -24,6 +26,7 @@ public enum HologramType {
             )
     ),
     ITEM(
+            ItemHologramConfiguration::new,
             level -> new Display.ItemDisplay(EntityType.ITEM_DISPLAY, level),
             (display, config) -> new ItemHologramUpdater(
                     (Display.ItemDisplay) display,
@@ -31,6 +34,7 @@ public enum HologramType {
             )
     ),
     TEXT(
+            TextHologramConfiguration::new,
             level -> new Display.TextDisplay(EntityType.TEXT_DISPLAY, level),
             (display, config) -> new TextHologramUpdater(
                     (Display.TextDisplay) display,
@@ -38,12 +42,18 @@ public enum HologramType {
             )
     );
 
+    private final Supplier<HologramConfiguration> configFactory;
     private final Function<Level, Display> displayFactory;
     private final BiFunction<Display, HologramConfiguration, HologramUpdater> updaterFactory;
 
-    HologramType(Function<Level, Display> displayFactory, BiFunction<Display, HologramConfiguration, HologramUpdater> updaterFactory) {
+    HologramType(Supplier<HologramConfiguration> configFactory, Function<Level, Display> displayFactory, BiFunction<Display, HologramConfiguration, HologramUpdater> updaterFactory) {
+        this.configFactory = configFactory;
         this.displayFactory = displayFactory;
         this.updaterFactory = updaterFactory;
+    }
+
+    public HologramConfiguration createConfiguration() {
+        return configFactory.get();
     }
 
     public Display createDisplay(Level level) {

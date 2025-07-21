@@ -6,9 +6,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import toutouchien.niveriaholograms.NiveriaHolograms;
-import toutouchien.niveriaholograms.configurations.BlockHologramConfiguration;
 import toutouchien.niveriaholograms.configurations.HologramConfiguration;
-import toutouchien.niveriaholograms.configurations.ItemHologramConfiguration;
 import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.core.HologramType;
@@ -50,12 +48,7 @@ public class HologramManager {
     }
 
     public Hologram create(Player player, HologramType type, String name) {
-        HologramConfiguration configuration = switch (type) {
-            case BLOCK -> new BlockHologramConfiguration();
-            case ITEM -> new ItemHologramConfiguration();
-            case TEXT -> new TextHologramConfiguration();
-        };
-
+        HologramConfiguration configuration = type.createConfiguration();
         Hologram hologram = createHologram(type, configuration, name, player.getUniqueId(), new CustomLocation(player.getLocation()));
 
         if (type == HologramType.TEXT)

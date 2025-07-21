@@ -34,7 +34,7 @@ public class HologramLoader {
         CustomLocation location = (CustomLocation) section.get("location");
         UUID owner = UUID.fromString(section.getString("owner", UUID.randomUUID().toString()));
 
-        HologramConfiguration configuration = type == HologramType.BLOCK ? new BlockHologramConfiguration() : type == HologramType.ITEM ? new ItemHologramConfiguration() : new TextHologramConfiguration();
+        HologramConfiguration configuration = type.createConfiguration();
 
         HologramManager hologramManager = this.plugin.hologramManager();
         Hologram hologram = hologramManager.createHologram(type, configuration, name, owner, location);
@@ -45,6 +45,7 @@ public class HologramLoader {
             case BLOCK -> loadBlockConfiguration(section, (BlockHologramConfiguration) configuration);
             case ITEM -> loadItemConfiguration(section, (ItemHologramConfiguration) configuration);
             case TEXT -> loadTextConfiguration(section, (TextHologramConfiguration) configuration);
+            default -> throw new IllegalArgumentException("Unsupported hologram type: " + type);
         }
 
         return hologram;
