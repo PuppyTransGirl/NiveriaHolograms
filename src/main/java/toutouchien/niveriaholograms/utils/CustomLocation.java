@@ -48,15 +48,27 @@ public class CustomLocation implements ConfigurationSerializable {
         return x;
     }
 
+    public double y() {
+        return y;
+    }
+
+    public double z() {
+        return z;
+    }
+
+    public float yaw() {
+        return yaw;
+    }
+
+    public float pitch() {
+        return pitch;
+    }
+
     @NotNull
     @Contract("_ -> this")
     public CustomLocation x(double x) {
         this.x = x;
         return this;
-    }
-
-    public double y() {
-        return y;
     }
 
     @NotNull
@@ -66,10 +78,6 @@ public class CustomLocation implements ConfigurationSerializable {
         return this;
     }
 
-    public double z() {
-        return z;
-    }
-
     @NotNull
     @Contract("_ -> this")
     public CustomLocation z(double z) {
@@ -77,19 +85,11 @@ public class CustomLocation implements ConfigurationSerializable {
         return this;
     }
 
-    public float yaw() {
-        return yaw;
-    }
-
     @NotNull
     @Contract("_ -> this")
     public CustomLocation yaw(float yaw) {
         this.yaw = yaw;
         return this;
-    }
-
-    public float pitch() {
-        return pitch;
     }
 
     @NotNull
@@ -108,17 +108,15 @@ public class CustomLocation implements ConfigurationSerializable {
     }
 
     public double distanceSquared(@NotNull CustomLocation other) {
-        if (!this.world.equals(other.world)) {
+        if (!this.world.equals(other.world))
             throw new IllegalArgumentException("Cannot measure distance between " + this.world + " and " + other.world);
-        }
 
         return NumberConversions.square(x - other.x) + NumberConversions.square(y - other.y) + NumberConversions.square(z - other.z);
     }
 
     public double distanceSquared(@NotNull Location other) {
-        if (!this.world.equals(other.getWorld().getName())) {
+        if (!this.world.equals(other.getWorld().getName()))
             throw new IllegalArgumentException("Cannot measure distance between " + this.world + " and " + other.getWorld().getName());
-        }
 
         return NumberConversions.square(x - other.getX()) + NumberConversions.square(y - other.getY()) + NumberConversions.square(z - other.getZ());
     }

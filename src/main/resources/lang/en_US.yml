@@ -1,0 +1,28 @@
+# ============================================================
+# ===============  OTHER (PREFIXES, COLORS, ETC.) ============
+# ============================================================
+
+special-tags:
+  # ---------------- PREFIXES ----------------
+  prefix:
+    holograms: "<gradient:#FC67FA:#F4C4F3>ʜᴏʟᴏɢʀᴀᴍѕ</gradient>"
+
+  # ---------------- COLORS ----------------
+  ncolor:
+    primary: "#FC67FA"
+    secondary: "#F4C4F3"
+    success: "#7AF291"
+    error: "#F27474"
+    default: "#B0AEC1"
+
+  # ---------------- OTHER ----------------
+  other:
+    separator: "<#B0AEC1>»</#B0AEC1>"
+
+# ============================================================
+# ======================== FEATURES ==========================
+# ============================================================
+
+niveriaholograms:
+  reload:
+    done: "<prefix:holograms/> <separator> <ncolor:success>NiveriaHolograms has been reloaded. (%s ms)</ncolor>"

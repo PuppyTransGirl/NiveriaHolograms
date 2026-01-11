@@ -1,8 +1,11 @@
 package toutouchien.niveriaholograms;
 
+import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 import toutouchien.niveriaapi.NiveriaAPI;
+import toutouchien.niveriaapi.lang.Lang;
 import toutouchien.niveriaholograms.commands.hologram.HologramCommand;
 import toutouchien.niveriaholograms.commands.niveriaholograms.NiveriaHologramsCommand;
 import toutouchien.niveriaholograms.listeners.HologramListener;
@@ -12,7 +15,7 @@ import toutouchien.niveriaholograms.utils.CustomLocation;
 import java.util.Arrays;
 
 public class NiveriaHolograms extends JavaPlugin {
-	private static NiveriaHolograms INSTANCE;
+	private static NiveriaHolograms instance;
 
 	private HologramManager hologramManager;
 
@@ -21,16 +24,23 @@ public class NiveriaHolograms extends JavaPlugin {
 	}
 
 	@Override
+	public void onLoad() {
+		instance = this;
+	}
+
+	@Override
 	public void onEnable() {
-		INSTANCE = this;
+		this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
+			Commands registrar = commands.registrar();
+			Arrays.asList(
+					NiveriaHologramsCommand.get(),
+					HologramCommand.get()
+			).forEach(registrar::register);
+		});
+
+		Lang.load(this);
 
 		(this.hologramManager = new HologramManager(this)).initialize();
-
-		NiveriaAPI.instance().commandManager().registerCommands(Arrays.asList(
-				new NiveriaHologramsCommand(),
-
-				new HologramCommand()
-		));
 
 		getServer().getPluginManager().registerEvents(new HologramListener(this), this);
 	}
@@ -43,6 +53,7 @@ public class NiveriaHolograms extends JavaPlugin {
 	}
 
 	public void reload() {
+		Lang.reload(this);
 		this.hologramManager.reload();
 	}
 
@@ -51,6 +62,6 @@ public class NiveriaHolograms extends JavaPlugin {
 	}
 
 	public static NiveriaHolograms instance() {
-		return INSTANCE;
+		return instance;
 	}
 }

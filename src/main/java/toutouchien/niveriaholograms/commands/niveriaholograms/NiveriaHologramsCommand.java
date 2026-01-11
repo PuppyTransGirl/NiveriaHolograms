@@ -1,32 +1,39 @@
 package toutouchien.niveriaholograms.commands.niveriaholograms;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
-import toutouchien.niveriaapi.command.Command;
-import toutouchien.niveriaapi.command.CommandData;
-import toutouchien.niveriaapi.utils.ui.MessageUtils;
+import toutouchien.niveriaapi.lang.Lang;
+import toutouchien.niveriaapi.utils.CommandUtils;
+import toutouchien.niveriaholograms.NiveriaHolograms;
 
-public class NiveriaHologramsCommand extends Command {
-	public NiveriaHologramsCommand() {
-		super(new CommandData("niveriaholograms", "niveriaholograms")
-				.description("Permet de gérer le plugin d'hologrammes de Niveria.")
-				.usage("<reload>")
-				.subCommands(new NiveriaHologramsReloadCommand()));
+public class NiveriaHologramsCommand {
+	private NiveriaHologramsCommand() {
+		throw new IllegalStateException("Command class");
 	}
 
-	@Override
-	public void execute(CommandSender sender, String @NotNull [] args, @NotNull String label) {
-		TextComponent errorMessage = MessageUtils.errorMessage(
-				Component.text("Tu n'as pas spécifié de sous-commande.")
-		);
+	public static LiteralCommandNode<CommandSourceStack> get() {
+		return Commands.literal("niveriaholograms")
+				.requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.niveriaholograms"))
+				.then(reloadCommand())
+				.build();
+	}
 
-		TextComponent infoMessage = MessageUtils.infoMessage(
-				Component.text("Les sous-commandes possibles sont reload.")
-		);
+	private static LiteralArgumentBuilder<CommandSourceStack> reloadCommand() {
+		return Commands.literal("reload")
+				.requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.niveriaholograms.reload"))
+				.executes(ctx -> {
+					CommandSender sender = CommandUtils.sender(ctx);
 
-		sender.sendMessage(errorMessage);
-		sender.sendMessage(infoMessage);
+					long startMillis = System.currentTimeMillis();
+					NiveriaHolograms.instance().reload();
+					long timeTaken = System.currentTimeMillis() - startMillis;
+					Lang.sendMessage(sender, "niveriaholograms.reload.done", timeTaken);
+
+					return Command.SINGLE_SUCCESS;
+				});
 	}
 }
