@@ -30,7 +30,14 @@ niveriaholograms:
   hologram:
     clone:
       doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>L'hologramme \"%s\" n'existe pas.</ncolor>"
-      name_too_long: "<prefix:holograms/> <separator> <ncolor:error>Le nom de l'hologramme est trop long.</ncolor>"
-      already_exists: "<prefix:holograms/> <separator> <ncolor:error>Un hologramme avec ce nom existe déjà.</ncolor>"
+      name_too_long: "<prefix:holograms/> <separator> <ncolor:error>Le nom de l'hologramme est trop long. Il ne peut pas dépasser %s caractères.</ncolor>"
       invalid_character: "<prefix:holograms/> <separator> <ncolor:error>Le nom de l'hologramme contient des caractères invalides.</ncolor>"
+      already_exists: "<prefix:holograms/> <separator> <ncolor:error>Un hologramme avec ce nom existe déjà.</ncolor>"
       cloned: "<prefix:holograms/> <separator> <ncolor:success>Hologramme \"%s\" cloné en \"%s\" avec succès.</ncolor>"
+
+    create:
+      invalid_type: "<prefix:holograms/> <separator> <ncolor:error>Le type d'hologramme \"%s\" est invalide.</ncolor>"
+      name_too_long: "<prefix:holograms/> <separator> <ncolor:error>Le nom de l'hologramme est trop long. Il ne peut pas dépasser %s caractères.</ncolor>"
+      invalid_character: "<prefix:holograms/> <separator> <ncolor:error>Le nom de l'hologramme contient des caractères invalides.</ncolor>"
+      already_exists: "<prefix:holograms/> <separator> <ncolor:error>Un hologramme avec ce nom existe déjà.</ncolor>"
+      created: "<prefix:holograms/> <separator> <ncolor:success>Hologramme \"%s\" de type \"%s\" créé avec succès.</ncolor>"

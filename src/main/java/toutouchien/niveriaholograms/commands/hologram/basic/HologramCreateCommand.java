@@ -1,92 +1,79 @@
 package toutouchien.niveriaholograms.commands.hologram.basic;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import toutouchien.niveriaapi.command.CommandData;
-import toutouchien.niveriaapi.command.SubCommand;
-import toutouchien.niveriaapi.utils.common.StringUtils;
-import toutouchien.niveriaapi.utils.data.FileUtils;
-import toutouchien.niveriaapi.utils.ui.MessageUtils;
+import org.jetbrains.annotations.Nullable;
+import toutouchien.niveriaapi.lang.Lang;
+import toutouchien.niveriaapi.utils.CommandUtils;
+import toutouchien.niveriaapi.utils.StringUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.HologramType;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
-import java.util.*;
+public class HologramCreateCommand {
+    private HologramCreateCommand() {
+        throw new IllegalStateException("Command class");
+    }
 
-public class HologramCreateCommand extends SubCommand {
-	public HologramCreateCommand() {
-		super(new CommandData("create", "niveriaholograms")
-				.playerRequired(true)
-				.usage("<type> <nom>"));
-	}
+    public static LiteralCommandNode<CommandSourceStack> get() {
+        return Commands.literal("create")
+                .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.create", true))
+                .then(Commands.argument("type", StringArgumentType.word())
+                        .suggests((ctx, builder) -> {
+                            for (HologramType type : HologramType.values()) {
+                                String rawType = type.name();
+                                builder.suggest(StringUtils.capitalize(rawType));
+                            }
 
-	@Override
-	public void execute(@NotNull Player player, String[] args, @NotNull String label) {
-		if (args.length == 0) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Tu dois spécifier le type d'hologramme que tu veux créer.")
-			);
+                            return builder.buildFuture();
+                        })
+                        .then(Commands.argument("name", StringArgumentType.word())
+                                .executes(ctx -> {
+                                    Player player = (Player) ctx.getSource().getExecutor();
+                                    String type = StringUtils.capitalize(ctx.getArgument("type", String.class));
+                                    String name = ctx.getArgument("name", String.class);
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+                                    HologramType hologramType = StringUtils.match(type, HologramType.class, null);
+                                    HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+                                    boolean isValidHologram = isValidHologram(hologramType, type, player, name, hologramManager);
+                                    if (!isValidHologram)
+                                        return Command.SINGLE_SUCCESS;
 
-		if (args.length != 2) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Tu dois spécifier le nom de l'hologramme.")
-			);
+                                    hologramManager.create(player, hologramType, name);
+                                    Lang.sendMessage(player, "niveriaholograms.hologram.create.created", name, type);
+                                    return Command.SINGLE_SUCCESS;
+                                })
+                        )
+                ).build();
+    }
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+    private static boolean isValidHologram(@Nullable HologramType hologramType, @NotNull String type, @NotNull Player player, @NotNull String name, @NotNull HologramManager hologramManager) {
+        if (hologramType == null) {
+            Lang.sendMessage(player, "niveriaholograms.hologram.create.invalid_type", type);
+            return false;
+        }
 
-		Optional<HologramType> hologramType = StringUtils.match(args[0], HologramType.class);
-		if (hologramType.isEmpty()) {
-			MessageUtils.sendErrorMessage(player, Component.text("Le type d'hologramme spécifié n'existe pas."));
-			return;
-		}
+        int length = name.length();
+        if (length > 64) {
+            Lang.sendMessage(player, "niveriaholograms.hologram.create.name_too_long", 64);
+            return false;
+        }
 
-		HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
-		String holoName = args[1];
-		int length = holoName.length();
-		if (length > 64) {
-			MessageUtils.sendErrorMessage(player, Component.text("Le nom de l'hologramme ne peut pas dépasser 64 caractères."));
-			return;
-		}
+        if (name.contains(".") || name.contains("+")) {
+            Lang.sendMessage(player, "niveriaholograms.hologram.create.invalid_characters");
+            return false;
+        }
 
-		if (hologramManager.hologramExists(holoName)) {
-			MessageUtils.sendErrorMessage(player, Component.text("Un hologramme avec ce nom existe déjà."));
-			return;
-		}
+        if (hologramManager.hologramExists(name)) {
+            Lang.sendMessage(player, "niveriaholograms.hologram.create.already_exists");
+            return false;
+        }
 
-		String[] invalidCharacters = FileUtils.invalidCharacters();
-		for (String invalidCharacter : invalidCharacters) {
-			if (!holoName.contains(invalidCharacter))
-				continue;
-
-			MessageUtils.sendErrorMessage(player, Component.text("Le nom de l'hologramme contient un caractère non autorisé. (%s)".formatted(invalidCharacter)));
-			MessageUtils.sendInfoMessage(player, Component.text("Les caractères non autorisés sont " + Arrays.toString(invalidCharacters)
-					.replace("[", "")
-					.replace("]", "")
-					.replace(",", "")));
-			return;
-		}
-
-		hologramManager.create(player, hologramType.get(), holoName);
-		player.sendMessage(MessageUtils.successMessage(Component.text("Hologramme créé avec succès !")));
-	}
-
-	@Override
-	public List<String> complete(@NotNull Player player, String @NotNull [] args, int argIndex) {
-        if (argIndex != 0)
-            return Collections.emptyList();
-
-		String currentArg = args[argIndex].toLowerCase(Locale.ROOT);
-        return Arrays.stream(HologramType.values())
-                .map(hologramType -> StringUtils.capitalize(hologramType.name()))
-                .filter(hologramName -> hologramName.startsWith(currentArg))
-                .toList();
+        return true;
     }
 }

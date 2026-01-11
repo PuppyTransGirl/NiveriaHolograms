@@ -173,7 +173,7 @@ public class HologramCloneCommand {
 
         int length = newHologramName.length();
         if (length > 64) {
-            Lang.sendMessage(player, "niveriaholograms.hologram.clone.name_too_long");
+            Lang.sendMessage(player, "niveriaholograms.hologram.clone.name_too_long", 64);
             return false;
         }
 
