@@ -37,7 +37,7 @@ public class HologramEditYawCommand {
 								location.yaw(yaw);
 							});
 
-							Lang.sendMessage(sender, "niveriaholograms.hologram.edit.yaw.edited", hologramName);
+							Lang.sendMessage(sender, "niveriaholograms.hologram.edit.yaw.edited", hologramName, yaw);
 							return Command.SINGLE_SUCCESS;
 						})
 				).build();

@@ -131,6 +131,24 @@ niveriaholograms:
       position:
         edited: "<prefix:holograms/> <separator> <ncolor:success>La position de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
+      rotation:
+        edited: "<prefix:holograms/> <separator> <ncolor:success>Le pitch de l'hologramme \"%s\" a été changé en \"%.2f %.2f\" avec succès.</ncolor>"
+
+      scale:
+        edited: "<prefix:holograms/> <separator> <ncolor:success>La taille de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+
+      shadowRadius:
+        edited: "<prefix:holograms/> <separator> <ncolor:success>Le rayon de l'ombre de l'hologramme \"%s\" a été changé en \"%.2f\" avec succès.</ncolor>"
+
+      shadowStrength:
+        edited: "<prefix:holograms/> <separator> <ncolor:success>La force de l'ombre de l'hologramme \"%s\" a été changé en \"%.2f\" avec succès.</ncolor>"
+
+      translate:
+        edited: "<prefix:holograms/> <separator> <ncolor:success>La translation de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+
+      visibilityDistance:
+        edited: "<prefix:holograms/> <separator> <ncolor:success>La distance d'affichage de l'hologramme \"%s\" a été changé en \"%s\" avec succès.</ncolor>"
+
       yaw:
         edited: "<prefix:holograms/> <separator> <ncolor:success>Le yaw de l'hologramme \"%s\" a été changé en \"%.2f\" avec succès.</ncolor>"
 

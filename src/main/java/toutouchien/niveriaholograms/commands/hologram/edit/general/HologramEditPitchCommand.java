@@ -37,7 +37,7 @@ public class HologramEditPitchCommand {
 								location.pitch(pitch);
 							});
 
-							Lang.sendMessage(sender, "niveriaholograms.hologram.edit.pitch.edited", hologramName);
+							Lang.sendMessage(sender, "niveriaholograms.hologram.edit.pitch.edited", hologramName, pitch);
 							return Command.SINGLE_SUCCESS;
 						})
 				).build();
