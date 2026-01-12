@@ -54,6 +54,7 @@ public class HologramNearbyCommand {
                                 CustomLocation loc = hologram.location();
 
                                 Lang.sendMessage(player, "niveriaholograms.hologram.nearby.hologram_entry",
+                                        hologram.name(), // For MiniMessage command click
                                         hologram.name(),
                                         StringUtils.capitalize(hologram.type().name()),
                                         loc.x(), loc.y(), loc.z(),
