@@ -1,79 +1,51 @@
 package toutouchien.niveriaholograms.commands.hologram.edit.text;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import toutouchien.niveriaapi.command.CommandData;
-import toutouchien.niveriaapi.command.SubCommand;
-import toutouchien.niveriaapi.utils.ui.MessageUtils;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
+import org.bukkit.command.CommandSender;
+import toutouchien.niveriaapi.lang.Lang;
+import toutouchien.niveriaapi.utils.CommandUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
-import java.util.Collections;
-import java.util.List;
-
-public class HologramEditTextShadowCommand extends SubCommand {
-	public HologramEditTextShadowCommand() {
-		super(new CommandData("textshadow", "niveriaholograms")
-				.playerRequired(true)
-				.usage("<true|false>"));
+public class HologramEditTextShadowCommand {
+	private HologramEditTextShadowCommand() {
+		throw new IllegalStateException("Command class");
 	}
 
-	@Override
-	public void execute(@NotNull Player player, String @NotNull [] args, String[] fullArgs, @NotNull String label) {
-		HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
-		Hologram hologram = hologramManager.hologramByName(fullArgs[1]);
-		if (hologram == null) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Cet hologramme n'existe pas.")
-			);
+	public static LiteralCommandNode<CommandSourceStack> get() {
+		return Commands.literal("textShadow")
+				.requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.textshadow"))
+				.then(Commands.argument("textShadow", BoolArgumentType.bool())
+						.executes(ctx -> {
+							CommandSender sender = CommandUtils.sender(ctx);
+							String hologramName = ctx.getArgument("hologram", String.class);
+							boolean textShadow = ctx.getArgument("textShadow", boolean.class);
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+							HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+							Hologram hologram = hologramManager.hologramByName(hologramName);
+							if (hologram == null) {
+								Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+								return Command.SINGLE_SUCCESS;
+							}
 
-		if (!(hologram.configuration() instanceof TextHologramConfiguration)) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Cette comande ne peut être utilisée que sur des hologrammes de texte.")
-			);
+							if (!(hologram.configuration() instanceof TextHologramConfiguration)) {
+								Lang.sendMessage(sender, "niveriaholograms.hologram.edit.only_text");
+								return Command.SINGLE_SUCCESS;
+							}
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+							hologram.editConfig((TextHologramConfiguration config) -> {
+								config.textShadow(textShadow);
+							});
 
-		if (args.length == 0) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Tu dois spécifier si tu veux mettre l'ombre du texte ou non.")
-			);
-
-			player.sendMessage(errorMessage);
-			return;
-		}
-
-		boolean textShadow = Boolean.parseBoolean(args[0]);
-		hologram.editConfig((TextHologramConfiguration config) -> {
-			config.textShadow(textShadow);
-		});
-
-		TextComponent successMessage = MessageUtils.successMessage(
-				Component.text("L'ombre de texte a été " + (textShadow ? "activée" : "désactivée") + ".")
-		);
-
-		player.sendMessage(successMessage);
-	}
-
-	@Override
-	public List<String> complete(@NotNull Player player, String @NotNull [] args, String @NotNull [] fullArgs, int argIndex) {
-		if (argIndex != 0)
-			return Collections.emptyList();
-
-		Hologram hologram = NiveriaHolograms.instance().hologramManager().hologramByName(fullArgs[1]);
-		if (hologram == null || !(hologram.configuration() instanceof TextHologramConfiguration configuration))
-			return Collections.emptyList();
-
-		return Collections.singletonList(String.valueOf(!configuration.textShadow()));
+							Lang.sendMessage(sender, "niveriaholograms.hologram.edit.textShadow.edited", hologramName);
+							return Command.SINGLE_SUCCESS;
+						})
+				).build();
 	}
 }

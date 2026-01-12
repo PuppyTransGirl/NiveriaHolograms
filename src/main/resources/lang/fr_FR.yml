@@ -139,14 +139,28 @@ niveriaholograms:
       seeThrough:
         edited: "<prefix:holograms/> <separator> <ncolor:success>L'affichage de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
+      setLine:
+        invalid_line: "<prefix:holograms/> <separator> <ncolor:error>Le numéro de la ligne \"%s\" est invalide.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>Le texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+
+      textAlignment:
+        invalid_textAlignment: "<prefix:holograms/> <separator> <ncolor:error>La valeur d'alignement du texte \"%s\" est invalide.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>L'alignement du texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+
+      textShadow:
+        edited: "<prefix:holograms/> <separator> <ncolor:success>L'ombre du texte \"%s\" a été mis à jour avec succès.</ncolor>"
+
+      updateInterval:
+        edited: "<prefix:holograms/> <separator> <ncolor:success>L'interval de mis à jour \"%s\" a été changé en \"%s\" avec succès.</ncolor>"
+
       # General
       billboard:
         invalid_billboard: "<prefix:holograms/> <separator> <ncolor:error>La valeur de billboard \"%s\" est invalide.</ncolor>"
-        edited: "<prefix:holograms/> <separator> <ncolor:success>Le paramètre de billboard de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>Le billboard de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
       brightness:
         invalid_type: "<prefix:holograms/> <separator> <ncolor:error>La valeur de type de lumière \"%s\" est invalide.</ncolor>"
-        edited: "<prefix:holograms/> <separator> <ncolor:success>Le paramètre de lumière de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>La lumière de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
       pitch:
         edited: "<prefix:holograms/> <separator> <ncolor:success>Le pitch de l'hologramme \"%s\" a été changé en \"%.2f\" avec succès.</ncolor>"
@@ -178,4 +192,4 @@ niveriaholograms:
       # Other
       glowing:
         invalid_color: "<prefix:holograms/> <separator> <ncolor:error>La couleur de brillance \"%s\" est invalide.</ncolor>"
-        edited: "<prefix:holograms/> <separator> <ncolor:success>Le paramètre de brillance de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>La brillance de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
