@@ -2,7 +2,7 @@ package toutouchien.niveriaholograms.updater;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.level.block.Block;
 import toutouchien.niveriaholograms.configurations.BlockHologramConfiguration;
@@ -26,7 +26,7 @@ public class BlockHologramUpdater extends HologramUpdater {
     }
 
     private void updateBlock() {
-        ResourceLocation blockResource = ResourceLocation.parse(config.material().key().asString());
+        Identifier blockResource = Identifier.parse(config.material().key().asString());
         Optional<Holder.Reference<Block>> blockHolder = BuiltInRegistries.BLOCK.get(blockResource);
         if (blockHolder.isEmpty())
             throw new IllegalArgumentException("Invalid block material: " + blockResource);
@@ -38,8 +38,7 @@ public class BlockHologramUpdater extends HologramUpdater {
     private void updateGlowing() {
         display.setGlowingTag(config.glowing());
 
-        if (config.glowingColor() != null) {
+        if (config.glowingColor() != null)
             display.setGlowColorOverride(config.glowingColor().value());
-        }
     }
 }

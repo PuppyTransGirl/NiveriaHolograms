@@ -1,6 +1,7 @@
 package toutouchien.niveriaholograms.core;
 
 import io.papermc.paper.adventure.PaperAdventure;
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
@@ -14,9 +15,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
-import toutouchien.niveriaapi.utils.base.Task;
-import toutouchien.niveriaapi.utils.game.NMSUtils;
+import toutouchien.niveriaapi.utils.NMSUtils;
+import toutouchien.niveriaapi.utils.Task;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.configurations.HologramConfiguration;
 import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -49,7 +50,7 @@ public class Hologram {
     private CustomLocation location;
     private boolean locationDirty;
 
-    private BukkitTask updateTask;
+    private ScheduledTask updateTask;
 
     public Hologram(HologramType type, HologramConfiguration config, String name, UUID owner, CustomLocation location) {
         this.type = type;
@@ -80,10 +81,11 @@ public class Hologram {
 
         if (config instanceof TextHologramConfiguration textConfig) {
             updateTask = Task.asyncRepeat(
-                    this::updateForAllPlayers,
+                    ignored -> this.updateForAllPlayers(),
                     NiveriaHolograms.instance(),
-                    Math.max(40L, textConfig.updateInterval()),
-                    textConfig.updateInterval()
+                    Math.max(40L, textConfig.updateInterval()) * 50L,
+                    textConfig.updateInterval() * 50L,
+                    TimeUnit.MILLISECONDS
             );
         }
     }
@@ -168,26 +170,29 @@ public class Hologram {
                 .collect(Collectors.toList());
 
         if (config instanceof TextHologramConfiguration textConfig && (textConfig.textDirty() || textConfig.updateIntervalDirty())) {
-            if (updateTask != null && !updateTask.isCancelled()) {
+            if (updateTask != null && !updateTask.isCancelled())
                 updateTask.cancel();
-            }
 
             updateTask = Task.asyncRepeat(
-                    this::updateForAllPlayers,
+                    ignored -> this.updateForAllPlayers(),
                     NiveriaHolograms.instance(),
-                    Math.max(40L, textConfig.updateInterval()),
-                    textConfig.updateInterval()
+                    Math.max(40L, textConfig.updateInterval()) * 50L,
+                    textConfig.updateInterval() * 50L,
+                    TimeUnit.MILLISECONDS
             );
 
             textConfig.updateIntervalDirty(false)
                     .textDirty(false);
         }
 
+        sendDataPackets(targets, teleportPacket);
+    }
+
+    private void sendDataPackets(List<Player> targets, ClientboundTeleportEntityPacket teleportPacket) {
         EXECUTOR.submit(() -> {
             for (Player player : targets) {
-                if (display instanceof Display.TextDisplay textDisplay && config instanceof TextHologramConfiguration textConfig) {
+                if (display instanceof Display.TextDisplay textDisplay && config instanceof TextHologramConfiguration textConfig)
                     textDisplay.setText(PaperAdventure.asVanilla(textConfig.serializedText(player)));
-                }
 
                 // packDirty sends only the dirty values, which is more efficient when updating
                 // It's a lot more optimized than sending packAll everytime

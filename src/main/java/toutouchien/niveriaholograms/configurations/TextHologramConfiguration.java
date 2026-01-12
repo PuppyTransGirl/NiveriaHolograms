@@ -9,7 +9,7 @@ import toutouchien.niveriaapi.NiveriaAPI;
 import toutouchien.niveriaapi.hook.HookManager;
 import toutouchien.niveriaapi.hook.HookType;
 import toutouchien.niveriaapi.hook.impl.PlaceholderAPIHook;
-import toutouchien.niveriaapi.utils.ui.ComponentUtils;
+import toutouchien.niveriaapi.utils.ComponentUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -139,7 +139,7 @@ public class TextHologramConfiguration extends HologramConfiguration {
                 line = hook.replacePlaceholders(player, line);
             }
 
-            builder.append(ComponentUtils.deserializeMiniMessage(line));
+            builder.append(ComponentUtils.deserializeMM(line));
         }
 
         this.serializedText.put(uuid, builder.build());
