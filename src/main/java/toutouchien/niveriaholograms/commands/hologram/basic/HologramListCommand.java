@@ -1,60 +1,52 @@
 package toutouchien.niveriaholograms.commands.hologram.basic;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
-import toutouchien.niveriaapi.command.CommandData;
-import toutouchien.niveriaapi.command.SubCommand;
-import toutouchien.niveriaapi.utils.common.MathUtils;
-import toutouchien.niveriaapi.utils.ui.ColorUtils;
-import toutouchien.niveriaapi.utils.ui.MessageUtils;
+import toutouchien.niveriaapi.lang.Lang;
+import toutouchien.niveriaapi.utils.CommandUtils;
+import toutouchien.niveriaapi.utils.StringUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 import toutouchien.niveriaholograms.utils.CustomLocation;
 
-import static net.kyori.adventure.text.Component.text;
+import java.util.List;
 
-public class HologramListCommand extends SubCommand {
-	HologramListCommand() {
-		super(new CommandData("list", "niveriaholograms")
-				.aliases("l"));
-	}
+public class HologramListCommand {
+    private HologramListCommand() {
+        throw new IllegalStateException("Command class");
+    }
 
-	@Override
-	public void execute(CommandSender sender, String @NotNull [] args, @NotNull String label) {
-		TextComponent infoMessage = MessageUtils.infoMessage(
-				text("Voici la liste des hologrammes:")
-		);
+    public static LiteralCommandNode<CommandSourceStack> get() {
+        return Commands.literal("list")
+                .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.list"))
+                .executes(ctx -> {
+                    CommandSender sender = CommandUtils.sender(ctx);
+                    HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
 
-		sender.sendMessage(infoMessage);
+                    List<Hologram> holograms = hologramManager.holograms();
+                    if (holograms.isEmpty()) {
+                        Lang.sendMessage(sender, "niveriaholograms.hologram.list.no_holograms");
+                        return Command.SINGLE_SUCCESS;
+                    }
 
-		HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+                    Lang.sendMessage(sender, "niveriaholograms.hologram.list.header", holograms.size());
 
-		for (Hologram hologram : hologramManager.holograms()) {
-			String name = hologram.name();
-			CustomLocation location = hologram.location();
+                    for (Hologram hologram : holograms) {
+                        CustomLocation loc = hologram.location();
 
-			TextComponent.Builder hologramInfo = text()
-					.content(" - ").color(NamedTextColor.DARK_GRAY)
-					.append(text(hologram.name(), ColorUtils.primaryColor()))
-					.append(text(" (", NamedTextColor.DARK_GRAY))
-					.append(text(MathUtils.decimalRound(location.x(), 2), ColorUtils.secondaryColor()))
-					.append(text("/", NamedTextColor.GRAY))
-					.append(text(MathUtils.decimalRound(location.y(), 2), ColorUtils.secondaryColor()))
-					.append(text("/", NamedTextColor.GRAY))
-					.append(text(MathUtils.decimalRound(location.z(), 2), ColorUtils.secondaryColor()))
-					.append(text(" in ", NamedTextColor.GRAY))
-					.append(text(location.world(), ColorUtils.secondaryColor()))
-					.append(text(")", NamedTextColor.DARK_GRAY))
-					.clickEvent(ClickEvent.runCommand("/" + label + " teleport " + name))
-					.hoverEvent(HoverEvent.showText(Component.text("Clique pour s'y téléporter")));
+                        Lang.sendMessage(sender, "niveriaholograms.hologram.list.line",
+                                hologram.name(),
+                                StringUtils.capitalize(hologram.type().name()),
+                                loc.x(), loc.y(), loc.z(),
+                                loc.world()
+                        );
+                    }
 
-			sender.sendMessage(hologramInfo);
-		}
-	}
+                    return Command.SINGLE_SUCCESS;
+                }).build();
+    }
 }
