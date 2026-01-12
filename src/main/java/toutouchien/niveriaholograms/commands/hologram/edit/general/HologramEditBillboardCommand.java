@@ -151,7 +151,7 @@ public class HologramEditBillboardCommand {
                                 config.billboard(billboard);
                             });
 
-                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.billboard.edited");
+                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.billboard.edited", hologramName);
                             return Command.SINGLE_SUCCESS;
                         })
                 ).build();

@@ -1,116 +1,83 @@
 package toutouchien.niveriaholograms.commands.hologram.edit.general;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.NamedTextColor;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
 import net.minecraft.util.Brightness;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import toutouchien.niveriaapi.command.CommandData;
-import toutouchien.niveriaapi.command.SubCommand;
-import toutouchien.niveriaapi.utils.ui.MessageUtils;
+import org.bukkit.command.CommandSender;
+import toutouchien.niveriaapi.lang.Lang;
+import toutouchien.niveriaapi.utils.CommandUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.configurations.HologramConfiguration;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Stream;
 
-public class HologramEditBrightnessCommand extends SubCommand {
-    private static final List<String> BRIGHTNESS_TYPES = Arrays.asList("sky", "block");
-    private static final List<String> DEFAULT_VALUES = Arrays.asList("0", "5", "10", "15");
-    
-    public HologramEditBrightnessCommand() {
-        super(new CommandData("brightness", "niveriaholograms")
-              .playerRequired(true)
-              .usage("<block|sky> <0-15>"));
+public class HologramEditBrightnessCommand {
+    private static final List<String> BRIGHTNESS_TYPES = List.of("block", "sky");
+
+    private HologramEditBrightnessCommand() {
+        throw new IllegalStateException("Command class");
     }
-    
-    @Override
-    public void execute(@NotNull Player player, String @NotNull [] args, String[] fullArgs, @NotNull String label) {
-        HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
-        Hologram hologram = hologramManager.hologramByName(fullArgs[1]);
-        if (hologram == null) {
-            TextComponent errorMessage = MessageUtils.errorMessage(
-                    Component.text("Cet hologramme n'existe pas.")
-            );
 
-            player.sendMessage(errorMessage);
-            return;
-        }
+    public static LiteralCommandNode<CommandSourceStack> get() {
+        return Commands.literal("brightness")
+                .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.brightness"))
+                .then(Commands.argument("type", StringArgumentType.word())
+                        .suggests((ctx, builder) -> {
+                            List.of("block", "sky").forEach(builder::suggest);
+                            return builder.buildFuture();
+                        })
+                        .then(Commands.argument("light", IntegerArgumentType.integer(0, 15))
+                                .suggests((ctx, builder) -> {
+                                    List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15).forEach(builder::suggest);
+                                    return builder.buildFuture();
+                                })
+                                .executes(ctx -> {
+                                    CommandSender sender = CommandUtils.sender(ctx);
+                                    String hologramName = ctx.getArgument("hologram", String.class);
+                                    String typeName = ctx.getArgument("type", String.class);
+                                    int light = ctx.getArgument("ligt", Integer.class);
 
-        if (args.length == 0) {
-            player.sendMessage(Component.text("/" + label + " " + String.join(" ", fullArgs) + " <block|sky> <0-15>", NamedTextColor.RED));
-            return;
-        }
-        
-        String type = args[0].toLowerCase(Locale.ROOT);
-        if (!BRIGHTNESS_TYPES.contains(type)) {
-            TextComponent errorMessage = MessageUtils.errorMessage(
-                    Component.text("Type de luminosité invalide. Utilisez 'sky' ou 'block'.")
-            );
+                                    HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+                                    Hologram hologram = hologramManager.hologramByName(hologramName);
+                                    if (hologram == null) {
+                                        Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+                                        return Command.SINGLE_SUCCESS;
+                                    }
 
-            player.sendMessage(errorMessage);
-            return;
-        }
-        
-        int value;
-        try {
-            value = Integer.parseInt(args[1]);
-            if (value < 0 || value > 15) {
-                TextComponent errorMessage = MessageUtils.errorMessage(
-                        Component.text("La valeur de luminosité doit être entre 0 et 15.")
-                );
+                                    String type = typeName.toLowerCase(Locale.ROOT);
+                                    if (!BRIGHTNESS_TYPES.contains(type)) {
+                                        Lang.sendMessage(sender, "niveriaholograms.hologram.edit.brightness.invalid_type", typeName);
+                                        return Command.SINGLE_SUCCESS;
+                                    }
 
-                player.sendMessage(errorMessage);
-                return;
-            }
-        } catch (NumberFormatException e) {
-            TextComponent errorMessage = MessageUtils.errorMessage(
-                    Component.text("La valeur de luminosité doit être entre 0 et 15.")
-            );
+                                    HologramConfiguration configuration = hologram.configuration();
 
-            player.sendMessage(errorMessage);
-            return;
-        }
+                                    Brightness current = configuration.brightness();
+                                    int block = current == null ? 0 : current.block();
+                                    int sky = current == null ? 0 : current.sky();
 
-        HologramConfiguration configuration = hologram.configuration();
+                                    if ("block".equalsIgnoreCase(type))
+                                        block = light;
+                                    else if ("sky".equalsIgnoreCase(type))
+                                        sky = light;
 
-        Brightness currentBrightness = configuration.brightness();
-        int blockBrightness = type.equalsIgnoreCase("block") ? value : currentBrightness == null ? 0 : currentBrightness.block();
-        int skyBrightness = type.equalsIgnoreCase("sky") ? value : currentBrightness == null ? 0 : currentBrightness.sky();
+                                    int finalBlock = block;
+                                    int finalSky = sky;
+                                    hologram.editConfig(config -> {
+                                        config.brightness(new Brightness(finalBlock, finalSky));
+                                    });
 
-        hologram.editConfig(config -> {
-            config.brightness(new Brightness(blockBrightness, skyBrightness));
-        });
-
-        TextComponent successMessage = MessageUtils.successMessage(
-                Component.text()
-                        .append(Component.text("La luminosité de type '"))
-                        .append(Component.text(type))
-                        .append(Component.text("' a été mise à "))
-                        .append(Component.text(value))
-                        .append(Component.text(" avec succès !"))
-                        .build()
-        );
-
-        player.sendMessage(successMessage);
-    }
-    
-    @Override
-    public List<String> complete(@NotNull Player player, String[] args, String @NotNull [] fullArgs, int argIndex) {
-        String currentArg = args[argIndex];
-        if (argIndex == 0)
-            return Stream.of("block", "sky")
-                    .filter(billboard -> billboard.toLowerCase(Locale.ROOT).startsWith(currentArg))
-                    .toList();
-        else if (argIndex == 1)
-            return DEFAULT_VALUES;
-        
-        return Collections.emptyList();
+                                    Lang.sendMessage(sender, "niveriaholograms.hologram.edit.brightness.edited", hologramName);
+                                    return Command.SINGLE_SUCCESS;
+                                })
+                        )
+                ).build();
     }
 }

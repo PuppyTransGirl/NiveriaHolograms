@@ -121,6 +121,13 @@ niveriaholograms:
         invalid_billboard: "<prefix:holograms/> <separator> <ncolor:error>La valeur de billboard \"%s\" est invalide.</ncolor>"
         edited: "<prefix:holograms/> <separator> <ncolor:success>Le paramètre de billboard de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
+      brightness:
+        invalid_type: "<prefix:holograms/> <separator> <ncolor:error>La valeur de type de lumière \"%s\" est invalide.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>Le paramètre de lumière de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+
+      pitch:
+        edited: "<prefix:holograms/> <separator> <ncolor:success>Le pitch de l'hologramme \"%s\" a été changé en \"%.2f\" avec succès.</ncolor>"
+
       # Other
       glowing:
         invalid_color: "<prefix:holograms/> <separator> <ncolor:error>La couleur de brillance \"%s\" est invalide.</ncolor>"
