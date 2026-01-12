@@ -19,7 +19,7 @@ public class HologramEditShadowRadiusCommand {
 
 	public static LiteralCommandNode<CommandSourceStack> get() {
 		return Commands.literal("shadowRadius")
-				.requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.shadowRadius"))
+                .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.shadowradius"))
 				.then(Commands.argument("shadowRadius", FloatArgumentType.floatArg())
 						.executes(ctx -> {
 							CommandSender sender = CommandUtils.sender(ctx);

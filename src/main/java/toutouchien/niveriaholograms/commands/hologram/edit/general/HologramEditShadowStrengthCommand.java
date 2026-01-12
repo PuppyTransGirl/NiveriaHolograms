@@ -19,7 +19,7 @@ public class HologramEditShadowStrengthCommand {
 
 	public static LiteralCommandNode<CommandSourceStack> get() {
 		return Commands.literal("shadowStrength")
-				.requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.shadowStrength"))
+                .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.shadowstrength"))
 				.then(Commands.argument("shadowStrength", FloatArgumentType.floatArg())
 						.executes(ctx -> {
 							CommandSender sender = CommandUtils.sender(ctx);

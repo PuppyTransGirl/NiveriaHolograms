@@ -1,113 +1,76 @@
 package toutouchien.niveriaholograms.commands.hologram.edit.text;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import toutouchien.niveriaapi.command.CommandData;
-import toutouchien.niveriaapi.command.SubCommand;
-import toutouchien.niveriaapi.utils.ui.MessageUtils;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
+import org.bukkit.command.CommandSender;
+import toutouchien.niveriaapi.lang.Lang;
+import toutouchien.niveriaapi.utils.CommandUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class HologramEditRemoveLineCommand extends SubCommand {
-	public HologramEditRemoveLineCommand() {
-		super(new CommandData("removeline", "niveriaholograms")
-				.playerRequired(true)
-				.usage("<ligne>"));
-	}
+public class HologramEditRemoveLineCommand {
+    private HologramEditRemoveLineCommand() {
+        throw new IllegalStateException("Command class");
+    }
 
-	@Override
-	public void execute(@NotNull Player player, String @NotNull [] args, String[] fullArgs, @NotNull String label) {
-		HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
-		Hologram hologram = hologramManager.hologramByName(fullArgs[1]);
-		if (hologram == null) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Cet hologramme n'existe pas.")
-			);
+    public static LiteralCommandNode<CommandSourceStack> get() {
+        return Commands.literal("removeLine")
+                .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.removeline"))
+                .then(Commands.argument("line", IntegerArgumentType.integer(1))
+                        .suggests((ctx, builder) -> {
+                            String hologramName = ctx.getArgument("hologram", String.class);
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+                            HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+                            Hologram hologram = hologramManager.hologramByName(hologramName);
+                            if (hologram == null)
+                                return builder.buildFuture();
 
-		if (!(hologram.configuration() instanceof TextHologramConfiguration configuration)) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Cette comande ne peut être utilisée que sur des hologrammes de texte.")
-			);
+                            if (!(hologram.configuration() instanceof TextHologramConfiguration configuration))
+                                return builder.buildFuture();
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+                            List<String> lines = configuration.text();
+                            for (int i = 1; i <= lines.size(); i++)
+                                builder.suggest(Integer.toString(i));
 
-		if (args.length == 0) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Tu dois spécifier la ligne que tu veux retirer.")
-			);
+                            return builder.buildFuture();
+                        })
+                        .executes(ctx -> {
+                            CommandSender sender = CommandUtils.sender(ctx);
+                            String hologramName = ctx.getArgument("hologram", String.class);
+                            int line = ctx.getArgument("line", int.class);
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+                            HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+                            Hologram hologram = hologramManager.hologramByName(hologramName);
+                            if (hologram == null) {
+                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+                                return Command.SINGLE_SUCCESS;
+                            }
 
-		int lineNumber;
-		try {
-			lineNumber = Integer.parseInt(args[0]);
-		} catch (NumberFormatException e) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Le numéro de la ligne n'est pas valide.")
-			);
+                            if (!(hologram.configuration() instanceof TextHologramConfiguration configuration)) {
+                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.only_text");
+                                return Command.SINGLE_SUCCESS;
+                            }
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+                            List<String> lines = configuration.text();
+                            if (line > lines.size()) {
+                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.removeLine.invalid_line", line);
+                                return Command.SINGLE_SUCCESS;
+                            }
 
-		if (lineNumber < 1 || lineNumber > configuration.text().size()) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Le numéro de la ligne n'est pas valide.")
-			);
+                            hologram.editConfig((TextHologramConfiguration config) -> {
+                                config.removeText(line - 1);
+                            });
 
-			player.sendMessage(errorMessage);
-			return;
-		}
-
-		hologram.editConfig((TextHologramConfiguration config) -> {
-			config.removeText(lineNumber - 1);
-		});
-
-		TextComponent successMessage = MessageUtils.successMessage(
-				Component.text()
-						.append(Component.text("La ligne "))
-						.append(Component.text(lineNumber))
-						.append(Component.text(" a été retirée avec succès !"))
-						.build()
-		);
-
-		player.sendMessage(successMessage);
-	}
-
-	@Override
-	public List<String> complete(@NotNull Player player, String @NotNull [] args, String @NotNull [] fullArgs, int argIndex) {
-		if (argIndex != 0)
-			return Collections.emptyList();
-
-		Hologram hologram = NiveriaHolograms.instance().hologramManager().hologramByName(fullArgs[1]);
-		if (hologram == null)
-			return Collections.emptyList();
-
-		if (!(hologram.configuration() instanceof TextHologramConfiguration configuration))
-			return Collections.emptyList();
-
-		List<String> text = configuration.text();
-		List<String> suggestions = new ArrayList<>();
-
-		for (int i = 1; i <= text.size(); i++)
-			suggestions.add(Integer.toString(i));
-
-		return suggestions;
-	}
+                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.removeLine.edited", hologramName);
+                            return Command.SINGLE_SUCCESS;
+                        })
+                ).build();
+    }
 }

@@ -116,6 +116,29 @@ niveriaholograms:
         no_item: "<prefix:holograms/> <separator> <ncolor:error>Vous devez tenir un item dans votre main principale.</ncolor>"
         edited: "<prefix:holograms/> <separator> <ncolor:success>L'item de l'hologramme \"%s\" a été changé en \"<lang:%s>\" avec succès.</ncolor>"
 
+      # Text
+      addLine:
+        edited: "<prefix:holograms/> <separator> <ncolor:success>Le texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+
+      background:
+        invalid_color: "<prefix:holograms/> <separator> <ncolor:error>La couleur du fond \"%s\" est invalide.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>La couleur du fond de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+
+      insertAfter:
+        invalid_line: "<prefix:holograms/> <separator> <ncolor:error>Le numéro de la ligne \"%s\" est invalide.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>Le texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+
+      insertBefore:
+        invalid_line: "<prefix:holograms/> <separator> <ncolor:error>Le numéro de la ligne \"%s\" est invalide.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>Le texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+
+      removeLine:
+        invalid_line: "<prefix:holograms/> <separator> <ncolor:error>Le numéro de la ligne \"%s\" est invalide.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>Le texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+
+      seeThrough:
+        edited: "<prefix:holograms/> <separator> <ncolor:success>L'affichage de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+
       # General
       billboard:
         invalid_billboard: "<prefix:holograms/> <separator> <ncolor:error>La valeur de billboard \"%s\" est invalide.</ncolor>"
