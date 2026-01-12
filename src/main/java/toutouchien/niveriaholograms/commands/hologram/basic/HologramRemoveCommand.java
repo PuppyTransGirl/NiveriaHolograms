@@ -1,64 +1,49 @@
 package toutouchien.niveriaholograms.commands.hologram.basic;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import toutouchien.niveriaapi.command.CommandData;
-import toutouchien.niveriaapi.command.SubCommand;
-import toutouchien.niveriaapi.utils.ui.MessageUtils;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
+import org.bukkit.command.CommandSender;
+import toutouchien.niveriaapi.lang.Lang;
+import toutouchien.niveriaapi.utils.CommandUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-
-public class HologramRemoveCommand extends SubCommand {
-	public HologramRemoveCommand() {
-		super(new CommandData("remove", "niveriaholograms")
-				.aliases("r")
-				.playerRequired(true)
-				.usage("<hologram>"));
+public class HologramRemoveCommand {
+	private HologramRemoveCommand() {
+		throw new IllegalStateException("Command class");
 	}
 
-	@Override
-	public void execute(@NotNull Player player, String[] args, @NotNull String label) {
-		if (args.length == 0) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Tu dois spécifier le nom de l'hologramme que tu veux retirer.")
-			);
+	public static LiteralCommandNode<CommandSourceStack> get() {
+		return Commands.literal("remove")
+				.requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.remove"))
+				.then(Commands.argument("hologram", StringArgumentType.word())
+						.suggests((ctx, builder) -> {
+							HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+							for (Hologram hologram : hologramManager.holograms())
+								builder.suggest(hologram.name());
 
-		HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
-		Hologram hologram = hologramManager.hologramByName(args[0]);
-		if (hologram == null) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Cet hologramme n'existe pas.")
-			);
+							return builder.buildFuture();
+						})
+						.executes(ctx -> {
+							CommandSender sender = CommandUtils.sender(ctx);
+							String hologramName = StringArgumentType.getString(ctx, "hologram");
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+							HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+							Hologram hologram = hologramManager.hologramByName(hologramName);
+							if (hologram == null) {
+								Lang.sendMessage(sender, "niveriaholograms.hologram.remove.doesnt_exist", hologramName);
+								return Command.SINGLE_SUCCESS;
+							}
 
-		hologramManager.delete(hologram);
-		player.sendMessage(MessageUtils.successMessage(Component.text("Hologramme supprimé avec succès !")));
+							hologramManager.delete(hologram);
+							Lang.sendMessage(sender, "niveriaholograms.hologram.remove.removed", hologram.name());
+							return Command.SINGLE_SUCCESS;
+						})
+				).build();
 	}
-
-	@Override
-	public List<String> complete(@NotNull Player player, String @NotNull [] args, int argIndex) {
-        if (argIndex != 0)
-            return Collections.emptyList();
-
-		String currentArg = args[argIndex].toLowerCase(Locale.ROOT);
-        return NiveriaHolograms.instance().hologramManager().holograms().stream()
-                .map(Hologram::name)
-                .filter(hologramName -> hologramName.toLowerCase(Locale.ROOT).startsWith(currentArg))
-                .toList();
-
-    }
 }
