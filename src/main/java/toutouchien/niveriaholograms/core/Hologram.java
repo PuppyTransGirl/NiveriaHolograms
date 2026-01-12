@@ -79,7 +79,7 @@ public class Hologram {
         updateLocation();
         update();
 
-        if (config instanceof TextHologramConfiguration textConfig) {
+        if (config instanceof TextHologramConfiguration textConfig && textConfig.updateInterval() != 0) {
             updateTask = Task.asyncRepeat(
                     ignored -> this.updateForAllPlayers(),
                     NiveriaHolograms.instance(),
@@ -100,9 +100,8 @@ public class Hologram {
                 false
         );
 
-        if (display instanceof Display.TextDisplay textDisplay && config instanceof TextHologramConfiguration textConfig) {
+        if (display instanceof Display.TextDisplay textDisplay && config instanceof TextHologramConfiguration textConfig)
             textDisplay.setText(PaperAdventure.asVanilla(textConfig.serializedText(player)));
-        }
 
         // getNonDefaultValues sends less data than packAll
         // It is used when the player haven't received any data from the display yet
@@ -118,9 +117,8 @@ public class Hologram {
                 .collect(Collectors.toList());
 
         EXECUTOR.submit(() -> {
-            for (Player player : targets) {
+            for (Player player : targets)
                 this.create(player);
-            }
         });
     }
 
@@ -137,9 +135,8 @@ public class Hologram {
                 .collect(Collectors.toList());
 
         EXECUTOR.submit(() -> {
-            for (Player player : targets) {
+            for (Player player : targets)
                 this.delete(player);
-            }
         });
     }
 
@@ -173,13 +170,14 @@ public class Hologram {
             if (updateTask != null && !updateTask.isCancelled())
                 updateTask.cancel();
 
-            updateTask = Task.asyncRepeat(
-                    ignored -> this.updateForAllPlayers(),
-                    NiveriaHolograms.instance(),
-                    Math.max(40L, textConfig.updateInterval()) * 50L,
-                    textConfig.updateInterval() * 50L,
-                    TimeUnit.MILLISECONDS
-            );
+            if (textConfig.updateInterval() != 0)
+                updateTask = Task.asyncRepeat(
+                        ignored -> this.updateForAllPlayers(),
+                        NiveriaHolograms.instance(),
+                        Math.max(40L, textConfig.updateInterval()) * 50L,
+                        textConfig.updateInterval() * 50L,
+                        TimeUnit.MILLISECONDS
+                );
 
             textConfig.updateIntervalDirty(false)
                     .textDirty(false);

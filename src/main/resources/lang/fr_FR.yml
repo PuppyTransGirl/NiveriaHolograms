@@ -45,7 +45,7 @@ niveriaholograms:
     info:
       doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>L'hologramme \"%s\" n'existe pas.</ncolor>"
       info: |
-        <prefix:holograms/> <separator> <ncolor:primary>Informations sur l'hologramme \"%s\":</ncolor>
+        <prefix:holograms/> <separator> <ncolor:primary>Informations sur l'hologramme "%s":</ncolor>
         <ncolor:default>- Type: %s
         - Position: X: %.2f Y: %.2f Z: %.2f
         - Monde: %s
@@ -84,7 +84,7 @@ niveriaholograms:
     list:
       no_holograms: "<prefix:holograms/> <separator> <ncolor:default>Il n'y a pas d'hologrammes créés.</ncolor>"
       header: "<prefix:holograms/> <separator> <ncolor:primary>Liste des hologrammes (%s):</ncolor>"
-      hologram_entry: "<ncolor:default>- %s (Type: %s, Monde: %s, Position: X: %.2f Y: %.2f Z: %.2f)</ncolor>"
+      hologram_entry: "<hover:show_text:'Clique ici pour te téléporter cet hologramme'><click:run_command:'/hologram teleport %s'><ncolor:default>- %s (Type: %s, Monde: %s, Position: X: %.2f Y: %.2f Z: %.2f)</ncolor></click></hover>"
 
     nearby:
       no_holograms: "<prefix:holograms/> <separator> <ncolor:default>Il n'y a pas d'hologrammes dans un rayon de %s.</ncolor>"

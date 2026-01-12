@@ -53,6 +53,7 @@ tasks {
             modrinth("LuckPerms", "v5.5.17-bukkit")
             github("jpenilla", "TabTPS", "v1.3.29", "tabtps-paper-1.3.29.jar")
             modrinth("ServerLogViewer-Paper", "1.0.0")
+            github("PuppyTransGirl", "NiveriaAPI", "v3.0.0", "NiveriaAPI-3.0.0.jar")
         }
     }
 

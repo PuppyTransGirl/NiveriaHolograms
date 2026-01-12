@@ -58,6 +58,7 @@ public class HologramInfoCommand {
                             HologramType type = hologram.type();
                             CustomLocation loc = hologram.location();
 
+                            String[] brightnessText = brightnessText(config.brightness());
                             Lang.sendMessage(sender, "niveriaholograms.hologram.info.info",
                                     hologram.name(),
                                     StringUtils.capitalize(type.name()),
@@ -66,7 +67,7 @@ public class HologramInfoCommand {
                                     loc.yaw(), loc.pitch(),
                                     scaleText(config.scale()),
                                     StringUtils.capitalize(config.billboard().name()),
-                                    brightnessText(config.brightness()),
+                                    brightnessText[0], brightnessText[1],
                                     config.shadowRadius(),
                                     config.shadowStrength(),
                                     config.visibilityDistance()

@@ -41,7 +41,7 @@ public class HologramNearbyCommand {
 
 
                             if (nearbyHolograms.isEmpty()) {
-                                Lang.sendMessage(player, "niveriaholograms.hologram.nearby.no_holograms");
+                                Lang.sendMessage(player, "niveriaholograms.hologram.nearby.no_holograms", radius);
                                 return Command.SINGLE_SUCCESS;
                             }
 
@@ -57,8 +57,8 @@ public class HologramNearbyCommand {
                                         hologram.name(), // For MiniMessage command click
                                         hologram.name(),
                                         StringUtils.capitalize(hologram.type().name()),
-                                        loc.x(), loc.y(), loc.z(),
                                         loc.world(),
+                                        loc.x(), loc.y(), loc.z(),
                                         distance
                                 );
                             }

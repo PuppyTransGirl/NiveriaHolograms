@@ -41,8 +41,8 @@ public class HologramListCommand {
                         Lang.sendMessage(sender, "niveriaholograms.hologram.list.hologram_entry",
                                 hologram.name(),
                                 StringUtils.capitalize(hologram.type().name()),
-                                loc.x(), loc.y(), loc.z(),
-                                loc.world()
+                                loc.world(),
+                                loc.x(), loc.y(), loc.z()
                         );
                     }
 
