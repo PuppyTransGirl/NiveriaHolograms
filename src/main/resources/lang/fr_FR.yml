@@ -94,3 +94,7 @@ niveriaholograms:
     remove:
       doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>L'hologramme \"%s\" n'existe pas.</ncolor>"
       removed: "<prefix:holograms/> <separator> <ncolor:success>Hologramme \"%s\" supprimé avec succès.</ncolor>"
+
+    teleport:
+      doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>L'hologramme \"%s\" n'existe pas.</ncolor>"
+      teleported: "<prefix:holograms/> <separator> <ncolor:success>Téléporté à l'hologramme \"%s\" avec succès.</ncolor>"
