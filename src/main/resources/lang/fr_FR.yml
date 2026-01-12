@@ -106,7 +106,6 @@ niveriaholograms:
       only_text: "<prefix:holograms/> <separator> <ncolor:error>Cette option ne peut être modifiée que pour les hologrammes de type texte.</ncolor>"
       only_block_and_item: "<prefix:holograms/> <separator> <ncolor:error>Cette option ne peut être modifiée que pour les hologrammes de type bloc et item.</ncolor>"
 
-      # These are messages about the command used to change the block type of block hologram
       block:
         no_air: "<prefix:holograms/> <separator> <ncolor:error>Le bloc ne peut pas être de l'air.</ncolor>"
         edited: "<prefix:holograms/> <separator> <ncolor:success>Le bloc de l'hologramme \"%s\" a été changé en \"<lang:%s>\" avec succès.</ncolor>"
@@ -114,3 +113,7 @@ niveriaholograms:
       item:
         no_item: "<prefix:holograms/> <separator> <ncolor:error>Vous devez tenir un item dans votre main principale.</ncolor>"
         edited: "<prefix:holograms/> <separator> <ncolor:success>L'item de l'hologramme \"%s\" a été changé en \"<lang:%s>\" avec succès.</ncolor>"
+
+      glowing:
+        invalid_color: "<prefix:holograms/> <separator> <ncolor:error>La couleur de brillance \"%s\" est invalide.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>Le paramètre de brillance de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"

@@ -1,86 +1,86 @@
 package toutouchien.niveriaholograms.commands.hologram.edit.other;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import toutouchien.niveriaapi.command.CommandData;
-import toutouchien.niveriaapi.command.SubCommand;
-import toutouchien.niveriaapi.utils.ui.MessageUtils;
+import org.bukkit.command.CommandSender;
+import toutouchien.niveriaapi.lang.Lang;
+import toutouchien.niveriaapi.utils.CommandUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.configurations.BlockHologramConfiguration;
 import toutouchien.niveriaholograms.configurations.ItemHologramConfiguration;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-public class HologramEditGlowingCommand extends SubCommand {
-    public HologramEditGlowingCommand() {
-        super(new CommandData("glowing", "niveriaholograms")
-                .playerRequired(true)
-                .usage("<couleur|transparent|none|#FFFFFF>"));
+public class HologramEditGlowingCommand {
+    private HologramEditGlowingCommand() {
+        throw new IllegalStateException("Command class");
     }
 
-    @Override
-    public void execute(@NotNull Player player, String @NotNull [] args, String[] fullArgs, @NotNull String label) {
-        HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
-        Hologram hologram = hologramManager.hologramByName(fullArgs[1]);
-        if (hologram == null) {
-            TextComponent errorMessage = MessageUtils.errorMessage(
-                    Component.text("Cet hologramme n'existe pas.")
-            );
+    public static LiteralCommandNode<CommandSourceStack> get() {
+        return Commands.literal("glowing")
+                .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.glowing"))
+                .then(Commands.argument("color", StringArgumentType.greedyString())
+                        .suggests((ctx, builder) -> {
+                            List<String> suggestions = List.of("aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white", "yellow", "transparent", "none", "default");
 
-            player.sendMessage(errorMessage);
-            return;
-        }
+                            suggestions.forEach(builder::suggest);
 
-        if (!(hologram.configuration() instanceof BlockHologramConfiguration) && !(hologram.configuration() instanceof ItemHologramConfiguration)) {
-            TextComponent errorMessage = MessageUtils.errorMessage(
-                    Component.text("Cette comande ne peut être utilisée que sur des hologrammes d'item et de bloc.")
-            );
+                            return builder.buildFuture();
+                        })
+                        .executes(ctx -> {
+                            CommandSender sender = CommandUtils.sender(ctx);
+                            String hologramName = ctx.getArgument("hologram", String.class);
+                            String colorName = ctx.getArgument("color", String.class);
 
-            player.sendMessage(errorMessage);
-            return;
-        }
+                            HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+                            Hologram hologram = hologramManager.hologramByName(hologramName);
+                            if (hologram == null) {
+                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+                                return Command.SINGLE_SUCCESS;
+                            }
 
-        if (args.length == 0) {
-            TextComponent errorMessage = MessageUtils.errorMessage(
-                    Component.text("Tu dois spécifier la couleur de glowing.")
-            );
+                            if (!(hologram.configuration() instanceof BlockHologramConfiguration) && !(hologram.configuration() instanceof ItemHologramConfiguration)) {
+                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.only_block_and_item");
+                                return Command.SINGLE_SUCCESS;
+                            }
 
-            player.sendMessage(errorMessage);
-            return;
-        }
+                            String option = colorName.toLowerCase(Locale.ROOT);
+                            TextColor glowingColor;
+                            switch (option) {
+                                case "none" -> glowingColor = null;
+                                case "default" -> glowingColor = NamedTextColor.WHITE;
 
-        String option = args[0].toLowerCase(Locale.ROOT);
-        TextColor glowingColor;
-        switch (option) {
-            case "none" -> glowingColor = null;
-            case "default" -> glowingColor = NamedTextColor.WHITE;
+                                default -> {
+                                    TextColor textColor = option.startsWith("#")
+                                            ? TextColor.fromHexString(option)
+                                            : NamedTextColor.NAMES.value(option);
 
-            default -> {
-                TextColor textColor = option.startsWith("#")
-                        ? TextColor.fromHexString(option)
-                        : NamedTextColor.NAMES.value(option);
+                                    if (textColor == null) {
+                                        Lang.sendMessage(sender, "niveriaholograms.hologram.edit.glowing.invalid_color", colorName);
+                                        return Command.SINGLE_SUCCESS;
+                                    }
 
-                if (textColor == null) {
-                    TextComponent errorMessage = MessageUtils.errorMessage(
-                            Component.text("Cette couleur est invalide.")
-                    );
+                                    glowingColor = textColor;
+                                }
+                            }
 
-                    player.sendMessage(errorMessage);
-                    return;
-                }
+                            applyGlowing(hologram, glowingColor);
 
-                glowingColor = textColor;
-            }
-        }
+                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.glowing.edited", hologramName);
+                            return Command.SINGLE_SUCCESS;
+                        })
+                ).build();
+    }
+
+    private static void applyGlowing(Hologram hologram, TextColor glowingColor) {
         if (hologram.configuration() instanceof BlockHologramConfiguration) {
             hologram.editConfig((BlockHologramConfiguration config) -> {
                 if (glowingColor == null) {
@@ -102,49 +102,5 @@ public class HologramEditGlowingCommand extends SubCommand {
                 config.glowingColor(glowingColor);
             });
         }
-
-        TextComponent successMessage = MessageUtils.successMessage(
-                Component.text("Le glowing a été changé avec succès !")
-        );
-
-        player.sendMessage(successMessage);
-    }
-
-    @Override
-    public List<String> complete(@NotNull Player player, String @NotNull [] args, String @NotNull [] fullArgs, int argIndex) {
-        if (argIndex != 0)
-            return Collections.emptyList();
-
-        Hologram hologram = NiveriaHolograms.instance().hologramManager().hologramByName(fullArgs[1]);
-        if (hologram == null || (!(hologram.configuration() instanceof BlockHologramConfiguration) && !(hologram.configuration() instanceof ItemHologramConfiguration)))
-            return Collections.emptyList();
-
-        List<String> completion = new ArrayList<>(List.of("aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white", "yellow"));
-        boolean glowing = hologram.configuration() instanceof BlockHologramConfiguration
-                ? ((BlockHologramConfiguration) hologram.configuration()).glowing()
-                : ((ItemHologramConfiguration) hologram.configuration()).glowing();
-
-        TextColor glowingColor = hologram.configuration() instanceof BlockHologramConfiguration
-                ? ((BlockHologramConfiguration) hologram.configuration()).glowingColor()
-                : ((ItemHologramConfiguration) hologram.configuration()).glowingColor();
-
-        if (glowingColor == null || !glowing) {
-            completion.add("default");
-            return completion;
-        }
-
-        completion.add("none");
-
-        if (glowingColor != NamedTextColor.WHITE) {
-            completion.add("default");
-
-            if (!(glowingColor instanceof NamedTextColor))
-                completion.add(glowingColor.asHexString());
-        }
-
-        String currentArg = args[argIndex];
-        return completion.stream()
-                .filter(billboard -> billboard.toLowerCase(Locale.ROOT).startsWith(currentArg))
-                .toList();
     }
 }

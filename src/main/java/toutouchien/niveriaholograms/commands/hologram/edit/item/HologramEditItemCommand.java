@@ -28,7 +28,7 @@ public class HologramEditItemCommand {
 					HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
 					Hologram hologram = hologramManager.hologramByName(hologramName);
 					if (hologram == null) {
-						Lang.sendMessage(player, "niveriaholograms.hologram.edit.doesnt_exist");
+						Lang.sendMessage(player, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
 						return Command.SINGLE_SUCCESS;
 					}
 
