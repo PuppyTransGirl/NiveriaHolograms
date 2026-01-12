@@ -1,64 +1,51 @@
 package toutouchien.niveriaholograms.commands.hologram.edit.text;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import toutouchien.niveriaapi.command.CommandData;
-import toutouchien.niveriaapi.command.SubCommand;
-import toutouchien.niveriaapi.utils.ui.MessageUtils;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
+import org.bukkit.command.CommandSender;
+import toutouchien.niveriaapi.lang.Lang;
+import toutouchien.niveriaapi.utils.CommandUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
-public class HologramEditAddLineCommand extends SubCommand {
-	public HologramEditAddLineCommand() {
-		super(new CommandData("addline", "niveriaholograms")
-				.playerRequired(true)
-				.usage("<texte>"));
+public class HologramEditAddLineCommand {
+	private HologramEditAddLineCommand() {
+		throw new IllegalStateException("Command class");
 	}
 
-	@Override
-	public void execute(@NotNull Player player, String @NotNull [] args, String[] fullArgs, @NotNull String label) {
-		HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
-		Hologram hologram = hologramManager.hologramByName(fullArgs[1]);
-		if (hologram == null) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Cet hologramme n'existe pas.")
-			);
+	public static LiteralCommandNode<CommandSourceStack> get() {
+		return Commands.literal("addLine")
+				.requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.addLine"))
+				.then(Commands.argument("text", StringArgumentType.greedyString())
+						.executes(ctx -> {
+							CommandSender sender = CommandUtils.sender(ctx);
+							String hologramName = ctx.getArgument("hologram", String.class);
+							String text = ctx.getArgument("text", String.class);
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+							HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+							Hologram hologram = hologramManager.hologramByName(hologramName);
+							if (hologram == null) {
+								Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+								return Command.SINGLE_SUCCESS;
+							}
 
-		if (!(hologram.configuration() instanceof TextHologramConfiguration)) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Cette comande ne peut être utilisée que sur des hologrammes de texte.")
-			);
+							if (!(hologram.configuration() instanceof TextHologramConfiguration)) {
+								Lang.sendMessage(sender, "niveriaholograms.hologram.edit.only_text");
+								return Command.SINGLE_SUCCESS;
+							}
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+							hologram.editConfig((TextHologramConfiguration config) -> {
+								config.addText(text);
+							});
 
-		if (args.length == 0) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Tu dois spécifier le texte que tu veux ajouter.")
-			);
-
-			player.sendMessage(errorMessage);
-			return;
-		}
-
-		String newText = String.join(" ", args);
-		hologram.editConfig((TextHologramConfiguration config) -> {
-			config.addText(newText);
-		});
-
-		TextComponent successMessage = MessageUtils.successMessage(
-				Component.text("Le texte a été ajouté avec succès !")
-		);
-
-		player.sendMessage(successMessage);
+							Lang.sendMessage(sender, "niveriaholograms.hologram.edit.addLine.edited", hologramName);
+							return Command.SINGLE_SUCCESS;
+						})
+				).build();
 	}
 }
