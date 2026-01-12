@@ -110,3 +110,7 @@ niveriaholograms:
       block:
         no_air: "<prefix:holograms/> <separator> <ncolor:error>Le bloc ne peut pas être de l'air.</ncolor>"
         edited: "<prefix:holograms/> <separator> <ncolor:success>Le bloc de l'hologramme \"%s\" a été changé en \"<lang:%s>\" avec succès.</ncolor>"
+
+      item:
+        no_item: "<prefix:holograms/> <separator> <ncolor:error>Vous devez tenir un item dans votre main principale.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>L'item de l'hologramme \"%s\" a été changé en \"<lang:%s>\" avec succès.</ncolor>"

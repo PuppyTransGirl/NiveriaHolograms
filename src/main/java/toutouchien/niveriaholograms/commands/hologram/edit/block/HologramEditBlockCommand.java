@@ -22,6 +22,7 @@ public class HologramEditBlockCommand {
 
 	public static LiteralCommandNode<CommandSourceStack> get() {
 		return Commands.literal("block")
+				.requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.block"))
 				.then(Commands.argument("block", ArgumentTypes.resource(RegistryKey.BLOCK)))
 				.executes(ctx -> {
 					CommandSender sender = CommandUtils.sender(ctx);
