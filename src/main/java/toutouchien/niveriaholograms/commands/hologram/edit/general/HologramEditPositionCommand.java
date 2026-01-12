@@ -1,171 +1,76 @@
 package toutouchien.niveriaholograms.commands.hologram.edit.general;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
+import io.papermc.paper.command.brigadier.argument.resolvers.FinePositionResolver;
+import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver;
+import io.papermc.paper.math.FinePosition;
+import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import toutouchien.niveriaapi.command.CommandData;
-import toutouchien.niveriaapi.command.SubCommand;
-import toutouchien.niveriaapi.utils.common.MathUtils;
-import toutouchien.niveriaapi.utils.ui.MessageUtils;
+import toutouchien.niveriaapi.lang.Lang;
+import toutouchien.niveriaapi.utils.CommandUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
-import toutouchien.niveriaholograms.utils.CustomLocation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+@SuppressWarnings("UnstableApiUsage")
+public class HologramEditPositionCommand {
+    private HologramEditPositionCommand() {
+        throw new IllegalStateException("Command class");
+    }
 
-public class HologramEditPositionCommand extends SubCommand {
-	public HologramEditPositionCommand() {
-		super(new CommandData("position", "niveriaholograms")
-				.playerRequired(true)
-				.usage("<here|joueur|x y z>"));
-	}
+    public static LiteralCommandNode<CommandSourceStack> get() {
+        return Commands.literal("position")
+                .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.position"))
+                .then(Commands.argument("player", ArgumentTypes.player()).executes(HologramEditPositionCommand::getAfter))
+                .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.position", true)) // position argument requires a player
+                .then(Commands.argument("position", ArgumentTypes.finePosition()).executes(HologramEditPositionCommand::getAfter))
+                .build();
+    }
 
-	@Override
-	public void execute(@NotNull Player player, String @NotNull [] args, String[] fullArgs, @NotNull String label) {
-		HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
-		Hologram hologram = hologramManager.hologramByName(fullArgs[1]);
-		if (hologram == null) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Cet hologramme n'existe pas.")
-			);
+    @SuppressWarnings({"DataFlowIssue", "java:S2259"})
+    private static Location locationFromContext(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        try {
+            FinePositionResolver resolver = ctx.getArgument("position", FinePositionResolver.class);
+            FinePosition finePosition = resolver.resolve(ctx.getSource());
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+            // Player cannot be null if the provided argument was position since it requires a player
+            Player player = (Player) ctx.getSource().getExecutor();
+            return finePosition.toLocation(player.getWorld());
+        } catch (IllegalArgumentException e) {
+            PlayerSelectorArgumentResolver targetResolver = ctx.getArgument("player", PlayerSelectorArgumentResolver.class);
+            Player target = targetResolver.resolve(ctx.getSource()).getFirst();
+            return target.getLocation();
+        }
+    }
 
-		if (args.length == 0) {
-			player.sendMessage(Component.text("/" + label + " " + String.join(" ", fullArgs) + " <here|joueur|x y z>", NamedTextColor.RED));
-			return;
-		}
+    @SuppressWarnings("SameReturnValue")
+    public static int getAfter(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        CommandSender sender = CommandUtils.sender(ctx);
+        String hologramName = ctx.getArgument("hologram", String.class);
 
-		String arg = args[0];
+        HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+        Hologram hologram = hologramManager.hologramByName(hologramName);
+        if (hologram == null) {
+            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+            return Command.SINGLE_SUCCESS;
+        }
 
-		if (arg.equalsIgnoreCase("here")) {
-			// Don't change the rotation
-			hologram.editLocation(location -> {
-				location.x(player.getLocation().x())
-						.y(player.getLocation().y())
-						.z(player.getLocation().z());
-			});
+        Location newLocation = locationFromContext(ctx);
+        hologram.editLocation(location ->
+                location.world(newLocation.getWorld().getName())
+                        .x(newLocation.x())
+                        .y(newLocation.y())
+                        .z(newLocation.z())
+        );
 
-			TextComponent successMessage = MessageUtils.successMessage(
-					Component.text("L'hologramme a été déplacé avec succès !")
-			);
-
-			player.sendMessage(successMessage);
-			return;
-		}
-
-		Player p = Bukkit.getPlayerExact(arg);
-		if (p != null) {
-			// Don't change the rotation
-			hologram.editLocation(location -> {
-				location.x(player.getLocation().x())
-						.y(player.getLocation().y())
-						.z(player.getLocation().z());
-			});
-
-			TextComponent successMessage = MessageUtils.successMessage(
-					Component.text("L'hologramme a été déplacé avec succès !")
-			);
-
-			player.sendMessage(successMessage);
-			return;
-		}
-
-		// New coordinate parsing logic
-		if (args.length == 3) {
-			try {
-				CustomLocation currentLocation = hologram.location();
-				double x = parseCoordinate(args[0], currentLocation.x());
-				double y = parseCoordinate(args[1], currentLocation.y());
-				double z = parseCoordinate(args[2], currentLocation.z());
-
-				hologram.editLocation(location -> {
-					location.x(x)
-							.y(y)
-							.z(z);
-				});
-
-				TextComponent successMessage = MessageUtils.successMessage(
-						Component.text("L'hologramme a été déplacé avec succès !")
-				);
-
-				player.sendMessage(successMessage);
-			} catch (NumberFormatException e) {
-				TextComponent errorMessage = MessageUtils.errorMessage(
-						Component.text("Les coordonnées sont invalides.")
-				);
-
-				player.sendMessage(errorMessage);
-			}
-			return;
-		}
-
-		player.sendMessage(Component.text("/" + label + " " + String.join(" ", fullArgs) + " <here|joueur|x y z>", NamedTextColor.RED));
-	}
-
-	private double parseCoordinate(String coord, double currentValue) {
-		if (!coord.startsWith("~")) {
-			double value = Double.parseDouble(coord);
-			if (!Double.isFinite(value)) {
-				throw new NumberFormatException("Coordinate is not finite: " + coord);
-			}
-			return value;
-		}
-
-		if (coord.length() == 1)
-			return currentValue;
-
-		double delta = Double.parseDouble(coord.substring(1));
-		if (!Double.isFinite(delta)) {
-			throw new NumberFormatException("Coordinate delta is not finite: " + coord);
-		}
-		return currentValue + delta;
-	}
-
-	@Override
-	public List<String> complete(@NotNull Player player, String @NotNull [] args, String @NotNull [] fullArgs, int argIndex) {
-		List<String> completions = new ArrayList<>();
-
-		if (argIndex == 0) {
-			completions.addAll(List.of("here", "~0", "~"));
-
-			completions.addAll(Bukkit.getOnlinePlayers().stream()
-					.filter(p -> !p.getUniqueId().equals(player.getUniqueId()))
-					.map(Player::getName)
-					.toList());
-		}
-
-		if (argIndex < 5) {
-			Hologram hologram = NiveriaHolograms.instance().hologramManager().hologramByName(fullArgs[1]);
-			if (hologram == null)
-				return Collections.emptyList();
-
-			CustomLocation currentLocation = hologram.location();
-
-			completions.add("~");
-			completions.add("~0");
-
-			switch(argIndex) {
-				case 0 -> completions.add(String.valueOf(MathUtils.decimalRound(currentLocation.x(), 2)));
-				case 1 -> completions.add(String.valueOf(MathUtils.decimalRound(currentLocation.y(), 2)));
-				case 2 -> completions.add(String.valueOf(MathUtils.decimalRound(currentLocation.z(), 2)));
-                default -> {
-					// Do nothing
-                }
-            }
-		}
-
-		return completions.stream()
-				.filter(s -> s.toLowerCase(Locale.ROOT).startsWith(args[argIndex].toLowerCase(Locale.ROOT)))
-				.toList();
-	}
+        Lang.sendMessage(sender, "niveriaholograms.hologram.edit.position.edited", hologramName);
+        return Command.SINGLE_SUCCESS;
+    }
 }

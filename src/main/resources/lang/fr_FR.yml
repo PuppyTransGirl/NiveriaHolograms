@@ -128,6 +128,12 @@ niveriaholograms:
       pitch:
         edited: "<prefix:holograms/> <separator> <ncolor:success>Le pitch de l'hologramme \"%s\" a été changé en \"%.2f\" avec succès.</ncolor>"
 
+      position:
+        edited: "<prefix:holograms/> <separator> <ncolor:success>La position de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+
+      yaw:
+        edited: "<prefix:holograms/> <separator> <ncolor:success>Le yaw de l'hologramme \"%s\" a été changé en \"%.2f\" avec succès.</ncolor>"
+
       # Other
       glowing:
         invalid_color: "<prefix:holograms/> <separator> <ncolor:error>La couleur de brillance \"%s\" est invalide.</ncolor>"

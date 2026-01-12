@@ -13,7 +13,7 @@ import java.util.Map;
 
 @SerializableAs("CustomLocation")
 public class CustomLocation implements ConfigurationSerializable {
-    private final String world;
+    private String world;
     private double x, y, z;
     private float yaw, pitch;
 
@@ -62,6 +62,13 @@ public class CustomLocation implements ConfigurationSerializable {
 
     public float pitch() {
         return pitch;
+    }
+
+    @NotNull
+    @Contract("_ -> this")
+    public CustomLocation world(@NotNull String world) {
+        this.world = world;
+        return this;
     }
 
     @NotNull
