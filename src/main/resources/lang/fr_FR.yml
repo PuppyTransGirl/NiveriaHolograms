@@ -41,3 +41,42 @@ niveriaholograms:
       invalid_character: "<prefix:holograms/> <separator> <ncolor:error>Le nom de l'hologramme contient des caractères invalides.</ncolor>"
       already_exists: "<prefix:holograms/> <separator> <ncolor:error>Un hologramme avec ce nom existe déjà.</ncolor>"
       created: "<prefix:holograms/> <separator> <ncolor:success>Hologramme \"%s\" de type \"%s\" créé avec succès.</ncolor>"
+
+    info:
+      doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>L'hologramme \"%s\" n'existe pas.</ncolor>"
+      info: |
+        <prefix:holograms/> <separator> <ncolor:primary>Informations sur l'hologramme \"%s\":</ncolor>
+        <ncolor:default>- Type: %s
+        - Position: X: %.2f Y: %.2f Z: %.2f
+        - Monde: %s
+        - Rotation: %.2f %.2f
+        - Taille: %s
+        - Billboard: %s
+        - Luminosité: Bloc %s Ciel %s
+        - Rayon d'ombre: %.2f
+        - Force de l'ombre: %.2f
+        - Distance de visibilité: %s</ncolor>
+
+      info_block: |
+        <ncolor:default>- Bloc: %s
+        - Brillant: %s
+        - Couleur de brillance: %s
+        </ncolor>
+
+      info_item: |
+        <ncolor:default>- Item: %s
+        - Brillant: %s
+        - Couleur de brillance: %s
+        </ncolor>
+
+      info_text: |
+        <ncolor:default>- Couleur de fond: %s
+        - Alignement du texte: %s
+        - Transparent: %s
+        - Ombre du texte: %s
+        - Intervalle de mise à jour (tick): %s</ncolor>
+
+      other:
+        default: "Par défaut"
+        transparent: "Transparent"
+        no_glowing_color: "Aucune"
