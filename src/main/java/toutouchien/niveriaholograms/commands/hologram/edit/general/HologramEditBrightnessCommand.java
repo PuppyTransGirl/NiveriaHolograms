@@ -42,7 +42,7 @@ public class HologramEditBrightnessCommand {
                                     CommandSender sender = CommandUtils.sender(ctx);
                                     String hologramName = ctx.getArgument("hologram", String.class);
                                     String typeName = ctx.getArgument("type", String.class);
-                                    int light = ctx.getArgument("ligt", Integer.class);
+                                    int light = ctx.getArgument("ligt", int.class);
 
                                     HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                                     Hologram hologram = hologramManager.hologramByName(hologramName);

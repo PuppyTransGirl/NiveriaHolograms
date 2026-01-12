@@ -29,7 +29,7 @@ public class HologramNearbyCommand {
                 .then(Commands.argument("radius", IntegerArgumentType.integer(0))
                         .executes(ctx -> {
                             Player player = (Player) ctx.getSource().getExecutor();
-                            int radius = ctx.getArgument("radius", Integer.class);
+                            int radius = ctx.getArgument("radius", int.class);
 
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                             List<Map.Entry<Hologram, Double>> nearbyHolograms = hologramManager.holograms().stream()

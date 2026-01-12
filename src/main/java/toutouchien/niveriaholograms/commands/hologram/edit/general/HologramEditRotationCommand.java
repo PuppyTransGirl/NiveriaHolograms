@@ -25,8 +25,8 @@ public class HologramEditRotationCommand {
                                 .executes(ctx -> {
                                     CommandSender sender = CommandUtils.sender(ctx);
                                     String hologramName = ctx.getArgument("hologram", String.class);
-                                    float yaw = ctx.getArgument("yaw", Float.class);
-                                    float pitch = ctx.getArgument("pitch", Float.class);
+                                    float yaw = ctx.getArgument("yaw", float.class);
+                                    float pitch = ctx.getArgument("pitch", float.class);
 
                                     HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                                     Hologram hologram = hologramManager.hologramByName(hologramName);

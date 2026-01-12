@@ -24,7 +24,7 @@ public class HologramEditYawCommand {
 						.executes(ctx -> {
 							CommandSender sender = CommandUtils.sender(ctx);
 							String hologramName = ctx.getArgument("hologram", String.class);
-							float yaw = ctx.getArgument("yaw", Float.class);
+                            float yaw = ctx.getArgument("yaw", float.class);
 
 							HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
 							Hologram hologram = hologramManager.hologramByName(hologramName);

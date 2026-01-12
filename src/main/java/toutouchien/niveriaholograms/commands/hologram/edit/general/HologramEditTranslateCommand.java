@@ -26,9 +26,9 @@ public class HologramEditTranslateCommand {
                                         .executes(ctx -> {
                                             CommandSender sender = CommandUtils.sender(ctx);
                                             String hologramName = ctx.getArgument("hologram", String.class);
-                                            float translateX = ctx.getArgument("translateX", Float.class);
-                                            float translateY = ctx.getArgument("translateY", Float.class);
-                                            float translateZ = ctx.getArgument("translateZ", Float.class);
+                                            float translateX = ctx.getArgument("translateX", float.class);
+                                            float translateY = ctx.getArgument("translateY", float.class);
+                                            float translateZ = ctx.getArgument("translateZ", float.class);
 
                                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                                             Hologram hologram = hologramManager.hologramByName(hologramName);

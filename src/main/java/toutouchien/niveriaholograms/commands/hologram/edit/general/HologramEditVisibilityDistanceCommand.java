@@ -24,7 +24,7 @@ public class HologramEditVisibilityDistanceCommand {
 						.executes(ctx -> {
 							CommandSender sender = CommandUtils.sender(ctx);
 							String hologramName = ctx.getArgument("hologram", String.class);
-							int visibilityDistance = ctx.getArgument("visibilityDistance", Integer.class);
+                            int visibilityDistance = ctx.getArgument("visibilityDistance", int.class);
 
 							HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
 							Hologram hologram = hologramManager.hologramByName(hologramName);

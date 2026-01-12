@@ -24,7 +24,7 @@ public class HologramEditShadowStrengthCommand {
 						.executes(ctx -> {
 							CommandSender sender = CommandUtils.sender(ctx);
 							String hologramName = ctx.getArgument("hologram", String.class);
-							float shadowStrength = ctx.getArgument("shadowStrength", Float.class);
+                            float shadowStrength = ctx.getArgument("shadowStrength", float.class);
 
 							HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
 							Hologram hologram = hologramManager.hologramByName(hologramName);

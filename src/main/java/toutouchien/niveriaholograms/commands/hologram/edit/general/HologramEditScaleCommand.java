@@ -23,16 +23,16 @@ public class HologramEditScaleCommand {
                 .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.scale"))
                 .then(Commands.argument("scale", FloatArgumentType.floatArg())
                         .executes(ctx -> {
-                            float scale = ctx.getArgument("scale", Float.class);
+                            float scale = ctx.getArgument("scale", float.class);
                             return getAfter(ctx, scale, scale, scale);
                         })
                 ).then(Commands.argument("scaleX", FloatArgumentType.floatArg())
                         .then(Commands.argument("scaleY", FloatArgumentType.floatArg())
                                 .then(Commands.argument("scaleZ", FloatArgumentType.floatArg())
                                         .executes(ctx -> {
-                                            float scaleX = ctx.getArgument("scaleX", Float.class);
-                                            float scaleY = ctx.getArgument("scaleY", Float.class);
-                                            float scaleZ = ctx.getArgument("scaleZ", Float.class);
+                                            float scaleX = ctx.getArgument("scaleX", float.class);
+                                            float scaleY = ctx.getArgument("scaleY", float.class);
+                                            float scaleZ = ctx.getArgument("scaleZ", float.class);
                                             return getAfter(ctx, scaleX, scaleY, scaleZ);
                                         })
                                 )

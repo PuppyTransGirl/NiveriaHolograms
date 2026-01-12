@@ -24,7 +24,7 @@ public class HologramEditShadowRadiusCommand {
 						.executes(ctx -> {
 							CommandSender sender = CommandUtils.sender(ctx);
 							String hologramName = ctx.getArgument("hologram", String.class);
-							float shadowRadius = ctx.getArgument("shadowRadius", Float.class);
+                            float shadowRadius = ctx.getArgument("shadowRadius", float.class);
 
 							HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
 							Hologram hologram = hologramManager.hologramByName(hologramName);
