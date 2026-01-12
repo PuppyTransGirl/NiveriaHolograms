@@ -1,17 +1,14 @@
 package toutouchien.niveriaholograms.commands.hologram.basic;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import toutouchien.niveriaapi.command.CommandData;
-import toutouchien.niveriaapi.command.SubCommand;
-import toutouchien.niveriaapi.utils.common.MathUtils;
-import toutouchien.niveriaapi.utils.ui.ColorUtils;
-import toutouchien.niveriaapi.utils.ui.MessageUtils;
+import toutouchien.niveriaapi.lang.Lang;
+import toutouchien.niveriaapi.utils.CommandUtils;
+import toutouchien.niveriaapi.utils.StringUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
@@ -21,84 +18,52 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-public class HologramNearbyCommand extends SubCommand {
-	HologramNearbyCommand() {
-		super(new CommandData("nearby", "niveriaholograms")
-				.aliases("near", "n")
-				.playerRequired(true)
-				.usage("<range>"));
-	}
+public class HologramNearbyCommand {
+    private HologramNearbyCommand() {
+        throw new IllegalStateException("Command class");
+    }
 
-	@Override
-	public void execute(@NotNull Player player, String[] args, @NotNull String label) {
-		if (args.length == 0) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Tu dois spécifier le rayon dans lequel chercher les hologrammes.")
-			);
+    public static LiteralCommandNode<CommandSourceStack> get() {
+        return Commands.literal("nearby")
+                .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.nearby", true))
+                .then(Commands.argument("radius", IntegerArgumentType.integer(0))
+                        .executes(ctx -> {
+                            Player player = (Player) ctx.getSource().getExecutor();
+                            int radius = ctx.getArgument("radius", Integer.class);
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+                            HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+                            List<Map.Entry<Hologram, Double>> nearbyHolograms = hologramManager.holograms().stream()
+                                    .filter(hologram -> hologram.location().world().equals(player.getWorld().getName()))
+                                    .map(hologram -> Map.entry(hologram, hologram.location().distance(player.getLocation())))
+                                    .filter(distance -> distance.getValue() <= radius)
+                                    .sorted(Comparator.comparingDouble(Map.Entry::getValue))
+                                    .toList();
 
-		int radius;
-		try {
-			radius = Integer.parseInt(args[0]);
-		} catch (NumberFormatException exception) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Le rayon spécifié n'est pas un nombre.")
-			);
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+                            if (nearbyHolograms.isEmpty()) {
+                                Lang.sendMessage(player, "niveriaholograms.hologram.nearby.no_holograms");
+                                return Command.SINGLE_SUCCESS;
+                            }
 
-		HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
-		List<Map.Entry<Hologram, Double>> nearbyHolograms = hologramManager.holograms().stream()
-				.filter(hologram -> hologram.location().world().equals(player.getWorld().getName()))
-				.map(hologram -> Map.entry(hologram, hologram.location().distance(player.getLocation())))
-				.filter(distance -> distance.getValue() <= radius)
-				.sorted(Comparator.comparingDouble(Map.Entry::getValue))
-				.toList();
+                            Lang.sendMessage(player, "niveriaholograms.hologram.nearby.header", nearbyHolograms.size());
 
-		if (nearbyHolograms.isEmpty()) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Il n'y a aucun hologramme dans un rayon de %s blocs.".formatted(radius))
-			);
+                            for (Map.Entry<Hologram, Double> entry : nearbyHolograms) {
+                                Hologram hologram = entry.getKey();
+                                double distance = entry.getValue();
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+                                CustomLocation loc = hologram.location();
 
-		TextComponent infoMessage = MessageUtils.infoMessage(
-				Component.text("Voici la liste des hologrammes aux alentours (%s rayon):".formatted(radius))
-		);
+                                Lang.sendMessage(player, "niveriaholograms.hologram.nearby.hologram_entry",
+                                        hologram.name(),
+                                        StringUtils.capitalize(hologram.type().name()),
+                                        loc.x(), loc.y(), loc.z(),
+                                        loc.world(),
+                                        distance
+                                );
+                            }
 
-		player.sendMessage(infoMessage);
-
-		nearbyHolograms.forEach(entry -> {
-			Hologram hologram = entry.getKey();
-			double distance = entry.getValue();
-			String name = hologram.name();
-
-			CustomLocation location = hologram.location();
-			String coordinates = "%s/%s/%s in %s, %s blocks away".formatted(
-					MathUtils.decimalRound(location.x(), 2),
-					MathUtils.decimalRound(location.y(), 2),
-					MathUtils.decimalRound(location.z(), 2),
-					location.world(),
-					MathUtils.decimalRound(distance, 2)
-			);
-
-			TextComponent.Builder playerInfo = Component.text()
-					.content(" - ").color(NamedTextColor.DARK_GRAY)
-					.append(Component.text(hologram.name(), ColorUtils.primaryColor()))
-					.append(Component.text(" (", NamedTextColor.DARK_GRAY))
-					.append(Component.text(coordinates, ColorUtils.secondaryColor()))
-					.append(Component.text(")", NamedTextColor.DARK_GRAY))
-					.clickEvent(ClickEvent.runCommand("/" + label + " teleport " + name))
-					.hoverEvent(HoverEvent.showText(Component.text("Clique pour s'y téléporter")));
-
-			player.sendMessage(playerInfo);
-		});
-	}
+                            return Command.SINGLE_SUCCESS;
+                        })
+                ).build();
+    }
 }

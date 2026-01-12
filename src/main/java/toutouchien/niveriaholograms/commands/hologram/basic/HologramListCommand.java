@@ -38,7 +38,7 @@ public class HologramListCommand {
                     for (Hologram hologram : holograms) {
                         CustomLocation loc = hologram.location();
 
-                        Lang.sendMessage(sender, "niveriaholograms.hologram.list.line",
+                        Lang.sendMessage(sender, "niveriaholograms.hologram.list.hologram_entry",
                                 hologram.name(),
                                 StringUtils.capitalize(hologram.type().name()),
                                 loc.x(), loc.y(), loc.z(),

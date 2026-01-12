@@ -85,3 +85,8 @@ niveriaholograms:
       no_holograms: "<prefix:holograms/> <separator> <ncolor:default>Il n'y a pas d'hologrammes créés.</ncolor>"
       header: "<prefix:holograms/> <separator> <ncolor:primary>Liste des hologrammes (%s):</ncolor>"
       hologram_entry: "<ncolor:default>- %s (Type: %s, Monde: %s, Position: X: %.2f Y: %.2f Z: %.2f)</ncolor>"
+
+    nearby:
+      no_holograms: "<prefix:holograms/> <separator> <ncolor:default>Il n'y a pas d'hologrammes dans un rayon de %s.</ncolor>"
+      header: "<prefix:holograms/> <separator> <ncolor:primary>Hologrammes à proximité (%s):</ncolor>"
+      hologram_entry: "<ncolor:default>- %s (Type: %s, Monde: %s, Position: X: %.2f Y: %.2f Z: %.2f, Distance: %.2f)</ncolor>"
