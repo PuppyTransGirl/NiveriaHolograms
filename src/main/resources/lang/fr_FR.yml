@@ -98,3 +98,15 @@ niveriaholograms:
     teleport:
       doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>L'hologramme \"%s\" n'existe pas.</ncolor>"
       teleported: "<prefix:holograms/> <separator> <ncolor:success>Téléporté à l'hologramme \"%s\" avec succès.</ncolor>"
+
+    edit:
+      doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>L'hologramme \"%s\" n'existe pas.</ncolor>"
+      only_block: "<prefix:holograms/> <separator> <ncolor:error>Cette option ne peut être modifiée que pour les hologrammes de type bloc.</ncolor>"
+      only_item: "<prefix:holograms/> <separator> <ncolor:error>Cette option ne peut être modifiée que pour les hologrammes de type item.</ncolor>"
+      only_text: "<prefix:holograms/> <separator> <ncolor:error>Cette option ne peut être modifiée que pour les hologrammes de type texte.</ncolor>"
+      only_block_and_item: "<prefix:holograms/> <separator> <ncolor:error>Cette option ne peut être modifiée que pour les hologrammes de type bloc et item.</ncolor>"
+
+      # These are messages about the command used to change the block type of block hologram
+      block:
+        no_air: "<prefix:holograms/> <separator> <ncolor:error>Le bloc ne peut pas être de l'air.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>Le bloc de l'hologramme \"%s\" a été changé en \"<lang:%s>\" avec succès.</ncolor>"
