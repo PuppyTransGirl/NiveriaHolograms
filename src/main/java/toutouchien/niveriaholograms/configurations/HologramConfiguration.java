@@ -79,11 +79,11 @@ public class HologramConfiguration {
 	public HologramConfiguration copy() {
 		HologramConfiguration copy = new HologramConfiguration();
 		copy.scale = new Vector3f(this.scale);
+		System.out.println("Copy: " + scale + " " + copy.scale);
 		copy.translation = new Vector3f(this.translation);
 		copy.billboard = this.billboard;
-		if (this.brightness != null) {
+		if (this.brightness != null)
 			copy.brightness = new Brightness(this.brightness.block(), this.brightness.sky());
-		}
 		copy.shadowRadius = this.shadowRadius;
 		copy.shadowStrength = this.shadowStrength;
 		copy.visibilityDistance = this.visibilityDistance;

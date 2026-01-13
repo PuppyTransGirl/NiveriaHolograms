@@ -9,6 +9,20 @@ public class ItemHologramConfiguration extends HologramConfiguration {
 	private boolean glowing;
 	private TextColor glowingColor;
 
+	public ItemHologramConfiguration() {
+		// Needed
+	}
+
+	private ItemHologramConfiguration(HologramConfiguration basicConfig) {
+		this.scale(basicConfig.scale());
+		this.translation(basicConfig.translation());
+		this.billboard(basicConfig.billboard());
+		this.brightness(basicConfig.brightness());
+		this.shadowRadius(basicConfig.shadowRadius());
+		this.shadowStrength(basicConfig.shadowStrength());
+		this.visibilityDistance(basicConfig.visibilityDistance());
+	}
+
 	public ItemStack itemStack() {
 		return itemStack;
 	}
@@ -38,7 +52,7 @@ public class ItemHologramConfiguration extends HologramConfiguration {
 
 	@Override
 	public ItemHologramConfiguration copy() {
-		ItemHologramConfiguration copy = new ItemHologramConfiguration();
+		ItemHologramConfiguration copy = new ItemHologramConfiguration(super.copy());
 		copy.itemStack = this.itemStack.clone();
 		copy.glowing = this.glowing;
 		copy.glowingColor = this.glowingColor;

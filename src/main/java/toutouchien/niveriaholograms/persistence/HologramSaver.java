@@ -38,18 +38,17 @@ public class HologramSaver {
     }
 
     public void saveHologram(Hologram hologram) {
-        if (shutdown) {
+        if (shutdown)
             return;
-        }
 
         String name = hologram.name();
 
         // Skip if already saving this hologram
-        if (!currentlySaving.add(name)) {
+        if (!currentlySaving.add(name))
             return;
-        }
 
         Hologram snapshot = hologram.copy();
+        System.out.println("Snapshot made");
 
         this.saveExecutor.submit(() -> {
             try {

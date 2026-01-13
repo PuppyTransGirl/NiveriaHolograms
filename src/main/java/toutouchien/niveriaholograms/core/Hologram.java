@@ -248,7 +248,9 @@ public class Hologram {
         if (consumer == null)
             return;
 
+        System.out.println(config.scale());
         consumer.accept((T) config);
+        System.out.println(config.scale());
         update();
         updateForAllPlayers();
         NiveriaHolograms.instance().hologramManager().saveHologram(this);

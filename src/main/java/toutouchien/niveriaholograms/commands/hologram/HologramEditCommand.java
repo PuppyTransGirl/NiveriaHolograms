@@ -59,6 +59,7 @@ public class HologramEditCommand {
                         .then(HologramEditScaleCommand.get())
                         .then(HologramEditShadowRadiusCommand.get())
                         .then(HologramEditShadowStrengthCommand.get())
+                        .then(HologramEditTranslateCommand.get())
                         .then(HologramEditVisibilityDistanceCommand.get())
                         .then(HologramEditYawCommand.get())
 

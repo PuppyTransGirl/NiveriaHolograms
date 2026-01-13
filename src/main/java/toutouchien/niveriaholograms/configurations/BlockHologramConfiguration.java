@@ -8,6 +8,20 @@ public class BlockHologramConfiguration extends HologramConfiguration {
 	private boolean glowing;
 	private TextColor glowingColor;
 
+	public BlockHologramConfiguration() {
+		// Needed
+	}
+
+	private BlockHologramConfiguration(HologramConfiguration basicConfig) {
+		this.scale(basicConfig.scale());
+		this.translation(basicConfig.translation());
+		this.billboard(basicConfig.billboard());
+		this.brightness(basicConfig.brightness());
+		this.shadowRadius(basicConfig.shadowRadius());
+		this.shadowStrength(basicConfig.shadowStrength());
+		this.visibilityDistance(basicConfig.visibilityDistance());
+	}
+
 	public Material material() {
 		return material;
 	}
@@ -37,7 +51,7 @@ public class BlockHologramConfiguration extends HologramConfiguration {
 
 	@Override
 	public BlockHologramConfiguration copy() {
-		BlockHologramConfiguration copy = new BlockHologramConfiguration();
+		BlockHologramConfiguration copy = new BlockHologramConfiguration(super.copy());
 		copy.material = this.material;
 		copy.glowing = this.glowing;
 		copy.glowingColor = this.glowingColor;

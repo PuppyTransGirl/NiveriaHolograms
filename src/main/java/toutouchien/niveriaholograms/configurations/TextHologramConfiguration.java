@@ -25,6 +25,20 @@ public class TextHologramConfiguration extends HologramConfiguration {
     private boolean textDirty = true;
     private boolean updateIntervalDirty = true;
 
+    public TextHologramConfiguration() {
+        // Needed
+    }
+
+    private TextHologramConfiguration(HologramConfiguration oldConfig) {
+        this.scale(oldConfig.scale());
+        this.translation(oldConfig.translation());
+        this.billboard(oldConfig.billboard());
+        this.brightness(oldConfig.brightness());
+        this.shadowRadius(oldConfig.shadowRadius());
+        this.shadowStrength(oldConfig.shadowStrength());
+        this.visibilityDistance(oldConfig.visibilityDistance());
+    }
+
     public TextHologramConfiguration text(List<String> text) {
         this.text = text;
         this.serializedText.clear();
@@ -176,7 +190,7 @@ public class TextHologramConfiguration extends HologramConfiguration {
 
     @Override
     public TextHologramConfiguration copy() {
-        TextHologramConfiguration copy = new TextHologramConfiguration();
+        TextHologramConfiguration copy = new TextHologramConfiguration(super.copy());
         copy.text = new ArrayList<>(this.text);
         copy.background = this.background;
         copy.textAlignment = this.textAlignment;
