@@ -45,8 +45,7 @@ public class HologramCloneCommand {
                                         return Command.SINGLE_SUCCESS;
 
                                     hologramManager.cloneHologram(hologram, player, newHologramName);
-
-                                    Lang.sendMessage(player, "niveriaholograms.hologram.clone.cloned");
+                                    Lang.sendMessage(player, "niveriaholograms.hologram.clone.cloned", hologram.name(), newHologramName);
                                     return Command.SINGLE_SUCCESS;
                                 })
                         )
