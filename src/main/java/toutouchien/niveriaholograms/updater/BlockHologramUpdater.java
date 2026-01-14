@@ -9,14 +9,9 @@ import toutouchien.niveriaholograms.configurations.BlockHologramConfiguration;
 
 import java.util.Optional;
 
-public class BlockHologramUpdater extends HologramUpdater {
-    private final Display.BlockDisplay display;
-    private final BlockHologramConfiguration config;
-
+public class BlockHologramUpdater extends HologramUpdater<Display.BlockDisplay, BlockHologramConfiguration> {
     public BlockHologramUpdater(Display.BlockDisplay display, BlockHologramConfiguration config) {
         super(display, config);
-        this.display = display;
-        this.config = config;
     }
 
     @Override

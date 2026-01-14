@@ -26,22 +26,22 @@ public class BlockHologramConfiguration extends HologramConfiguration {
 		return material;
 	}
 
+	public boolean glowing() {
+		return glowing;
+	}
+
+	public TextColor glowingColor() {
+		return glowingColor;
+	}
+
 	public BlockHologramConfiguration material(Material material) {
 		this.material = material;
 		return this;
 	}
 
-	public boolean glowing() {
-		return glowing;
-	}
-
 	public BlockHologramConfiguration glowing(boolean glowing) {
 		this.glowing = glowing;
 		return this;
-	}
-
-	public TextColor glowingColor() {
-		return glowingColor;
 	}
 
 	public BlockHologramConfiguration glowingColor(TextColor glowingColor) {
@@ -52,9 +52,11 @@ public class BlockHologramConfiguration extends HologramConfiguration {
 	@Override
 	public BlockHologramConfiguration copy() {
 		BlockHologramConfiguration copy = new BlockHologramConfiguration(super.copy());
+
 		copy.material = this.material;
 		copy.glowing = this.glowing;
 		copy.glowingColor = this.glowingColor;
+
 		return copy;
 	}
 }

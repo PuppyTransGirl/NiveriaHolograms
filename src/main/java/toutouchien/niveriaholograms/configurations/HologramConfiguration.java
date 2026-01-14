@@ -17,13 +17,33 @@ public class HologramConfiguration {
         return scale;
     }
 
+    public Vector3f translation() {
+        return translation;
+    }
+
+    public Display.BillboardConstraints billboard() {
+        return billboard;
+    }
+
+    public Brightness brightness() {
+        return brightness;
+    }
+
+    public float shadowRadius() {
+        return shadowRadius;
+    }
+
+    public float shadowStrength() {
+        return shadowStrength;
+    }
+
+    public int visibilityDistance() {
+        return visibilityDistance;
+    }
+
     public HologramConfiguration scale(Vector3f scale) {
         this.scale = scale;
         return this;
-    }
-
-    public Vector3f translation() {
-        return translation;
     }
 
     public HologramConfiguration translation(Vector3f translation) {
@@ -31,17 +51,9 @@ public class HologramConfiguration {
         return this;
     }
 
-    public Display.BillboardConstraints billboard() {
-        return billboard;
-    }
-
     public HologramConfiguration billboard(Display.BillboardConstraints billboard) {
         this.billboard = billboard;
         return this;
-    }
-
-    public Brightness brightness() {
-        return brightness;
     }
 
     public HologramConfiguration brightness(Brightness brightness) {
@@ -49,26 +61,14 @@ public class HologramConfiguration {
         return this;
     }
 
-    public float shadowRadius() {
-        return shadowRadius;
-    }
-
     public HologramConfiguration shadowRadius(float shadowRadius) {
         this.shadowRadius = shadowRadius;
         return this;
     }
 
-    public float shadowStrength() {
-        return shadowStrength;
-    }
-
     public HologramConfiguration shadowStrength(float shadowStrength) {
         this.shadowStrength = shadowStrength;
         return this;
-    }
-
-    public int visibilityDistance() {
-        return visibilityDistance;
     }
 
     public HologramConfiguration visibilityDistance(int visibilityDistance) {
@@ -78,6 +78,7 @@ public class HologramConfiguration {
 
     public HologramConfiguration copy() {
         HologramConfiguration copy = new HologramConfiguration();
+
         copy.scale = new Vector3f(this.scale);
         copy.translation = new Vector3f(this.translation);
         copy.billboard = this.billboard;
@@ -86,6 +87,7 @@ public class HologramConfiguration {
         copy.shadowRadius = this.shadowRadius;
         copy.shadowStrength = this.shadowStrength;
         copy.visibilityDistance = this.visibilityDistance;
+
         return copy;
     }
 }

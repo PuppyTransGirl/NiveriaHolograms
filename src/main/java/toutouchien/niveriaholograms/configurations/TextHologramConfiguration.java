@@ -39,6 +39,70 @@ public class TextHologramConfiguration extends HologramConfiguration {
         this.visibilityDistance(oldConfig.visibilityDistance());
     }
 
+    public List<String> text() {
+        return Collections.unmodifiableList(text);
+    }
+
+    public Component serializedText(Player player) {
+        UUID uuid = player.getUniqueId();
+        if (serializedText.containsKey(uuid) && updateInterval == 0)
+            return serializedText.get(uuid);
+
+        List<String> textLines = this.text;
+        TextComponent.Builder builder = Component.text();
+
+        for (int i = 0; i < textLines.size(); i++) {
+            if (i > 0)
+                builder.appendNewline();
+
+            String line = textLines.get(i);
+
+            line = applyPapiPlaceholders(player, line);
+
+            builder.append(ComponentUtils.deserializeMM(line));
+        }
+
+        this.serializedText.put(uuid, builder.build());
+        return builder.build();
+    }
+
+    private String applyPapiPlaceholders(Player player, String line) {
+        HookManager hookManager = NiveriaAPI.instance().hookManager();
+        PlaceholderAPIHook hook = hookManager.hook(HookType.PlaceholderAPIHook);
+        if (hook != null)
+            line = hook.replacePlaceholders(player, line);
+
+        return line;
+    }
+
+    public TextColor background() {
+        return background;
+    }
+
+    public TextDisplay.TextAlignment textAlignment() {
+        return textAlignment;
+    }
+
+    public boolean seeThrough() {
+        return seeThrough;
+    }
+
+    public boolean textShadow() {
+        return textShadow;
+    }
+
+    public int updateInterval() {
+        return updateInterval;
+    }
+
+    public boolean textDirty() {
+        return textDirty;
+    }
+
+    public boolean updateIntervalDirty() {
+        return updateIntervalDirty;
+    }
+
     public TextHologramConfiguration text(List<String> text) {
         this.text = text;
         this.serializedText.clear();
@@ -127,64 +191,6 @@ public class TextHologramConfiguration extends HologramConfiguration {
     public TextHologramConfiguration textDirty(boolean textDirty) {
         this.textDirty = textDirty;
         return this;
-    }
-
-    public List<String> text() {
-        return Collections.unmodifiableList(text);
-    }
-
-    public Component serializedText(Player player) {
-        UUID uuid = player.getUniqueId();
-        if (serializedText.containsKey(uuid) && updateInterval == 0)
-            return serializedText.get(uuid);
-
-        List<String> textLines = this.text;
-        TextComponent.Builder builder = Component.text();
-
-        for (int i = 0; i < textLines.size(); i++) {
-            if (i > 0)
-                builder.appendNewline();
-
-            String line = textLines.get(i);
-
-            HookManager hookManager = NiveriaAPI.instance().hookManager();
-            PlaceholderAPIHook hook = hookManager.hook(HookType.PlaceholderAPIHook);
-            if (hook != null)
-                line = hook.replacePlaceholders(player, line);
-
-            builder.append(ComponentUtils.deserializeMM(line));
-        }
-
-        this.serializedText.put(uuid, builder.build());
-        return builder.build();
-    }
-
-    public TextColor background() {
-        return background;
-    }
-
-    public TextDisplay.TextAlignment textAlignment() {
-        return textAlignment;
-    }
-
-    public boolean seeThrough() {
-        return seeThrough;
-    }
-
-    public boolean textShadow() {
-        return textShadow;
-    }
-
-    public int updateInterval() {
-        return updateInterval;
-    }
-
-    public boolean textDirty() {
-        return textDirty;
-    }
-
-    public boolean updateIntervalDirty() {
-        return updateIntervalDirty;
     }
 
     @Override

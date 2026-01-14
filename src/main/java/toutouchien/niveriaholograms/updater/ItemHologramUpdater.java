@@ -4,14 +4,9 @@ import net.minecraft.world.entity.Display;
 import net.minecraft.world.item.ItemStack;
 import toutouchien.niveriaholograms.configurations.ItemHologramConfiguration;
 
-public class ItemHologramUpdater extends HologramUpdater {
-    private final Display.ItemDisplay display;
-    private final ItemHologramConfiguration config;
-
+public class ItemHologramUpdater extends HologramUpdater<Display.ItemDisplay, ItemHologramConfiguration> {
     public ItemHologramUpdater(Display.ItemDisplay display, ItemHologramConfiguration config) {
         super(display, config);
-        this.display = display;
-        this.config = config;
     }
 
     @Override
@@ -27,8 +22,7 @@ public class ItemHologramUpdater extends HologramUpdater {
     private void updateGlowing() {
         display.setGlowingTag(config.glowing());
 
-        if (config.glowingColor() != null) {
+        if (config.glowingColor() != null)
             display.setGlowColorOverride(config.glowingColor().value());
-        }
     }
 }

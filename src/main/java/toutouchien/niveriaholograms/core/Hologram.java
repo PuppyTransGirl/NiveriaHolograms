@@ -291,8 +291,7 @@ public class Hologram {
     }
 
     public void clearCache(Player player) {
-        if (config instanceof TextHologramConfiguration textConfig) {
+        if (config instanceof TextHologramConfiguration textConfig)
             textConfig.clearCache(player);
-        }
     }
 }

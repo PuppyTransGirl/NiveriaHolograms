@@ -27,22 +27,22 @@ public class ItemHologramConfiguration extends HologramConfiguration {
 		return itemStack;
 	}
 
+	public boolean glowing() {
+		return glowing;
+	}
+
+	public TextColor glowingColor() {
+		return glowingColor;
+	}
+
 	public ItemHologramConfiguration itemStack(ItemStack itemStack) {
 		this.itemStack = itemStack;
 		return this;
 	}
 
-	public boolean glowing() {
-		return glowing;
-	}
-
 	public ItemHologramConfiguration glowing(boolean glowing) {
 		this.glowing = glowing;
 		return this;
-	}
-
-	public TextColor glowingColor() {
-		return glowingColor;
 	}
 
 	public ItemHologramConfiguration glowingColor(TextColor glowingColor) {
@@ -53,9 +53,11 @@ public class ItemHologramConfiguration extends HologramConfiguration {
 	@Override
 	public ItemHologramConfiguration copy() {
 		ItemHologramConfiguration copy = new ItemHologramConfiguration(super.copy());
+
 		copy.itemStack = this.itemStack.clone();
 		copy.glowing = this.glowing;
 		copy.glowingColor = this.glowingColor;
+
 		return copy;
 	}
 }
