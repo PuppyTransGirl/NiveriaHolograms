@@ -79,7 +79,6 @@ public class HologramConfiguration {
 	public HologramConfiguration copy() {
 		HologramConfiguration copy = new HologramConfiguration();
 		copy.scale = new Vector3f(this.scale);
-		System.out.println("Copy: " + scale + " " + copy.scale);
 		copy.translation = new Vector3f(this.translation);
 		copy.billboard = this.billboard;
 		if (this.brightness != null)

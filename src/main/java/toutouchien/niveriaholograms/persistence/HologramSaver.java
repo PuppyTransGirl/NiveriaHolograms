@@ -48,8 +48,6 @@ public class HologramSaver {
             return;
 
         Hologram snapshot = hologram.copy();
-        System.out.println("Snapshot made");
-
         this.saveExecutor.submit(() -> {
             try {
                 this.saveToFile(snapshot);
