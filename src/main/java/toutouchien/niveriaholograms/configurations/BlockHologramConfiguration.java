@@ -1,46 +1,36 @@
 package toutouchien.niveriaholograms.configurations;
 
-import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Material;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.BlockType;
+import toutouchien.niveriaholograms.configurations.special.GlowingHologramConfiguration;
 
-public class BlockHologramConfiguration extends HologramConfiguration {
-	private Material material = Material.GRASS_BLOCK;
-	private boolean glowing;
-	private TextColor glowingColor;
+public class BlockHologramConfiguration extends GlowingHologramConfiguration {
+    private BlockState blockState = BlockType.GRASS_BLOCK.createBlockData().createBlockState();
 
-	public Material material() {
-		return material;
-	}
+    public BlockHologramConfiguration() {
+        // Needed for HologramType
+    }
 
-	public BlockHologramConfiguration material(Material material) {
-		this.material = material;
-		return this;
-	}
+    private BlockHologramConfiguration(GlowingHologramConfiguration glowingConfig) {
+        this.glowing(glowingConfig.glowing());
+        this.glowingColor(glowingConfig.glowingColor());
+    }
 
-	public boolean glowing() {
-		return glowing;
-	}
+    public BlockState blockState() {
+        return blockState;
+    }
 
-	public BlockHologramConfiguration glowing(boolean glowing) {
-		this.glowing = glowing;
-		return this;
-	}
+    public BlockHologramConfiguration blockState(BlockState blockState) {
+        this.blockState = blockState;
+        return this;
+    }
 
-	public TextColor glowingColor() {
-		return glowingColor;
-	}
+    @Override
+    public BlockHologramConfiguration copy() {
+        BlockHologramConfiguration copy = new BlockHologramConfiguration(super.copy());
 
-	public BlockHologramConfiguration glowingColor(TextColor glowingColor) {
-		this.glowingColor = glowingColor;
-		return this;
-	}
+        copy.blockState = this.blockState.copy();
 
-	@Override
-	public BlockHologramConfiguration copy() {
-		BlockHologramConfiguration copy = new BlockHologramConfiguration();
-		copy.material = this.material;
-		copy.glowing = this.glowing;
-		copy.glowingColor = this.glowingColor;
-		return copy;
-	}
+        return copy;
+    }
 }

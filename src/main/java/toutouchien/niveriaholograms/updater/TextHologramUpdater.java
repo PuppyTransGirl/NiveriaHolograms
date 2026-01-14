@@ -4,16 +4,13 @@ import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.world.entity.Display;
 import org.bukkit.entity.TextDisplay;
 import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
-import toutouchien.niveriaholograms.core.Hologram;
+import toutouchien.niveriaholograms.utils.HologramUtils;
 
-public class TextHologramUpdater extends HologramUpdater {
-    private final Display.TextDisplay display;
-    private final TextHologramConfiguration config;
+public class TextHologramUpdater extends HologramUpdater<Display.TextDisplay, TextHologramConfiguration> {
+    private static final int BACKGROUND_ALPHA_MASK = 0xC8000000; // preserves alpha/flags used by Display
 
     public TextHologramUpdater(Display.TextDisplay display, TextHologramConfiguration config) {
         super(display, config);
-        this.display = display;
-        this.config = config;
     }
 
     @Override
@@ -24,21 +21,33 @@ public class TextHologramUpdater extends HologramUpdater {
     }
 
     private void updateMaxLineLength() {
-        display.getEntityData().set(Display.TextDisplay.DATA_LINE_WIDTH_ID, Hologram.MAX_LINE_LENGTH);
+        display.getEntityData().set(Display.TextDisplay.DATA_LINE_WIDTH_ID, HologramUtils.MAX_LINE_LENGTH);
     }
 
     private void updateBackgroundColor() {
         TextColor background = config.background();
-        int newBackground = background == null ? Display.TextDisplay.INITIAL_BACKGROUND : background == Hologram.TRANSPARENT ? 0 : background.value() | 0xC8000000;
+        int newBackground;
+
+        if (background == null)
+            newBackground = Display.TextDisplay.INITIAL_BACKGROUND;
+        else if (background == HologramUtils.TRANSPARENT)
+            newBackground = 0;
+        else
+            newBackground = background.value() | BACKGROUND_ALPHA_MASK;
+
         display.getEntityData().set(Display.TextDisplay.DATA_BACKGROUND_COLOR_ID, newBackground);
     }
 
     private void updateFlags() {
         byte flags = display.getFlags();
-        flags = (byte) (config.textShadow() ? flags | Display.TextDisplay.FLAG_SHADOW : (flags & ~Display.TextDisplay.FLAG_SHADOW));
+        flags = setFlag(flags, Display.TextDisplay.FLAG_SHADOW, config.textShadow());
         flags = (byte) (config.textAlignment() == TextDisplay.TextAlignment.LEFT ? (flags | Display.TextDisplay.FLAG_ALIGN_LEFT) : (flags & ~Display.TextDisplay.FLAG_ALIGN_LEFT));
-        flags = (byte) (config.seeThrough() ? flags | Display.TextDisplay.FLAG_SEE_THROUGH : (flags & ~Display.TextDisplay.FLAG_SEE_THROUGH));
+        flags = setFlag(flags, Display.TextDisplay.FLAG_SEE_THROUGH, config.seeThrough());
         flags = (byte) (config.textAlignment() == TextDisplay.TextAlignment.RIGHT ? (flags | Display.TextDisplay.FLAG_ALIGN_RIGHT) : (flags & ~Display.TextDisplay.FLAG_ALIGN_RIGHT));
         display.setFlags(flags);
+    }
+
+    private static byte setFlag(byte flags, int flagMask, boolean enabled) {
+        return (byte) (enabled ? (flags | flagMask) : (flags & ~flagMask));
     }
 }

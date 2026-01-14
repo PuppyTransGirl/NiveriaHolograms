@@ -1,137 +1,110 @@
 package toutouchien.niveriaholograms.commands.hologram.edit.text;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import org.bukkit.entity.Player;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
+import org.bukkit.command.CommandSender;
+import org.checkerframework.checker.index.qual.Positive;
 import org.jetbrains.annotations.NotNull;
-import toutouchien.niveriaapi.command.CommandData;
-import toutouchien.niveriaapi.command.SubCommand;
-import toutouchien.niveriaapi.utils.ui.MessageUtils;
+import org.jspecify.annotations.Nullable;
+import toutouchien.niveriaapi.lang.Lang;
+import toutouchien.niveriaapi.utils.CommandUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-public class HologramEditSetLineCommand extends SubCommand {
-	public HologramEditSetLineCommand() {
-		super(new CommandData("setline", "niveriaholograms")
-				.playerRequired(true)
-				.usage("<ligne> <texte>"));
-	}
+public class HologramEditSetLineCommand {
+    private HologramEditSetLineCommand() {
+        throw new IllegalStateException("Command class");
+    }
 
-	@Override
-	public void execute(@NotNull Player player, String @NotNull [] args, String[] fullArgs, @NotNull String label) {
-		HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
-		Hologram hologram = hologramManager.hologramByName(fullArgs[1]);
-		if (hologram == null) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Cet hologramme n'existe pas.")
-			);
+    public static LiteralCommandNode<CommandSourceStack> get() {
+        return Commands.literal("setLine")
+                .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.setline"))
+                .then(Commands.argument("line", IntegerArgumentType.integer(1))
+                        .suggests((ctx, builder) -> {
+                            String hologramName = ctx.getArgument("hologram", String.class);
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+                            HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+                            Hologram hologram = hologramManager.hologramByName(hologramName);
+                            if (hologram == null)
+                                return builder.buildFuture();
 
-		if (!(hologram.configuration() instanceof TextHologramConfiguration configuration)) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Cette comande ne peut être utilisée que sur des hologrammes de texte.")
-			);
+                            if (!(hologram.configuration() instanceof TextHologramConfiguration configuration))
+                                return builder.buildFuture();
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+                            List<String> lines = configuration.text();
+                            for (int i = 1; i <= lines.size(); i++) {
+                                String iString = Integer.toString(i);
+                                if (iString.startsWith(builder.getRemainingLowerCase()))
+                                    builder.suggest(iString);
+                            }
 
-		if (args.length == 0) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Tu dois spécifier la ligne que tu veux modifier.")
-			);
+                            return builder.buildFuture();
+                        })
+                        .then(Commands.argument("text", StringArgumentType.greedyString())
+                                .suggests((ctx, builder) -> {
+                                    String hologramName = ctx.getArgument("hologram", String.class);
+                                    int line = ctx.getArgument("line", int.class);
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+                                    HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+                                    Hologram hologram = hologramManager.hologramByName(hologramName);
+                                    if (hologram == null)
+                                        return builder.buildFuture();
 
-		if (args.length == 1) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Tu dois spécifier le texte que tu veux mettre.")
-			);
+                                    if (!(hologram.configuration() instanceof TextHologramConfiguration configuration))
+                                        return builder.buildFuture();
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+                                    List<String> lines = configuration.text();
+                                    if (line <= lines.size())
+                                        builder.suggest(lines.get(line - 1));
 
-		int lineNumber;
-		try {
-			lineNumber = Integer.parseInt(args[0]);
-		} catch (NumberFormatException e) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Le numéro de la ligne n'est pas valide.")
-			);
+                                    return builder.buildFuture();
+                                })
+                                .executes(ctx -> {
+                                    CommandSender sender = CommandUtils.sender(ctx);
+                                    String hologramName = ctx.getArgument("hologram", String.class);
+                                    int line = ctx.getArgument("line", int.class);
+                                    String text = ctx.getArgument("text", String.class);
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+                                    HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+                                    Hologram hologram = hologramManager.hologramByName(hologramName);
+                                    if (!isValidHologram(hologram, sender, hologramName, line))
+                                        return Command.SINGLE_SUCCESS;
 
-		List<String> text = configuration.text();
-		if (lineNumber < 1 || lineNumber > text.size()) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Le numéro de la ligne n'est pas valide.")
-			);
+                                    hologram.editConfig((TextHologramConfiguration config) ->
+                                            config.text(line - 1, text)
+                                    );
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+                                    Lang.sendMessage(sender, "niveriaholograms.hologram.edit.setLine.edited", hologramName);
+                                    return Command.SINGLE_SUCCESS;
+                                })
+                        )
+                ).build();
+    }
 
-		String newText = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-		hologram.editConfig((TextHologramConfiguration config) -> {
-			config.text(lineNumber - 1, newText);
-		});
+    private static boolean isValidHologram(@Nullable Hologram hologram, @NotNull CommandSender sender, @NotNull String hologramName, @Positive int line) {
+        if (hologram == null) {
+            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+            return false;
+        }
 
-		TextComponent successMessage = MessageUtils.successMessage(
-				Component.text()
-						.append(Component.text("La contenu de la ligne "))
-						.append(Component.text(lineNumber))
-						.append(Component.text(" a été changé avec succès !"))
-						.build()
-		);
+        if (!(hologram.configuration() instanceof TextHologramConfiguration configuration)) {
+            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.only_text");
+            return false;
+        }
 
-		player.sendMessage(successMessage);
-	}
-
-	@Override
-	public List<String> complete(@NotNull Player player, String @NotNull [] args, String @NotNull [] fullArgs, int argIndex) {
-		if (argIndex > 1)
-			return Collections.emptyList();
-
-		Hologram hologram = NiveriaHolograms.instance().hologramManager().hologramByName(fullArgs[1]);
-		if (hologram == null)
-			return Collections.emptyList();
-
-		if (!(hologram.configuration() instanceof TextHologramConfiguration configuration))
-			return Collections.emptyList();
-
-		List<String> text = configuration.text();
-		List<String> suggestions = new ArrayList<>();
-
-		if (argIndex == 0) {
-			for (int i = 1; i <= text.size(); i++) {
-				suggestions.add(Integer.toString(i));
-			}
-		} else if (argIndex == 1 && args.length > 0) {
-			try {
-				int lineNumber = Integer.parseInt(args[0]);
-				if (lineNumber >= 1 && lineNumber <= text.size()) {
-					suggestions.add(text.get(lineNumber - 1));
-				}
-			} catch (NumberFormatException ignored) {
-				// Ignore invalid number format
-			}
-		}
-
-		return suggestions;
-	}
+        List<String> lines = configuration.text();
+        if (line > lines.size()) {
+            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.setLine.invalid_line", line);
+            return false;
+        }
+        return true;
+    }
 }

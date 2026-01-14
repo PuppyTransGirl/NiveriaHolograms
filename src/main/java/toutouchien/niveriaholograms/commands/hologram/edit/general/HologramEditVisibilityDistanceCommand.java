@@ -1,70 +1,45 @@
 package toutouchien.niveriaholograms.commands.hologram.edit.general;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import toutouchien.niveriaapi.command.CommandData;
-import toutouchien.niveriaapi.command.SubCommand;
-import toutouchien.niveriaapi.utils.ui.MessageUtils;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
+import org.bukkit.command.CommandSender;
+import toutouchien.niveriaapi.lang.Lang;
+import toutouchien.niveriaapi.utils.CommandUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
-public class HologramEditVisibilityDistanceCommand extends SubCommand {
-	public HologramEditVisibilityDistanceCommand() {
-		super(new CommandData("visibilitydistance", "niveriaholograms")
-				.playerRequired(true)
-				.usage("<distance>"));
-	}
+public class HologramEditVisibilityDistanceCommand {
+    private HologramEditVisibilityDistanceCommand() {
+        throw new IllegalStateException("Command class");
+    }
 
-	@Override
-	public void execute(@NotNull Player player, String @NotNull [] args, String[] fullArgs, @NotNull String label) {
-		HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
-		Hologram hologram = hologramManager.hologramByName(fullArgs[1]);
-		if (hologram == null) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Cet hologramme n'existe pas.")
-			);
+    public static LiteralCommandNode<CommandSourceStack> get() {
+        return Commands.literal("visibilityDistance")
+                .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.visibilitydistance"))
+                .then(Commands.argument("visibilityDistance", IntegerArgumentType.integer(-1))
+                        .executes(ctx -> {
+                            CommandSender sender = CommandUtils.sender(ctx);
+                            String hologramName = ctx.getArgument("hologram", String.class);
+                            int visibilityDistance = ctx.getArgument("visibilityDistance", int.class);
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+                            HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+                            Hologram hologram = hologramManager.hologramByName(hologramName);
+                            if (hologram == null) {
+                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+                                return Command.SINGLE_SUCCESS;
+                            }
 
-		if (args.length == 0) {
-			player.sendMessage(Component.text("/" + label + " " + String.join(" ", fullArgs) + " <distance>", NamedTextColor.RED));
-			return;
-		}
+                            hologram.editConfig(config ->
+                                    config.visibilityDistance(visibilityDistance)
+                            );
 
-		float visibilityDistance;
-		try {
-			visibilityDistance = Float.parseFloat(args[0]);
-			if (!Float.isFinite(visibilityDistance)) {
-				TextComponent errorMessage = MessageUtils.errorMessage(
-						Component.text("La distance est invalide.")
-				);
-
-				player.sendMessage(errorMessage);
-				return;
-			}
-		} catch (NumberFormatException e) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("La distance est invalide.")
-			);
-
-			player.sendMessage(errorMessage);
-			return;
-		}
-
-		hologram.editConfig(config -> {
-			config.shadowRadius(visibilityDistance);
-		});
-
-		TextComponent successMessage = MessageUtils.successMessage(
-				Component.text("Le distance de visibilité a été mis à " + visibilityDistance + " avec succès !")
-		);
-
-		player.sendMessage(successMessage);
-	}
+                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.visibilityDistance.edited", hologramName, visibilityDistance);
+                            return Command.SINGLE_SUCCESS;
+                        })
+                ).build();
+    }
 }

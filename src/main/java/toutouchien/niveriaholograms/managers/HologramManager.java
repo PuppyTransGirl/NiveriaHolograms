@@ -32,7 +32,7 @@ public class HologramManager {
         this.hologramSaver = new HologramSaver(plugin);
 
         this.holograms = new ConcurrentHashMap<>();
-        this.pendingHolograms = new HashMap<>();
+        this.pendingHolograms = new ConcurrentHashMap<>();
     }
 
     public void initialize() {
@@ -63,13 +63,22 @@ public class HologramManager {
         return hologram;
     }
 
+    public void cloneHologram(Hologram hologram, Player player, String newHologramName) {
+        Hologram clone = new Hologram(hologram, player, newHologramName);
+        clone.create();
+        clone.createForAllPlayers();
+
+        this.saveHologram(clone);
+        this.addHologram(clone);
+    }
+
     public void delete(Hologram hologram) {
-        this.holograms.remove(hologram.name());
+        this.holograms.remove(hologram.name().toLowerCase(Locale.ROOT));
         this.hologramSaver.deleteHologram(hologram);
     }
 
     public void addHologram(Hologram hologram) {
-        this.holograms.put(hologram.name(), hologram);
+        this.holograms.put(hologram.name().toLowerCase(Locale.ROOT), hologram);
     }
 
     public void loadHolograms() {
@@ -94,23 +103,17 @@ public class HologramManager {
     }
 
     public void loadHologram(ConfigurationSection section) {
-        String worldName = ((CustomLocation) section.get("location")).world();
+        String worldName = section.getObject("location", CustomLocation.class).world();
         if (Bukkit.getWorld(worldName) == null) {
-            List<String> loadedHolograms = pendingHolograms.computeIfAbsent(worldName, w -> new ArrayList<>());
-            loadedHolograms.add(section.getName());
+            pendingHolograms.computeIfAbsent(worldName, w -> Collections.synchronizedList(new ArrayList<>()))
+                    .add(section.getName());
             return;
         }
 
         Hologram hologram = hologramLoader.load(section);
         hologram.create();
         hologram.createForAllPlayers();
-        this.holograms.put(hologram.name(), hologram);
-    }
-
-    public void saveHolograms() {
-        for (Hologram hologram : this.holograms.values()) {
-            this.saveHologram(hologram);
-        }
+        this.holograms.put(hologram.name().toLowerCase(Locale.ROOT), hologram);
     }
 
     public void saveHologram(Hologram hologram) {
@@ -118,23 +121,16 @@ public class HologramManager {
     }
 
     public void clearCache(Player player) {
-        for (Hologram hologram : this.holograms.values()) {
+        for (Hologram hologram : this.holograms.values())
             hologram.clearCache(player);
-        }
     }
 
     public Hologram hologramByName(String name) {
-        return this.holograms.get(name);
+        return this.holograms.get(name.toLowerCase(Locale.ROOT));
     }
 
     public boolean hologramExists(String name) {
-        for (String holoName : holograms.keySet()) {
-            if (holoName.equalsIgnoreCase(name)) {
-                return true;
-            }
-        }
-
-        return false;
+        return this.hologramByName(name) != null;
     }
 
     public List<Hologram> holograms() {

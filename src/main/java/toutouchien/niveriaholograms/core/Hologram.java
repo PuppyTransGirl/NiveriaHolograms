@@ -1,7 +1,7 @@
 package toutouchien.niveriaholograms.core;
 
 import io.papermc.paper.adventure.PaperAdventure;
-import net.kyori.adventure.text.format.TextColor;
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
@@ -14,9 +14,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
-import toutouchien.niveriaapi.utils.base.Task;
-import toutouchien.niveriaapi.utils.game.NMSUtils;
+import org.joml.Vector3f;
+import toutouchien.niveriaapi.utils.NMSUtils;
+import toutouchien.niveriaapi.utils.Task;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.configurations.HologramConfiguration;
 import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
@@ -28,13 +28,11 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class Hologram {
-    public static final TextColor TRANSPARENT = TextColor.color(0);
-    public static final int MAX_LINE_LENGTH = 1403;
-
     private static final ExecutorService EXECUTOR = Executors.newThreadPerTaskExecutor(
             Thread.ofVirtual()
             .name("NiveriaHolograms-Hologram-Sender-", 0)
@@ -45,11 +43,11 @@ public class Hologram {
     private final String name;
     private final UUID owner;
     private Display display;
-    private HologramUpdater updater;
+    private HologramUpdater<?, ?> updater;
     private CustomLocation location;
     private boolean locationDirty;
 
-    private BukkitTask updateTask;
+    private ScheduledTask updateTask;
 
     public Hologram(HologramType type, HologramConfiguration config, String name, UUID owner, CustomLocation location) {
         this.type = type;
@@ -78,12 +76,13 @@ public class Hologram {
         updateLocation();
         update();
 
-        if (config instanceof TextHologramConfiguration textConfig) {
+        if (config instanceof TextHologramConfiguration textConfig && textConfig.updateInterval() != 0) {
             updateTask = Task.asyncRepeat(
-                    this::updateForAllPlayers,
+                    ignored -> this.updateForAllPlayers(),
                     NiveriaHolograms.instance(),
-                    Math.max(40L, textConfig.updateInterval()),
-                    textConfig.updateInterval()
+                    Math.max(40L, textConfig.updateInterval()) * 50L,
+                    textConfig.updateInterval() * 50L,
+                    TimeUnit.MILLISECONDS
             );
         }
     }
@@ -98,9 +97,8 @@ public class Hologram {
                 false
         );
 
-        if (display instanceof Display.TextDisplay textDisplay && config instanceof TextHologramConfiguration textConfig) {
+        if (display instanceof Display.TextDisplay textDisplay && config instanceof TextHologramConfiguration textConfig)
             textDisplay.setText(PaperAdventure.asVanilla(textConfig.serializedText(player)));
-        }
 
         // getNonDefaultValues sends less data than packAll
         // It is used when the player haven't received any data from the display yet
@@ -116,9 +114,8 @@ public class Hologram {
                 .collect(Collectors.toList());
 
         EXECUTOR.submit(() -> {
-            for (Player player : targets) {
+            for (Player player : targets)
                 this.create(player);
-            }
         });
     }
 
@@ -135,9 +132,8 @@ public class Hologram {
                 .collect(Collectors.toList());
 
         EXECUTOR.submit(() -> {
-            for (Player player : targets) {
+            for (Player player : targets)
                 this.delete(player);
-            }
         });
     }
 
@@ -145,7 +141,7 @@ public class Hologram {
         this.updater.update();
     }
 
-    public void updateForAllPlayers() {
+    public synchronized void updateForAllPlayers() {
         if (Bukkit.getOnlinePlayers().isEmpty())
             return;
 
@@ -168,31 +164,45 @@ public class Hologram {
                 .collect(Collectors.toList());
 
         if (config instanceof TextHologramConfiguration textConfig && (textConfig.textDirty() || textConfig.updateIntervalDirty())) {
-            if (updateTask != null && !updateTask.isCancelled()) {
+            if (updateTask != null && !updateTask.isCancelled())
                 updateTask.cancel();
-            }
 
-            updateTask = Task.asyncRepeat(
-                    this::updateForAllPlayers,
-                    NiveriaHolograms.instance(),
-                    Math.max(40L, textConfig.updateInterval()),
-                    textConfig.updateInterval()
-            );
+            if (textConfig.updateInterval() != 0)
+                updateTask = Task.asyncRepeat(
+                        ignored -> this.updateForAllPlayers(),
+                        NiveriaHolograms.instance(),
+                        Math.max(40L, textConfig.updateInterval()) * 50L,
+                        textConfig.updateInterval() * 50L,
+                        TimeUnit.MILLISECONDS
+                );
 
             textConfig.updateIntervalDirty(false)
                     .textDirty(false);
         }
 
+        boolean usePackAll = this.config.scaleDirty();
+        if (usePackAll)
+            this.config.scaleDirty(false);
+
+        sendDataPackets(targets, teleportPacket, usePackAll);
+    }
+
+    private void sendDataPackets(List<Player> targets, ClientboundTeleportEntityPacket teleportPacket, boolean usePackAll) {
         EXECUTOR.submit(() -> {
             for (Player player : targets) {
-                if (display instanceof Display.TextDisplay textDisplay && config instanceof TextHologramConfiguration textConfig) {
+                if (display instanceof Display.TextDisplay textDisplay && config instanceof TextHologramConfiguration textConfig)
                     textDisplay.setText(PaperAdventure.asVanilla(textConfig.serializedText(player)));
-                }
 
-                // packDirty sends only the dirty values, which is more efficient when updating
-                // It's a lot more optimized than sending packAll everytime
-                // Reduces packet size by approximately 93.44% per update on a default text hologram
-                List<SynchedEntityData.DataValue<?>> data = display.getEntityData().packDirty();
+                /*
+                packDirty sends only the dirty values, which is more efficient when updating
+                It's a lot more optimized than sending packAll everytime
+                Reduces packet size by approximately 93.44% per update on a default text hologram
+
+                For some reason the scale needs packAll instead of packDirty
+                We could use getNonDefaultValues but if you put scale 1 after putting another scale it will be considered as a default value
+                 */
+                List<SynchedEntityData.DataValue<?>> data = usePackAll ? display.getEntityData().packAll() : display.getEntityData().packDirty();
+
                 // This packet can't be created before because the text is unique to each player
                 ClientboundSetEntityDataPacket dataPacket = data != null ? new ClientboundSetEntityDataPacket(display.getId(), data) : null;
 
@@ -208,7 +218,7 @@ public class Hologram {
         locationDirty = true;
     }
 
-    public void teleportTo(Location location) {
+    private void teleportTo(Location location) {
         boolean worldChanged = !this.location.world().equals(location.getWorld().getName());
         this.location = new CustomLocation(location);
         this.updateLocation();
@@ -245,7 +255,12 @@ public class Hologram {
         if (consumer == null)
             return;
 
-        consumer.accept((T) config);
+        Vector3f previousScale = new Vector3f(this.config.scale());
+        consumer.accept((T) this.config);
+        Vector3f scale = this.config.scale();
+        if (!scale.equals(previousScale))
+            this.config.scaleDirty(true);
+
         update();
         updateForAllPlayers();
         NiveriaHolograms.instance().hologramManager().saveHologram(this);
@@ -287,8 +302,7 @@ public class Hologram {
     }
 
     public void clearCache(Player player) {
-        if (config instanceof TextHologramConfiguration textConfig) {
+        if (config instanceof TextHologramConfiguration textConfig)
             textConfig.clearCache(player);
-        }
     }
 }

@@ -1,68 +1,54 @@
 package toutouchien.niveriaholograms.commands.hologram.edit.item;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import toutouchien.niveriaapi.command.CommandData;
-import toutouchien.niveriaapi.command.SubCommand;
-import toutouchien.niveriaapi.utils.ui.MessageUtils;
+import toutouchien.niveriaapi.lang.Lang;
+import toutouchien.niveriaapi.utils.CommandUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.configurations.ItemHologramConfiguration;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
-public class HologramEditItemCommand extends SubCommand {
-	public HologramEditItemCommand() {
-		super(new CommandData("item", "niveriaholograms")
-				.playerRequired(true));
-	}
+public class HologramEditItemCommand {
+    private HologramEditItemCommand() {
+        throw new IllegalStateException("Command class");
+    }
 
-	@Override
-	public void execute(@NotNull Player player, String @NotNull [] args, String[] fullArgs, @NotNull String label) {
-		HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
-		Hologram hologram = hologramManager.hologramByName(fullArgs[1]);
-		if (hologram == null) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Cet hologramme n'existe pas.")
-			);
+    public static LiteralCommandNode<CommandSourceStack> get() {
+        return Commands.literal("item")
+                .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.item", true))
+                .executes(ctx -> {
+                    Player player = (Player) ctx.getSource().getExecutor();
+                    String hologramName = ctx.getArgument("hologram", String.class);
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+                    HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+                    Hologram hologram = hologramManager.hologramByName(hologramName);
+                    if (hologram == null) {
+                        Lang.sendMessage(player, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+                        return Command.SINGLE_SUCCESS;
+                    }
 
-		if (!(hologram.configuration() instanceof ItemHologramConfiguration)) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Cette comande ne peut être utilisée que sur des hologrammes d'item.")
-			);
+                    if (!(hologram.configuration() instanceof ItemHologramConfiguration)) {
+                        Lang.sendMessage(player, "niveriaholograms.hologram.edit.only_item");
+                        return Command.SINGLE_SUCCESS;
+                    }
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+                    ItemStack itemStack = player.getInventory().getItemInMainHand();
+                    if (itemStack.getType().isAir() || itemStack.getAmount() < 1) {
+                        Lang.sendMessage(player, "niveriaholograms.hologram.edit.item.no_item");
+                        return Command.SINGLE_SUCCESS;
+                    }
 
-		ItemStack itemStack = player.getInventory().getItemInMainHand();
-		if (itemStack.getType().isAir() || itemStack.getAmount() < 1) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Tu dois tenir un item dans ta main.")
-			);
+                    hologram.editConfig((ItemHologramConfiguration config) ->
+                            config.itemStack(itemStack)
+                    );
 
-			player.sendMessage(errorMessage);
-			return;
-		}
-
-		hologram.editConfig((ItemHologramConfiguration config) -> {
-			config.itemStack(itemStack);
-		});
-
-		TextComponent successMessage = MessageUtils.successMessage(
-				Component.text()
-						.append(Component.text("L'item a été mit à "))
-						.append(itemStack.displayName())
-						.append(Component.text("."))
-						.build()
-		);
-
-		player.sendMessage(successMessage);
-	}
+                    Lang.sendMessage(player, "niveriaholograms.hologram.edit.item.edited", hologramName, itemStack.translationKey());
+                    return Command.SINGLE_SUCCESS;
+                }).build();
+    }
 }

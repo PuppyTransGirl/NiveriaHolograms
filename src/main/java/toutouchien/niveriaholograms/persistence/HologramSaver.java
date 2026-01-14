@@ -12,9 +12,11 @@ import toutouchien.niveriaholograms.configurations.BlockHologramConfiguration;
 import toutouchien.niveriaholograms.configurations.HologramConfiguration;
 import toutouchien.niveriaholograms.configurations.ItemHologramConfiguration;
 import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
+import toutouchien.niveriaholograms.configurations.special.GlowingHologramConfiguration;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.core.HologramType;
 import toutouchien.niveriaholograms.exceptions.HologramSaveException;
+import toutouchien.niveriaholograms.utils.HologramUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,19 +40,16 @@ public class HologramSaver {
     }
 
     public void saveHologram(Hologram hologram) {
-        if (shutdown) {
+        if (shutdown)
             return;
-        }
 
         String name = hologram.name();
 
         // Skip if already saving this hologram
-        if (!currentlySaving.add(name)) {
+        if (!currentlySaving.add(name))
             return;
-        }
 
         Hologram snapshot = hologram.copy();
-
         this.saveExecutor.submit(() -> {
             try {
                 this.saveToFile(snapshot);
@@ -100,9 +99,8 @@ public class HologramSaver {
 
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
         ConfigurationSection section = config.getConfigurationSection("holograms." + hologram.name());
-        if (section == null) {
+        if (section == null)
             section = config.createSection("holograms." + hologram.name());
-        }
 
         this.save(section, hologram);
         try {
@@ -111,15 +109,26 @@ public class HologramSaver {
             throw new HologramSaveException("Failed to save hologram to temporary file: " + tempFile.getAbsolutePath(), e);
         }
 
-        // Delete the original holograms.yml file
-        if (file.exists() && !file.delete()) {
-            throw new HologramSaveException("Failed to delete original holograms file: " + file.getAbsolutePath());
+        File backupFile = new File(file.getParent(), file.getName() + ".bak");
+
+        // Rename original to backup (if exists)
+        if (file.exists()) {
+            backupFile.delete(); // Remove old backup if present
+            if (!file.renameTo(backupFile))
+                throw new HologramSaveException("Failed to backup original holograms file: " + file.getAbsolutePath());
         }
 
-        // Replace the original file with the temporary file by renaming it
+        // Rename temp to original
         if (!tempFile.renameTo(file)) {
+            // Attempt recovery: restore backup
+            if (backupFile.exists())
+                backupFile.renameTo(file);
+
             throw new HologramSaveException("Failed to rename temporary holograms file to: " + file.getAbsolutePath());
         }
+
+        // Clean up backup
+        backupFile.delete();
     }
 
     /**
@@ -149,15 +158,26 @@ public class HologramSaver {
             throw new HologramSaveException("Failed to save hologram deletion to temporary file: " + tempFile.getAbsolutePath(), e);
         }
 
-        // Delete the original holograms.yml file
-        if (file.exists() && !file.delete()) {
-            throw new HologramSaveException("Failed to delete original holograms file: " + file.getAbsolutePath());
+        File backupFile = new File(file.getParent(), file.getName() + ".bak");
+
+        // Rename original to backup (if exists)
+        if (file.exists()) {
+            backupFile.delete(); // Remove old backup if present
+            if (!file.renameTo(backupFile))
+                throw new HologramSaveException("Failed to backup original holograms file: " + file.getAbsolutePath());
         }
 
-        // Replace the original file with the temporary file by renaming it
+        // Rename temp to original
         if (!tempFile.renameTo(file)) {
+            // Attempt recovery: restore backup
+            if (backupFile.exists())
+                backupFile.renameTo(file);
+
             throw new HologramSaveException("Failed to rename temporary holograms file to: " + file.getAbsolutePath());
         }
+
+        // Clean up backup
+        backupFile.delete();
     }
 
     public void shutdown() {
@@ -200,20 +220,32 @@ public class HologramSaver {
         }
 
         switch (type) {
-            case BLOCK -> saveBlockConfiguration(section, (BlockHologramConfiguration) configuration);
-            case ITEM -> saveItemConfiguration(section, (ItemHologramConfiguration) configuration);
+            case BLOCK -> {
+                saveGlowingConfiguration(section, (GlowingHologramConfiguration) configuration);
+                saveBlockConfiguration(section, (BlockHologramConfiguration) configuration);
+            }
+
+            case ITEM -> {
+                saveGlowingConfiguration(section, (GlowingHologramConfiguration) configuration);
+                saveItemConfiguration(section, (ItemHologramConfiguration) configuration);
+            }
+
             case TEXT -> saveTextConfiguration(section, (TextHologramConfiguration) configuration);
+
+            default -> throw new IllegalArgumentException("Unsupported hologram type: " + type);
         }
     }
 
-    private void saveBlockConfiguration(ConfigurationSection section, BlockHologramConfiguration configuration) {
-        section.set("material", configuration.material().name());
+    private void saveGlowingConfiguration(ConfigurationSection section, GlowingHologramConfiguration configuration) {
         section.set("glowing", glowingColor(configuration.glowingColor()));
+    }
+
+    private void saveBlockConfiguration(ConfigurationSection section, BlockHologramConfiguration configuration) {
+        section.set("blockstate", configuration.blockState().getBlockData().getAsString(true));
     }
 
     private void saveItemConfiguration(ConfigurationSection section, ItemHologramConfiguration configuration) {
         section.set("itemstack", configuration.itemStack());
-        section.set("glowing", glowingColor(configuration.glowingColor()));
     }
 
     private void saveTextConfiguration(ConfigurationSection section, TextHologramConfiguration configuration) {
@@ -233,17 +265,14 @@ public class HologramSaver {
     }
 
     private String backgroundColor(TextColor backgroundColor) {
-        if (backgroundColor == null) {
+        if (backgroundColor == null)
             return "default";
-        }
 
-        if (backgroundColor == Hologram.TRANSPARENT) {
+        if (backgroundColor == HologramUtils.TRANSPARENT)
             return "transparent";
-        }
 
-        if (backgroundColor instanceof NamedTextColor namedTextColor) {
+        if (backgroundColor instanceof NamedTextColor namedTextColor)
             return namedTextColor.toString();
-        }
 
         return backgroundColor.asHexString();
     }

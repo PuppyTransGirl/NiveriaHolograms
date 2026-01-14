@@ -1,47 +1,36 @@
 package toutouchien.niveriaholograms.configurations;
 
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import toutouchien.niveriaholograms.configurations.special.GlowingHologramConfiguration;
 
-public class ItemHologramConfiguration extends HologramConfiguration {
-	private ItemStack itemStack = new ItemStack(Material.APPLE);
-	private boolean glowing;
-	private TextColor glowingColor;
+public class ItemHologramConfiguration extends GlowingHologramConfiguration {
+    private ItemStack itemStack = new ItemStack(Material.APPLE);
 
-	public ItemStack itemStack() {
-		return itemStack;
-	}
+    public ItemHologramConfiguration() {
+        // Needed for HologramType
+    }
 
-	public ItemHologramConfiguration itemStack(ItemStack itemStack) {
-		this.itemStack = itemStack;
-		return this;
-	}
+    private ItemHologramConfiguration(GlowingHologramConfiguration basicConfig) {
+        this.glowing(basicConfig.glowing());
+        this.glowingColor(basicConfig.glowingColor());
+    }
 
-	public boolean glowing() {
-		return glowing;
-	}
+    public ItemStack itemStack() {
+        return itemStack;
+    }
 
-	public ItemHologramConfiguration glowing(boolean glowing) {
-		this.glowing = glowing;
-		return this;
-	}
+    public ItemHologramConfiguration itemStack(ItemStack itemStack) {
+        this.itemStack = itemStack;
+        return this;
+    }
 
-	public TextColor glowingColor() {
-		return glowingColor;
-	}
+    @Override
+    public ItemHologramConfiguration copy() {
+        ItemHologramConfiguration copy = new ItemHologramConfiguration(super.copy());
 
-	public ItemHologramConfiguration glowingColor(TextColor glowingColor) {
-		this.glowingColor = glowingColor;
-		return this;
-	}
+        copy.itemStack = this.itemStack.clone();
 
-	@Override
-	public ItemHologramConfiguration copy() {
-		ItemHologramConfiguration copy = new ItemHologramConfiguration();
-		copy.itemStack = this.itemStack.clone();
-		copy.glowing = this.glowing;
-		copy.glowingColor = this.glowingColor;
-		return copy;
-	}
+        return copy;
+    }
 }

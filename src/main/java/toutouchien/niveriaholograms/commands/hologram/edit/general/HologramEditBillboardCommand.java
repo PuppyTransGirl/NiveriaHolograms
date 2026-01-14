@@ -1,93 +1,70 @@
 package toutouchien.niveriaholograms.commands.hologram.edit.general;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
 import net.minecraft.world.entity.Display;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import toutouchien.niveriaapi.command.CommandData;
-import toutouchien.niveriaapi.command.SubCommand;
-import toutouchien.niveriaapi.utils.ui.MessageUtils;
+import org.bukkit.command.CommandSender;
+import toutouchien.niveriaapi.lang.Lang;
+import toutouchien.niveriaapi.utils.CommandUtils;
+import toutouchien.niveriaapi.utils.StringUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
 
-public class HologramEditBillboardCommand extends SubCommand {
-	public HologramEditBillboardCommand() {
-		super(new CommandData("billboard", "niveriaholograms")
-				.playerRequired(true)
-				.usage("<billboard>"));
-	}
+public class HologramEditBillboardCommand {
+    private HologramEditBillboardCommand() {
+        throw new IllegalStateException("Command class");
+    }
 
-	@Override
-	public void execute(@NotNull Player player, String @NotNull [] args, String[] fullArgs, @NotNull String label) {
-		HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
-		Hologram hologram = hologramManager.hologramByName(fullArgs[1]);
-		if (hologram == null) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Cet hologramme n'existe pas.")
-			);
+    public static LiteralCommandNode<CommandSourceStack> get() {
+        return Commands.literal("billboard")
+                .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.billboard"))
+                .then(Commands.argument("billboard", StringArgumentType.word())
+                        .suggests((ctx, builder) -> {
+                            String hologramName = ctx.getArgument("hologram", String.class);
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+                            HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+                            Hologram hologram = hologramManager.hologramByName(hologramName);
+                            Display.BillboardConstraints currentBillboard = hologram == null ? null : hologram.configuration().billboard();
 
-		if (args.length == 0) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Tu dois spécifier le type de billboard que tu veux mettre.")
-			);
+                            Arrays.stream(Display.BillboardConstraints.values())
+                                    .filter(billboard -> billboard != currentBillboard)
+                                    .map(Enum::name)
+                                    .filter(entry -> entry.toLowerCase().startsWith(builder.getRemainingLowerCase()))
+                                    .forEach(builder::suggest);
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+                            return builder.buildFuture();
+                        })
+                        .executes(ctx -> {
+                            CommandSender sender = CommandUtils.sender(ctx);
+                            String hologramName = ctx.getArgument("hologram", String.class);
+                            String billboardName = ctx.getArgument("billboard", String.class);
 
-		Display.BillboardConstraints billboard;
+                            HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+                            Hologram hologram = hologramManager.hologramByName(hologramName);
+                            if (hologram == null) {
+                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+                                return Command.SINGLE_SUCCESS;
+                            }
 
-		try {
-			billboard = Display.BillboardConstraints.valueOf(args[0]);
-		} catch (IllegalArgumentException e) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Ce type de billboard n'existe pas.")
-			);
+                            Display.BillboardConstraints billboard = StringUtils.match(billboardName, Display.BillboardConstraints.class, null);
+                            if (billboard == null) {
+                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.billboard.invalid_billboard", billboardName);
+                                return Command.SINGLE_SUCCESS;
+                            }
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+                            hologram.editConfig(config ->
+                                    config.billboard(billboard)
+                            );
 
-		hologram.editConfig(config -> {
-			config.billboard(billboard);
-		});
-
-		TextComponent successMessage = MessageUtils.successMessage(
-				Component.text()
-						.append(Component.text("Le type de billboard a été mit à "))
-						.append(Component.text(billboard.name()))
-						.append(Component.text("."))
-						.build()
-		);
-
-		player.sendMessage(successMessage);
-	}
-
-	@Override
-	public List<String> complete(@NotNull Player player, String @NotNull [] args, String @NotNull [] fullArgs, int argIndex) {
-		if (argIndex != 0)
-			return Collections.emptyList();
-
-		Hologram hologram = NiveriaHolograms.instance().hologramManager().hologramByName(fullArgs[1]);
-		if (hologram == null)
-			return Collections.emptyList();
-
-		String currentArg = args[argIndex].toLowerCase(Locale.ROOT);
-		return Arrays.stream(Display.BillboardConstraints.values())
-				.filter(billboard -> billboard != hologram.configuration().billboard())
-				.map(Enum::name)
-				.filter(billboard -> billboard.toLowerCase(Locale.ROOT).startsWith(currentArg))
-				.toList();
-	}
+                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.billboard.edited", hologramName);
+                            return Command.SINGLE_SUCCESS;
+                        })
+                ).build();
+    }
 }

@@ -9,7 +9,7 @@ import toutouchien.niveriaapi.NiveriaAPI;
 import toutouchien.niveriaapi.hook.HookManager;
 import toutouchien.niveriaapi.hook.HookType;
 import toutouchien.niveriaapi.hook.impl.PlaceholderAPIHook;
-import toutouchien.niveriaapi.utils.ui.ComponentUtils;
+import toutouchien.niveriaapi.utils.ComponentUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,6 +24,85 @@ public class TextHologramConfiguration extends HologramConfiguration {
     private int updateInterval;
     private boolean textDirty = true;
     private boolean updateIntervalDirty = true;
+
+    public TextHologramConfiguration() {
+        // Needed for HologramType
+    }
+
+    private TextHologramConfiguration(HologramConfiguration oldConfig) {
+        this.scale(oldConfig.scale());
+        this.translation(oldConfig.translation());
+        this.billboard(oldConfig.billboard());
+        this.brightness(oldConfig.brightness());
+        this.shadowRadius(oldConfig.shadowRadius());
+        this.shadowStrength(oldConfig.shadowStrength());
+        this.visibilityDistance(oldConfig.visibilityDistance());
+    }
+
+    public List<String> text() {
+        return Collections.unmodifiableList(text);
+    }
+
+    public Component serializedText(Player player) {
+        UUID uuid = player.getUniqueId();
+        if (serializedText.containsKey(uuid) && updateInterval == 0)
+            return serializedText.get(uuid);
+
+        List<String> textLines = this.text();
+        TextComponent.Builder builder = Component.text();
+
+        for (int i = 0; i < textLines.size(); i++) {
+            if (i > 0)
+                builder.appendNewline();
+
+            String line = textLines.get(i);
+
+            line = applyPapiPlaceholders(player, line);
+
+            builder.append(ComponentUtils.deserializeMM(line));
+        }
+
+        TextComponent builtComponent = builder.build();
+        this.serializedText.put(uuid, builtComponent);
+        return builtComponent;
+    }
+
+    private String applyPapiPlaceholders(Player player, String line) {
+        HookManager hookManager = NiveriaAPI.instance().hookManager();
+        PlaceholderAPIHook hook = hookManager.hook(HookType.PlaceholderAPIHook);
+        if (hook != null)
+            line = hook.replacePlaceholders(player, line);
+
+        return line;
+    }
+
+    public TextColor background() {
+        return background;
+    }
+
+    public TextDisplay.TextAlignment textAlignment() {
+        return textAlignment;
+    }
+
+    public boolean seeThrough() {
+        return seeThrough;
+    }
+
+    public boolean textShadow() {
+        return textShadow;
+    }
+
+    public int updateInterval() {
+        return updateInterval;
+    }
+
+    public boolean textDirty() {
+        return textDirty;
+    }
+
+    public boolean updateIntervalDirty() {
+        return updateIntervalDirty;
+    }
 
     public TextHologramConfiguration text(List<String> text) {
         this.text = text;
@@ -115,68 +194,9 @@ public class TextHologramConfiguration extends HologramConfiguration {
         return this;
     }
 
-    public List<String> text() {
-        return Collections.unmodifiableList(text);
-    }
-
-    public Component serializedText(Player player) {
-        UUID uuid = player.getUniqueId();
-        if (serializedText.containsKey(uuid) && updateInterval == 0)
-            return serializedText.get(uuid);
-
-        List<String> textLines = this.text;
-        TextComponent.Builder builder = Component.text();
-
-        for (int i = 0; i < textLines.size(); i++) {
-            if (i > 0)
-                builder.appendNewline();
-
-            String line = textLines.get(i);
-
-            HookManager hookManager = NiveriaAPI.instance().hookManager();
-            PlaceholderAPIHook hook = hookManager.hook(HookType.PlaceholderAPIHook);
-            if (hook != null) {
-                line = hook.replacePlaceholders(player, line);
-            }
-
-            builder.append(ComponentUtils.deserializeMiniMessage(line));
-        }
-
-        this.serializedText.put(uuid, builder.build());
-        return builder.build();
-    }
-
-    public TextColor background() {
-        return background;
-    }
-
-    public TextDisplay.TextAlignment textAlignment() {
-        return textAlignment;
-    }
-
-    public boolean seeThrough() {
-        return seeThrough;
-    }
-
-    public boolean textShadow() {
-        return textShadow;
-    }
-
-    public int updateInterval() {
-        return updateInterval;
-    }
-
-    public boolean textDirty() {
-        return textDirty;
-    }
-
-    public boolean updateIntervalDirty() {
-        return updateIntervalDirty;
-    }
-
     @Override
     public TextHologramConfiguration copy() {
-        TextHologramConfiguration copy = new TextHologramConfiguration();
+        TextHologramConfiguration copy = new TextHologramConfiguration(super.copy());
         copy.text = new ArrayList<>(this.text);
         copy.background = this.background;
         copy.textAlignment = this.textAlignment;

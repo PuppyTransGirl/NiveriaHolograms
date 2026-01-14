@@ -6,11 +6,11 @@ import net.minecraft.world.entity.Display;
 import org.joml.Quaternionf;
 import toutouchien.niveriaholograms.configurations.HologramConfiguration;
 
-public abstract class HologramUpdater {
-    private final Display display;
-    private final HologramConfiguration config;
+public abstract class HologramUpdater<D extends Display, C extends HologramConfiguration> {
+    protected final D display;
+    protected final C config;
 
-    protected HologramUpdater(Display display, HologramConfiguration config) {
+    protected HologramUpdater(D display, C config) {
         this.display = display;
         this.config = config;
     }

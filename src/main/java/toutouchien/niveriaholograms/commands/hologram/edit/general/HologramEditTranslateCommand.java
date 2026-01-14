@@ -1,70 +1,51 @@
 package toutouchien.niveriaholograms.commands.hologram.edit.general;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import toutouchien.niveriaapi.command.CommandData;
-import toutouchien.niveriaapi.command.SubCommand;
-import toutouchien.niveriaapi.utils.ui.MessageUtils;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.FloatArgumentType;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
+import org.bukkit.command.CommandSender;
+import toutouchien.niveriaapi.lang.Lang;
+import toutouchien.niveriaapi.utils.CommandUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
-public class HologramEditTranslateCommand extends SubCommand {
-	public HologramEditTranslateCommand() {
-		super(new CommandData("translate", "niveriaholograms")
-				.playerRequired(true)
-				.usage("<x y z>"));
-	}
+public class HologramEditTranslateCommand {
+    private HologramEditTranslateCommand() {
+        throw new IllegalStateException("Command class");
+    }
 
-	@Override
-	public void execute(@NotNull Player player, String @NotNull [] args, String[] fullArgs, @NotNull String label) {
-		HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
-		Hologram hologram = hologramManager.hologramByName(fullArgs[1]);
-		if (hologram == null) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Cet hologramme n'existe pas.")
-			);
+    public static LiteralCommandNode<CommandSourceStack> get() {
+        return Commands.literal("translate")
+                .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.translate"))
+                .then(Commands.argument("translateX", FloatArgumentType.floatArg())
+                        .then(Commands.argument("translateY", FloatArgumentType.floatArg())
+                                .then(Commands.argument("translateZ", FloatArgumentType.floatArg())
+                                        .executes(ctx -> {
+                                            CommandSender sender = CommandUtils.sender(ctx);
+                                            String hologramName = ctx.getArgument("hologram", String.class);
+                                            float translateX = ctx.getArgument("translateX", float.class);
+                                            float translateY = ctx.getArgument("translateY", float.class);
+                                            float translateZ = ctx.getArgument("translateZ", float.class);
 
-			player.sendMessage(errorMessage);
-			return;
-		}
+                                            HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+                                            Hologram hologram = hologramManager.hologramByName(hologramName);
+                                            if (hologram == null) {
+                                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+                                                return Command.SINGLE_SUCCESS;
+                                            }
 
-		if (args.length != 3) {
-			player.sendMessage(Component.text("/" + label + " " + String.join(" ", fullArgs) + " <x y z>", NamedTextColor.RED));
-			return;
-		}
+                                            hologram.editConfig(config ->
+                                                    config.translation().set(translateX, translateY, translateZ)
+                                            );
 
-		try {
-			double x = parseDouble(args[0]);
-			double y = parseDouble(args[1]);
-			double z = parseDouble(args[2]);
-
-			hologram.editConfig(config -> {
-				config.translation().set(x, y, z);
-			});
-
-			TextComponent successMessage = MessageUtils.successMessage(
-					Component.text("La translation de l'hologramme a été modifiée avec succès !")
-			);
-
-			player.sendMessage(successMessage);
-		} catch (NumberFormatException e) {
-			TextComponent errorMessage = MessageUtils.errorMessage(
-					Component.text("Les coordonnées de translation sont invalides.")
-			);
-
-			player.sendMessage(errorMessage);
-		}
-	}
-
-	private double parseDouble(String coord) {
-		double value = Double.parseDouble(coord);
-		if (!Double.isFinite(value))
-			throw new NumberFormatException("Translation Coordinates is not finite: " + coord);
-
-		return value;
-	}
+                                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.translate.edited", hologramName);
+                                            return Command.SINGLE_SUCCESS;
+                                        })
+                                )
+                        )
+                ).build();
+    }
 }

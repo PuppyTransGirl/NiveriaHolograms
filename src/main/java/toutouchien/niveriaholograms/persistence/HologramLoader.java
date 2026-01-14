@@ -4,19 +4,24 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.util.Brightness;
 import net.minecraft.world.entity.Display;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.TextDisplay;
+import org.bukkit.inventory.ItemStack;
 import org.joml.Vector3f;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.configurations.BlockHologramConfiguration;
 import toutouchien.niveriaholograms.configurations.HologramConfiguration;
 import toutouchien.niveriaholograms.configurations.ItemHologramConfiguration;
 import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
+import toutouchien.niveriaholograms.configurations.special.GlowingHologramConfiguration;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.core.HologramType;
 import toutouchien.niveriaholograms.managers.HologramManager;
 import toutouchien.niveriaholograms.utils.CustomLocation;
+import toutouchien.niveriaholograms.utils.HologramUtils;
 
 import java.util.List;
 import java.util.UUID;
@@ -42,9 +47,18 @@ public class HologramLoader {
         loadConfiguration(section, configuration);
 
         switch (type) {
-            case BLOCK -> loadBlockConfiguration(section, (BlockHologramConfiguration) configuration);
-            case ITEM -> loadItemConfiguration(section, (ItemHologramConfiguration) configuration);
+            case BLOCK -> {
+                loadGlowingConfiguration(section, (GlowingHologramConfiguration) configuration);
+                loadBlockConfiguration(section, (BlockHologramConfiguration) configuration);
+            }
+
+            case ITEM -> {
+                loadGlowingConfiguration(section, (GlowingHologramConfiguration) configuration);
+                loadItemConfiguration(section, (ItemHologramConfiguration) configuration);
+            }
+
             case TEXT -> loadTextConfiguration(section, (TextHologramConfiguration) configuration);
+
             default -> throw new IllegalArgumentException("Unsupported hologram type: " + type);
         }
 
@@ -66,9 +80,7 @@ public class HologramLoader {
         configuration.brightness(new Brightness(brightnessSection.getInt("block"), brightnessSection.getInt("sky")));
     }
 
-    private void loadBlockConfiguration(ConfigurationSection section, BlockHologramConfiguration configuration) {
-        configuration.material(Material.valueOf(section.getString("material")));
-
+    private void loadGlowingConfiguration(ConfigurationSection section, GlowingHologramConfiguration configuration) {
         TextColor glowingColor = loadGlowing(section);
         if (glowingColor == null) {
             configuration.glowing(false);
@@ -79,17 +91,21 @@ public class HologramLoader {
                 .glowingColor(glowingColor);
     }
 
+    private void loadBlockConfiguration(ConfigurationSection section, BlockHologramConfiguration configuration) {
+        String blockstate = section.getString("blockstate");
+        if (blockstate == null || blockstate.isBlank())
+            blockstate = "minecraft:grass_block";
+
+        BlockData deserializedBlockData = Bukkit.createBlockData(blockstate);
+        configuration.blockState(deserializedBlockData.createBlockState());
+    }
+
     private void loadItemConfiguration(ConfigurationSection section, ItemHologramConfiguration configuration) {
-        configuration.itemStack(section.getItemStack("itemstack"));
+        ItemStack itemstack = section.getItemStack("itemstack");
+        if (itemstack == null)
+            itemstack = ItemStack.of(Material.APPLE);
 
-        TextColor glowingColor = loadGlowing(section);
-        if (glowingColor == null) {
-            configuration.glowing(false);
-            return;
-        }
-
-        configuration.glowing(true)
-                .glowingColor(glowingColor);
+        configuration.itemStack(itemstack);
     }
 
     private void loadTextConfiguration(ConfigurationSection section, TextHologramConfiguration configuration) {
@@ -119,7 +135,7 @@ public class HologramLoader {
 
         return switch (background.toLowerCase()) {
             case "default" -> null;
-            case "transparent" -> Hologram.TRANSPARENT;
+            case "transparent" -> HologramUtils.TRANSPARENT;
             default -> background.startsWith("#")
                     ? TextColor.fromHexString(background)
                     : NamedTextColor.NAMES.value(background);

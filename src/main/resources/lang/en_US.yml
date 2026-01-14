@@ -1,0 +1,195 @@
+# ============================================================
+# ===============  OTHER (PREFIXES, COLORS, ETC.) ============
+# ============================================================
+
+special-tags:
+  # ---------------- PREFIXES ----------------
+  prefix:
+    holograms: "<gradient:#FC67FA:#F4C4F3>ʜᴏʟᴏɢʀᴀᴍѕ</gradient>"
+
+  # ---------------- COLORS ----------------
+  ncolor:
+    primary: "#FC67FA"
+    secondary: "#F4C4F3"
+    success: "#7AF291"
+    error: "#F27474"
+    default: "#B0AEC1"
+
+  # ---------------- OTHER ----------------
+  other:
+    separator: "<#B0AEC1>»</#B0AEC1>"
+
+# ============================================================
+# ======================== FEATURES ==========================
+# ============================================================
+
+niveriaholograms:
+  reload:
+    done: "<prefix:holograms/> <separator> <ncolor:success>NiveriaHolograms has been reloaded. (%s ms)</ncolor>"
+
+  hologram:
+    clone:
+      doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>The hologram \"%s\" does not exist.</ncolor>"
+      name_too_long: "<prefix:holograms/> <separator> <ncolor:error>The hologram name is too long. It cannot exceed %s characters.</ncolor>"
+      invalid_character: "<prefix:holograms/> <separator> <ncolor:error>The hologram name contains invalid characters.</ncolor>"
+      already_exists: "<prefix:holograms/> <separator> <ncolor:error>A hologram with this name already exists.</ncolor>"
+      cloned: "<prefix:holograms/> <separator> <ncolor:success>Hologram \"%s\" successfully cloned to \"%s\".</ncolor>"
+
+    create:
+      invalid_type: "<prefix:holograms/> <separator> <ncolor:error>The hologram type \"%s\" is invalid.</ncolor>"
+      name_too_long: "<prefix:holograms/> <separator> <ncolor:error>The hologram name is too long. It cannot exceed %s characters.</ncolor>"
+      invalid_character: "<prefix:holograms/> <separator> <ncolor:error>The hologram name contains invalid characters.</ncolor>"
+      already_exists: "<prefix:holograms/> <separator> <ncolor:error>A hologram with this name already exists.</ncolor>"
+      created: "<prefix:holograms/> <separator> <ncolor:success>Hologram \"%s\" of type \"%s\" successfully created.</ncolor>"
+
+    info:
+      doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>The hologram \"%s\" does not exist.</ncolor>"
+      info: |
+        <prefix:holograms/> <separator> <ncolor:primary>Information for hologram "%s":</ncolor>
+        <ncolor:default>- Type: %s
+        - Position: X: %.2f Y: %.2f Z: %.2f
+        - World: %s
+        - Rotation: %.2f %.2f
+        - Scale: %s
+        - Billboard: %s
+        - Brightness: Block %s Sky %s
+        - Shadow Radius: %.2f
+        - Shadow Strength: %.2f
+        - Visibility Distance: %s</ncolor>
+
+      info_block: |
+        <ncolor:default>- Block: %s
+        - Glowing: %s
+        - Glow Color: %s
+        </ncolor>
+
+      info_item: |
+        <ncolor:default>- Item: %s
+        - Glowing: %s
+        - Glow Color: %s
+        </ncolor>
+
+      info_text: |
+        <ncolor:default>- Background Color: %s
+        - Text Alignment: %s
+        - See-through: %s
+        - Text Shadow: %s
+        - Update Interval (ticks): %s</ncolor>
+
+      other:
+        default: "Default"
+        transparent: "Transparent"
+        no_glowing_color: "None"
+
+    list:
+      no_holograms: "<prefix:holograms/> <separator> <ncolor:default>There are no holograms created.</ncolor>"
+      header: "<prefix:holograms/> <separator> <ncolor:primary>List of holograms (%s):</ncolor>"
+      hologram_entry: "<hover:show_text:'Click here to teleport to this hologram'><click:run_command:'/hologram teleport %s'><ncolor:default>- %s (Type: %s, World: %s, Position: X: %.2f Y: %.2f Z: %.2f)</ncolor></click></hover>"
+
+    nearby:
+      no_holograms: "<prefix:holograms/> <separator> <ncolor:default>There are no holograms within a radius of %s.</ncolor>"
+      header: "<prefix:holograms/> <separator> <ncolor:primary>Nearby holograms (%s):</ncolor>"
+      hologram_entry: "<hover:show_text:'Click here to teleport to this hologram'><click:run_command:'/hologram teleport %s'><ncolor:default>- %s (Type: %s, World: %s, Position: X: %.2f Y: %.2f Z: %.2f, Distance: %.2f)</ncolor></click></hover>"
+
+    remove:
+      doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>The hologram \"%s\" does not exist.</ncolor>"
+      removed: "<prefix:holograms/> <separator> <ncolor:success>Hologram \"%s\" successfully removed.</ncolor>"
+
+    teleport:
+      doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>The hologram \"%s\" does not exist.</ncolor>"
+      teleported: "<prefix:holograms/> <separator> <ncolor:success>Successfully teleported to hologram \"%s\".</ncolor>"
+
+    edit:
+      doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>The hologram \"%s\" does not exist.</ncolor>"
+      only_block: "<prefix:holograms/> <separator> <ncolor:error>This option can only be modified for block holograms.</ncolor>"
+      only_item: "<prefix:holograms/> <separator> <ncolor:error>This option can only be modified for item holograms.</ncolor>"
+      only_text: "<prefix:holograms/> <separator> <ncolor:error>This option can only be modified for text holograms.</ncolor>"
+      only_block_and_item: "<prefix:holograms/> <separator> <ncolor:error>This option can only be modified for block and item holograms.</ncolor>"
+
+      # Block
+      block:
+        no_air: "<prefix:holograms/> <separator> <ncolor:error>The block cannot be air.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>The block of hologram \"%s\" was successfully changed to \"<lang:%s/>\".</ncolor>"
+
+      # Item
+      item:
+        no_item: "<prefix:holograms/> <separator> <ncolor:error>You must hold an item in your main hand.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>The item of hologram \"%s\" was successfully changed to \"<lang:%s/>\".</ncolor>"
+
+      # Text
+      addLine:
+        edited: "<prefix:holograms/> <separator> <ncolor:success>The text of hologram \"%s\" was successfully updated.</ncolor>"
+
+      background:
+        invalid_color: "<prefix:holograms/> <separator> <ncolor:error>The background color \"%s\" is invalid.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>The background color of hologram \"%s\" was successfully updated.</ncolor>"
+
+      insertAfter:
+        invalid_line: "<prefix:holograms/> <separator> <ncolor:error>The line number \"%s\" is invalid.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>The text of hologram \"%s\" was successfully updated.</ncolor>"
+
+      insertBefore:
+        invalid_line: "<prefix:holograms/> <separator> <ncolor:error>The line number \"%s\" is invalid.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>The text of hologram \"%s\" was successfully updated.</ncolor>"
+
+      removeLine:
+        invalid_line: "<prefix:holograms/> <separator> <ncolor:error>The line number \"%s\" is invalid.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>The text of hologram \"%s\" was successfully updated.</ncolor>"
+
+      seeThrough:
+        edited: "<prefix:holograms/> <separator> <ncolor:success>The see-through setting of hologram \"%s\" was successfully updated.</ncolor>"
+
+      setLine:
+        invalid_line: "<prefix:holograms/> <separator> <ncolor:error>The line number \"%s\" is invalid.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>The text of hologram \"%s\" was successfully updated.</ncolor>"
+
+      textAlignment:
+        invalid_textAlignment: "<prefix:holograms/> <separator> <ncolor:error>The text alignment value \"%s\" is invalid.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>The text alignment of hologram \"%s\" was successfully updated.</ncolor>"
+
+      textShadow:
+        edited: "<prefix:holograms/> <separator> <ncolor:success>The text shadow of \"%s\" was successfully updated.</ncolor>"
+
+      updateInterval:
+        edited: "<prefix:holograms/> <separator> <ncolor:success>The update interval of hologram \"%s\" was successfully changed to \"%s\".</ncolor>"
+
+      # General
+      billboard:
+        invalid_billboard: "<prefix:holograms/> <separator> <ncolor:error>The billboard value \"%s\" is invalid.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>The billboard of hologram \"%s\" was successfully updated.</ncolor>"
+
+      brightness:
+        invalid_type: "<prefix:holograms/> <separator> <ncolor:error>The light type value \"%s\" is invalid.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>The brightness of hologram \"%s\" was successfully updated.</ncolor>"
+
+      pitch:
+        edited: "<prefix:holograms/> <separator> <ncolor:success>The pitch of hologram \"%s\" was successfully changed to \"%.2f\".</ncolor>"
+
+      position:
+        edited: "<prefix:holograms/> <separator> <ncolor:success>The position of hologram \"%s\" was successfully updated.</ncolor>"
+
+      rotation:
+        edited: "<prefix:holograms/> <separator> <ncolor:success>The rotation of hologram \"%s\" was successfully changed to \"%.2f %.2f\".</ncolor>"
+
+      scale:
+        edited: "<prefix:holograms/> <separator> <ncolor:success>The scale of hologram \"%s\" was successfully updated.</ncolor>"
+
+      shadowRadius:
+        edited: "<prefix:holograms/> <separator> <ncolor:success>The shadow radius of hologram \"%s\" was successfully changed to \"%.2f\".</ncolor>"
+
+      shadowStrength:
+        edited: "<prefix:holograms/> <separator> <ncolor:success>The shadow strength of hologram \"%s\" was successfully changed to \"%.2f\".</ncolor>"
+
+      translate:
+        edited: "<prefix:holograms/> <separator> <ncolor:success>The translation of hologram \"%s\" was successfully updated.</ncolor>"
+
+      visibilityDistance:
+        edited: "<prefix:holograms/> <separator> <ncolor:success>The visibility distance of hologram \"%s\" was successfully changed to \"%s\".</ncolor>"
+
+      yaw:
+        edited: "<prefix:holograms/> <separator> <ncolor:success>The yaw of hologram \"%s\" was successfully changed to \"%.2f\".</ncolor>"
+
+      # Other
+      glowing:
+        invalid_color: "<prefix:holograms/> <separator> <ncolor:error>The glow color \"%s\" is invalid.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>The glowing status of hologram \"%s\" was successfully updated.</ncolor>"
