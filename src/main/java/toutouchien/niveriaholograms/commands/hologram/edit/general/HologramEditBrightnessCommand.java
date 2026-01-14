@@ -70,9 +70,9 @@ public class HologramEditBrightnessCommand {
 
                                     int finalBlock = block;
                                     int finalSky = sky;
-                                    hologram.editConfig(config -> {
-                                        config.brightness(new Brightness(finalBlock, finalSky));
-                                    });
+                                    hologram.editConfig(config ->
+                                            config.brightness(new Brightness(finalBlock, finalSky))
+                                    );
 
                                     Lang.sendMessage(sender, "niveriaholograms.hologram.edit.brightness.edited", hologramName);
                                     return Command.SINGLE_SUCCESS;

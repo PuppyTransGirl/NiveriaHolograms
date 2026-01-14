@@ -37,9 +37,9 @@ public class HologramEditTranslateCommand {
                                                 return Command.SINGLE_SUCCESS;
                                             }
 
-                                            hologram.editConfig(config -> {
-                                                config.translation().set(translateX, translateY, translateZ);
-                                            });
+                                            hologram.editConfig(config ->
+                                                    config.translation().set(translateX, translateY, translateZ)
+                                            );
 
                                             Lang.sendMessage(sender, "niveriaholograms.hologram.edit.translate.edited", hologramName);
                                             return Command.SINGLE_SUCCESS;

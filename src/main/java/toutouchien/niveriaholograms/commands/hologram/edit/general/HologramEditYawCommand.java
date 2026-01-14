@@ -13,33 +13,33 @@ import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
 public class HologramEditYawCommand {
-	private HologramEditYawCommand() {
-		throw new IllegalStateException("Command class");
-	}
+    private HologramEditYawCommand() {
+        throw new IllegalStateException("Command class");
+    }
 
-	public static LiteralCommandNode<CommandSourceStack> get() {
-		return Commands.literal("yaw")
-				.requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.yaw"))
-				.then(Commands.argument("yaw", FloatArgumentType.floatArg(-180F, 180F))
-						.executes(ctx -> {
-							CommandSender sender = CommandUtils.sender(ctx);
-							String hologramName = ctx.getArgument("hologram", String.class);
+    public static LiteralCommandNode<CommandSourceStack> get() {
+        return Commands.literal("yaw")
+                .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.yaw"))
+                .then(Commands.argument("yaw", FloatArgumentType.floatArg(-180F, 180F))
+                        .executes(ctx -> {
+                            CommandSender sender = CommandUtils.sender(ctx);
+                            String hologramName = ctx.getArgument("hologram", String.class);
                             float yaw = ctx.getArgument("yaw", float.class);
 
-							HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
-							Hologram hologram = hologramManager.hologramByName(hologramName);
-							if (hologram == null) {
-								Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
-								return Command.SINGLE_SUCCESS;
-							}
+                            HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+                            Hologram hologram = hologramManager.hologramByName(hologramName);
+                            if (hologram == null) {
+                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+                                return Command.SINGLE_SUCCESS;
+                            }
 
-							hologram.editLocation(location -> {
-								location.yaw(yaw);
-							});
+                            hologram.editLocation(location ->
+                                    location.yaw(yaw)
+                            );
 
-							Lang.sendMessage(sender, "niveriaholograms.hologram.edit.yaw.edited", hologramName, yaw);
-							return Command.SINGLE_SUCCESS;
-						})
-				).build();
-	}
+                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.yaw.edited", hologramName, yaw);
+                            return Command.SINGLE_SUCCESS;
+                        })
+                ).build();
+    }
 }

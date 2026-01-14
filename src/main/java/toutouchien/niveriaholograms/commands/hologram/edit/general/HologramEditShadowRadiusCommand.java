@@ -13,33 +13,33 @@ import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
 public class HologramEditShadowRadiusCommand {
-	private HologramEditShadowRadiusCommand() {
-		throw new IllegalStateException("Command class");
-	}
+    private HologramEditShadowRadiusCommand() {
+        throw new IllegalStateException("Command class");
+    }
 
-	public static LiteralCommandNode<CommandSourceStack> get() {
-		return Commands.literal("shadowRadius")
+    public static LiteralCommandNode<CommandSourceStack> get() {
+        return Commands.literal("shadowRadius")
                 .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.shadowradius"))
-				.then(Commands.argument("shadowRadius", FloatArgumentType.floatArg())
-						.executes(ctx -> {
-							CommandSender sender = CommandUtils.sender(ctx);
-							String hologramName = ctx.getArgument("hologram", String.class);
+                .then(Commands.argument("shadowRadius", FloatArgumentType.floatArg())
+                        .executes(ctx -> {
+                            CommandSender sender = CommandUtils.sender(ctx);
+                            String hologramName = ctx.getArgument("hologram", String.class);
                             float shadowRadius = ctx.getArgument("shadowRadius", float.class);
 
-							HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
-							Hologram hologram = hologramManager.hologramByName(hologramName);
-							if (hologram == null) {
-								Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
-								return Command.SINGLE_SUCCESS;
-							}
+                            HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+                            Hologram hologram = hologramManager.hologramByName(hologramName);
+                            if (hologram == null) {
+                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+                                return Command.SINGLE_SUCCESS;
+                            }
 
-							hologram.editConfig(config -> {
-								config.shadowRadius(shadowRadius);
-							});
+                            hologram.editConfig(config ->
+                                    config.shadowRadius(shadowRadius)
+                            );
 
-							Lang.sendMessage(sender, "niveriaholograms.hologram.edit.shadowRadius.edited", hologramName, shadowRadius);
-							return Command.SINGLE_SUCCESS;
-						})
-				).build();
-	}
+                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.shadowRadius.edited", hologramName, shadowRadius);
+                            return Command.SINGLE_SUCCESS;
+                        })
+                ).build();
+    }
 }

@@ -4,7 +4,6 @@ import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
-import toutouchien.niveriaapi.NiveriaAPI;
 import toutouchien.niveriaapi.lang.Lang;
 import toutouchien.niveriaholograms.commands.hologram.HologramCommand;
 import toutouchien.niveriaholograms.commands.niveriaholograms.NiveriaHologramsCommand;

@@ -14,38 +14,38 @@ import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
 public class HologramEditAddLineCommand {
-	private HologramEditAddLineCommand() {
-		throw new IllegalStateException("Command class");
-	}
+    private HologramEditAddLineCommand() {
+        throw new IllegalStateException("Command class");
+    }
 
-	public static LiteralCommandNode<CommandSourceStack> get() {
-		return Commands.literal("addLine")
-				.requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.addline"))
-				.then(Commands.argument("text", StringArgumentType.greedyString())
-						.executes(ctx -> {
-							CommandSender sender = CommandUtils.sender(ctx);
-							String hologramName = ctx.getArgument("hologram", String.class);
-							String text = ctx.getArgument("text", String.class);
+    public static LiteralCommandNode<CommandSourceStack> get() {
+        return Commands.literal("addLine")
+                .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.addline"))
+                .then(Commands.argument("text", StringArgumentType.greedyString())
+                        .executes(ctx -> {
+                            CommandSender sender = CommandUtils.sender(ctx);
+                            String hologramName = ctx.getArgument("hologram", String.class);
+                            String text = ctx.getArgument("text", String.class);
 
-							HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
-							Hologram hologram = hologramManager.hologramByName(hologramName);
-							if (hologram == null) {
-								Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
-								return Command.SINGLE_SUCCESS;
-							}
+                            HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+                            Hologram hologram = hologramManager.hologramByName(hologramName);
+                            if (hologram == null) {
+                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+                                return Command.SINGLE_SUCCESS;
+                            }
 
-							if (!(hologram.configuration() instanceof TextHologramConfiguration)) {
-								Lang.sendMessage(sender, "niveriaholograms.hologram.edit.only_text");
-								return Command.SINGLE_SUCCESS;
-							}
+                            if (!(hologram.configuration() instanceof TextHologramConfiguration)) {
+                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.only_text");
+                                return Command.SINGLE_SUCCESS;
+                            }
 
-							hologram.editConfig((TextHologramConfiguration config) -> {
-								config.addText(text);
-							});
+                            hologram.editConfig((TextHologramConfiguration config) ->
+                                    config.addText(text)
+                            );
 
-							Lang.sendMessage(sender, "niveriaholograms.hologram.edit.addLine.edited", hologramName);
-							return Command.SINGLE_SUCCESS;
-						})
-				).build();
-	}
+                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.addLine.edited", hologramName);
+                            return Command.SINGLE_SUCCESS;
+                        })
+                ).build();
+    }
 }

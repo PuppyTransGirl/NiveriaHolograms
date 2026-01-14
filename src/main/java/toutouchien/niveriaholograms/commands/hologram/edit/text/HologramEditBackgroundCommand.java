@@ -71,9 +71,9 @@ public class HologramEditBackgroundCommand {
                                 }
                             }
 
-                            hologram.editConfig((TextHologramConfiguration config) -> {
-                                config.background(backgroundColor);
-                            });
+                            hologram.editConfig((TextHologramConfiguration config) ->
+                                    config.background(backgroundColor)
+                            );
 
                             Lang.sendMessage(sender, "niveriaholograms.hologram.edit.background.edited", hologramName);
                             return Command.SINGLE_SUCCESS;

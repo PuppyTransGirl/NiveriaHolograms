@@ -67,9 +67,9 @@ public class HologramEditInsertAfterCommand {
                                         return Command.SINGLE_SUCCESS;
                                     }
 
-                                    hologram.editConfig((TextHologramConfiguration config) -> {
-                                        config.addTextAfter(line - 1, text);
-                                    });
+                                    hologram.editConfig((TextHologramConfiguration config) ->
+                                            config.addTextAfter(line - 1, text)
+                                    );
 
                                     Lang.sendMessage(sender, "niveriaholograms.hologram.edit.insertAfter.edited", hologramName);
                                     return Command.SINGLE_SUCCESS;

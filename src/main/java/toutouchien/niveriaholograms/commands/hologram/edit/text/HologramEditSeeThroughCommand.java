@@ -14,38 +14,38 @@ import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
 public class HologramEditSeeThroughCommand {
-	private HologramEditSeeThroughCommand() {
-		throw new IllegalStateException("Command class");
-	}
+    private HologramEditSeeThroughCommand() {
+        throw new IllegalStateException("Command class");
+    }
 
-	public static LiteralCommandNode<CommandSourceStack> get() {
-		return Commands.literal("seeThrough")
-				.requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.seethrough"))
-				.then(Commands.argument("seeThrough", BoolArgumentType.bool())
-						.executes(ctx -> {
-							CommandSender sender = CommandUtils.sender(ctx);
-							String hologramName = ctx.getArgument("hologram", String.class);
-							boolean seeThrough = ctx.getArgument("seeThrough", boolean.class);
+    public static LiteralCommandNode<CommandSourceStack> get() {
+        return Commands.literal("seeThrough")
+                .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.seethrough"))
+                .then(Commands.argument("seeThrough", BoolArgumentType.bool())
+                        .executes(ctx -> {
+                            CommandSender sender = CommandUtils.sender(ctx);
+                            String hologramName = ctx.getArgument("hologram", String.class);
+                            boolean seeThrough = ctx.getArgument("seeThrough", boolean.class);
 
-							HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
-							Hologram hologram = hologramManager.hologramByName(hologramName);
-							if (hologram == null) {
-								Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
-								return Command.SINGLE_SUCCESS;
-							}
+                            HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+                            Hologram hologram = hologramManager.hologramByName(hologramName);
+                            if (hologram == null) {
+                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+                                return Command.SINGLE_SUCCESS;
+                            }
 
-							if (!(hologram.configuration() instanceof TextHologramConfiguration)) {
-								Lang.sendMessage(sender, "niveriaholograms.hologram.edit.only_text");
-								return Command.SINGLE_SUCCESS;
-							}
+                            if (!(hologram.configuration() instanceof TextHologramConfiguration)) {
+                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.only_text");
+                                return Command.SINGLE_SUCCESS;
+                            }
 
-							hologram.editConfig((TextHologramConfiguration config) -> {
-								config.seeThrough(seeThrough);
-							});
+                            hologram.editConfig((TextHologramConfiguration config) ->
+                                    config.seeThrough(seeThrough)
+                            );
 
-							Lang.sendMessage(sender, "niveriaholograms.hologram.edit.seeThrough.edited", hologramName);
-							return Command.SINGLE_SUCCESS;
-						})
-				).build();
-	}
+                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.seeThrough.edited", hologramName);
+                            return Command.SINGLE_SUCCESS;
+                        })
+                ).build();
+    }
 }

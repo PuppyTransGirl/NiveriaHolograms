@@ -52,9 +52,9 @@ public class HologramEditScaleCommand {
             return Command.SINGLE_SUCCESS;
         }
 
-        hologram.editConfig(config -> {
-            config.scale().set(scaleX, scaleY, scaleZ);
-        });
+        hologram.editConfig(config ->
+                config.scale().set(scaleX, scaleY, scaleZ)
+        );
 
         Lang.sendMessage(sender, "niveriaholograms.hologram.edit.scale.edited", hologramName);
         return Command.SINGLE_SUCCESS;

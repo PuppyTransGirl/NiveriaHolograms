@@ -13,33 +13,33 @@ import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
 public class HologramEditShadowStrengthCommand {
-	private HologramEditShadowStrengthCommand() {
-		throw new IllegalStateException("Command class");
-	}
+    private HologramEditShadowStrengthCommand() {
+        throw new IllegalStateException("Command class");
+    }
 
-	public static LiteralCommandNode<CommandSourceStack> get() {
-		return Commands.literal("shadowStrength")
+    public static LiteralCommandNode<CommandSourceStack> get() {
+        return Commands.literal("shadowStrength")
                 .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.shadowstrength"))
-				.then(Commands.argument("shadowStrength", FloatArgumentType.floatArg())
-						.executes(ctx -> {
-							CommandSender sender = CommandUtils.sender(ctx);
-							String hologramName = ctx.getArgument("hologram", String.class);
+                .then(Commands.argument("shadowStrength", FloatArgumentType.floatArg())
+                        .executes(ctx -> {
+                            CommandSender sender = CommandUtils.sender(ctx);
+                            String hologramName = ctx.getArgument("hologram", String.class);
                             float shadowStrength = ctx.getArgument("shadowStrength", float.class);
 
-							HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
-							Hologram hologram = hologramManager.hologramByName(hologramName);
-							if (hologram == null) {
-								Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
-								return Command.SINGLE_SUCCESS;
-							}
+                            HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+                            Hologram hologram = hologramManager.hologramByName(hologramName);
+                            if (hologram == null) {
+                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+                                return Command.SINGLE_SUCCESS;
+                            }
 
-							hologram.editConfig(config -> {
-								config.shadowStrength(shadowStrength);
-							});
+                            hologram.editConfig(config ->
+                                    config.shadowStrength(shadowStrength)
+                            );
 
-							Lang.sendMessage(sender, "niveriaholograms.hologram.edit.shadowStrength.edited", hologramName, shadowStrength);
-							return Command.SINGLE_SUCCESS;
-						})
-				).build();
-	}
+                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.shadowStrength.edited", hologramName, shadowStrength);
+                            return Command.SINGLE_SUCCESS;
+                        })
+                ).build();
+    }
 }

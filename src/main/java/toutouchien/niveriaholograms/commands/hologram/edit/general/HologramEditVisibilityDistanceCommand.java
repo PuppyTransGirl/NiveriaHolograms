@@ -13,33 +13,33 @@ import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
 public class HologramEditVisibilityDistanceCommand {
-	private HologramEditVisibilityDistanceCommand() {
-		throw new IllegalStateException("Command class");
-	}
+    private HologramEditVisibilityDistanceCommand() {
+        throw new IllegalStateException("Command class");
+    }
 
-	public static LiteralCommandNode<CommandSourceStack> get() {
-		return Commands.literal("visibilityDistance")
-				.requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.visibilitydistance"))
-				.then(Commands.argument("visibilityDistance", IntegerArgumentType.integer())
-						.executes(ctx -> {
-							CommandSender sender = CommandUtils.sender(ctx);
-							String hologramName = ctx.getArgument("hologram", String.class);
+    public static LiteralCommandNode<CommandSourceStack> get() {
+        return Commands.literal("visibilityDistance")
+                .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.visibilitydistance"))
+                .then(Commands.argument("visibilityDistance", IntegerArgumentType.integer())
+                        .executes(ctx -> {
+                            CommandSender sender = CommandUtils.sender(ctx);
+                            String hologramName = ctx.getArgument("hologram", String.class);
                             int visibilityDistance = ctx.getArgument("visibilityDistance", int.class);
 
-							HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
-							Hologram hologram = hologramManager.hologramByName(hologramName);
-							if (hologram == null) {
-								Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
-								return Command.SINGLE_SUCCESS;
-							}
+                            HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+                            Hologram hologram = hologramManager.hologramByName(hologramName);
+                            if (hologram == null) {
+                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+                                return Command.SINGLE_SUCCESS;
+                            }
 
-							hologram.editConfig(config -> {
-								config.visibilityDistance(visibilityDistance);
-							});
+                            hologram.editConfig(config ->
+                                    config.visibilityDistance(visibilityDistance)
+                            );
 
-							Lang.sendMessage(sender, "niveriaholograms.hologram.edit.visibilityDistance.edited", hologramName, visibilityDistance);
-							return Command.SINGLE_SUCCESS;
-						})
-				).build();
-	}
+                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.visibilityDistance.edited", hologramName, visibilityDistance);
+                            return Command.SINGLE_SUCCESS;
+                        })
+                ).build();
+    }
 }

@@ -64,9 +64,9 @@ public class HologramEditRemoveLineCommand {
                                 return Command.SINGLE_SUCCESS;
                             }
 
-                            hologram.editConfig((TextHologramConfiguration config) -> {
-                                config.removeText(line - 1);
-                            });
+                            hologram.editConfig((TextHologramConfiguration config) ->
+                                    config.removeText(line - 1)
+                            );
 
                             Lang.sendMessage(sender, "niveriaholograms.hologram.edit.removeLine.edited", hologramName);
                             return Command.SINGLE_SUCCESS;
