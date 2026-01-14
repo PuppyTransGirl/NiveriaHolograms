@@ -145,7 +145,7 @@ public class Hologram {
         this.updater.update();
     }
 
-    public void updateForAllPlayers() {
+    public synchronized void updateForAllPlayers() {
         if (Bukkit.getOnlinePlayers().isEmpty())
             return;
 
