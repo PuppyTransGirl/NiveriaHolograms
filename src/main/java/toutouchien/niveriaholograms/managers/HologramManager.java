@@ -63,6 +63,15 @@ public class HologramManager {
         return hologram;
     }
 
+    public void cloneHologram(Hologram hologram, Player player, String newHologramName) {
+        Hologram clone = new Hologram(hologram, player, newHologramName);
+        clone.create();
+        clone.createForAllPlayers();
+
+        this.saveHologram(clone);
+        this.addHologram(clone);
+    }
+
     public void delete(Hologram hologram) {
         this.holograms.remove(hologram.name());
         this.hologramSaver.deleteHologram(hologram);
@@ -129,9 +138,8 @@ public class HologramManager {
 
     public boolean hologramExists(String name) {
         for (String holoName : holograms.keySet()) {
-            if (holoName.equalsIgnoreCase(name)) {
+            if (holoName.equalsIgnoreCase(name))
                 return true;
-            }
         }
 
         return false;
