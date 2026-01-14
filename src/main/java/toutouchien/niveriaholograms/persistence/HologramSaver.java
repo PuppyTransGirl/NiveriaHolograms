@@ -97,9 +97,8 @@ public class HologramSaver {
 
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
         ConfigurationSection section = config.getConfigurationSection("holograms." + hologram.name());
-        if (section == null) {
+        if (section == null)
             section = config.createSection("holograms." + hologram.name());
-        }
 
         this.save(section, hologram);
         try {
@@ -109,14 +108,12 @@ public class HologramSaver {
         }
 
         // Delete the original holograms.yml file
-        if (file.exists() && !file.delete()) {
+        if (file.exists() && !file.delete())
             throw new HologramSaveException("Failed to delete original holograms file: " + file.getAbsolutePath());
-        }
 
         // Replace the original file with the temporary file by renaming it
-        if (!tempFile.renameTo(file)) {
+        if (!tempFile.renameTo(file))
             throw new HologramSaveException("Failed to rename temporary holograms file to: " + file.getAbsolutePath());
-        }
     }
 
     /**
@@ -147,14 +144,12 @@ public class HologramSaver {
         }
 
         // Delete the original holograms.yml file
-        if (file.exists() && !file.delete()) {
+        if (file.exists() && !file.delete())
             throw new HologramSaveException("Failed to delete original holograms file: " + file.getAbsolutePath());
-        }
 
         // Replace the original file with the temporary file by renaming it
-        if (!tempFile.renameTo(file)) {
+        if (!tempFile.renameTo(file))
             throw new HologramSaveException("Failed to rename temporary holograms file to: " + file.getAbsolutePath());
-        }
     }
 
     public void shutdown() {
@@ -230,17 +225,14 @@ public class HologramSaver {
     }
 
     private String backgroundColor(TextColor backgroundColor) {
-        if (backgroundColor == null) {
+        if (backgroundColor == null)
             return "default";
-        }
 
-        if (backgroundColor == Hologram.TRANSPARENT) {
+        if (backgroundColor == Hologram.TRANSPARENT)
             return "transparent";
-        }
 
-        if (backgroundColor instanceof NamedTextColor namedTextColor) {
+        if (backgroundColor instanceof NamedTextColor namedTextColor)
             return namedTextColor.toString();
-        }
 
         return backgroundColor.asHexString();
     }
