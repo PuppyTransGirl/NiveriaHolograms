@@ -78,7 +78,7 @@ public class HologramManager {
     }
 
     public void addHologram(Hologram hologram) {
-        this.holograms.put(hologram.name(), hologram);
+        this.holograms.put(hologram.name().toLowerCase(Locale.ROOT), hologram);
     }
 
     public void loadHolograms() {
@@ -113,7 +113,7 @@ public class HologramManager {
         Hologram hologram = hologramLoader.load(section);
         hologram.create();
         hologram.createForAllPlayers();
-        this.holograms.put(hologram.name(), hologram);
+        this.holograms.put(hologram.name().toLowerCase(Locale.ROOT), hologram);
     }
 
     public void saveHologram(Hologram hologram) {
@@ -126,16 +126,11 @@ public class HologramManager {
     }
 
     public Hologram hologramByName(String name) {
-        return this.holograms.get(name);
+        return this.holograms.get(name.toLowerCase(Locale.ROOT));
     }
 
     public boolean hologramExists(String name) {
-        for (String holoName : holograms.keySet()) {
-            if (holoName.equalsIgnoreCase(name))
-                return true;
-        }
-
-        return false;
+        return this.hologramByName(name) != null;
     }
 
     public List<Hologram> holograms() {
