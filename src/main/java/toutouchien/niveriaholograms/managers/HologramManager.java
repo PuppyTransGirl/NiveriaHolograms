@@ -103,7 +103,7 @@ public class HologramManager {
     }
 
     public void loadHologram(ConfigurationSection section) {
-        String worldName = ((CustomLocation) section.get("location")).world();
+        String worldName = section.getObject("location", CustomLocation.class).world();
         if (Bukkit.getWorld(worldName) == null) {
             List<String> loadedHolograms = pendingHolograms.computeIfAbsent(worldName, w -> new ArrayList<>());
             loadedHolograms.add(section.getName());
@@ -116,20 +116,13 @@ public class HologramManager {
         this.holograms.put(hologram.name(), hologram);
     }
 
-    public void saveHolograms() {
-        for (Hologram hologram : this.holograms.values()) {
-            this.saveHologram(hologram);
-        }
-    }
-
     public void saveHologram(Hologram hologram) {
         this.hologramSaver.saveHologram(hologram);
     }
 
     public void clearCache(Player player) {
-        for (Hologram hologram : this.holograms.values()) {
+        for (Hologram hologram : this.holograms.values())
             hologram.clearCache(player);
-        }
     }
 
     public Hologram hologramByName(String name) {

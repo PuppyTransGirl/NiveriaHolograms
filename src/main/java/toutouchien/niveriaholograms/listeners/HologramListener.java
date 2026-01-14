@@ -70,12 +70,12 @@ public class HologramListener implements Listener {
 	}
 
 	private void sendHolograms(Player player) {
+		String playerWorld = player.getWorld().getName();
 		for (Hologram hologram : this.hologramManager.holograms()) {
-			if (hologram.location().world().equals(player.getWorld().getName())) {
+			if (hologram.location().world().equals(playerWorld))
 				hologram.create(player);
-			} else {
+			else
 				hologram.delete(player);
-			}
 		}
 	}
 }

@@ -149,9 +149,8 @@ public class TextHologramConfiguration extends HologramConfiguration {
 
             HookManager hookManager = NiveriaAPI.instance().hookManager();
             PlaceholderAPIHook hook = hookManager.hook(HookType.PlaceholderAPIHook);
-            if (hook != null) {
+            if (hook != null)
                 line = hook.replacePlaceholders(player, line);
-            }
 
             builder.append(ComponentUtils.deserializeMM(line));
         }

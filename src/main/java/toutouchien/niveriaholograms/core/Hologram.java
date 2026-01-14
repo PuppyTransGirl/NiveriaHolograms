@@ -65,6 +65,7 @@ public class Hologram {
         this.name = newName;
         this.owner = original.owner;
         this.config = original.config.copy();
+        // n
         this.location = new CustomLocation(player.getLocation());
     }
 

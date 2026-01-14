@@ -40,7 +40,7 @@ public class HologramEditScaleCommand {
                 ).build();
     }
 
-    @SuppressWarnings("SameReturnValue")
+    @SuppressWarnings({"SameReturnValue", "java:S3516"})
     public static int getAfter(CommandContext<CommandSourceStack> ctx, float scaleX, float scaleY, float scaleZ) {
         CommandSender sender = CommandUtils.sender(ctx);
         String hologramName = ctx.getArgument("hologram", String.class);
