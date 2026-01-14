@@ -39,6 +39,7 @@ public class HologramListCommand {
                         CustomLocation loc = hologram.location();
 
                         Lang.sendMessage(sender, "niveriaholograms.hologram.list.hologram_entry",
+                                hologram.name(), // For MiniMessage command click
                                 hologram.name(),
                                 StringUtils.capitalize(hologram.type().name()),
                                 loc.world(),
