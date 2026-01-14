@@ -15,6 +15,8 @@ import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.HologramType;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
+import java.util.Arrays;
+
 public class HologramCreateCommand {
     private HologramCreateCommand() {
         throw new IllegalStateException("Command class");
@@ -25,10 +27,10 @@ public class HologramCreateCommand {
                 .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.create", true))
                 .then(Commands.argument("type", StringArgumentType.word())
                         .suggests((ctx, builder) -> {
-                            for (HologramType type : HologramType.values()) {
-                                String rawType = type.name();
-                                builder.suggest(StringUtils.capitalize(rawType));
-                            }
+                            Arrays.stream(HologramType.values())
+                                    .map(Enum::name)
+                                    .filter(entry -> entry.toLowerCase().startsWith(builder.getRemainingLowerCase()))
+                                    .forEach(builder::suggest);
 
                             return builder.buildFuture();
                         })

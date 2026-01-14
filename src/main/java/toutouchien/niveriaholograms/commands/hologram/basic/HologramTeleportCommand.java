@@ -14,37 +14,41 @@ import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
 public class HologramTeleportCommand {
-	private HologramTeleportCommand() {
-		throw new IllegalStateException("Command class");
-	}
+    private HologramTeleportCommand() {
+        throw new IllegalStateException("Command class");
+    }
 
-	public static LiteralCommandNode<CommandSourceStack> get() {
-		return Commands.literal("teleport")
-				.requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.teleport", true))
-				.then(Commands.argument("hologram", StringArgumentType.word())
-						.suggests((ctx, builder) -> {
-							HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+    public static LiteralCommandNode<CommandSourceStack> get() {
+        return Commands.literal("teleport")
+                .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.teleport", true))
+                .then(Commands.argument("hologram", StringArgumentType.word())
+                        .suggests((ctx, builder) -> {
+                            HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
 
-							for (Hologram hologram : hologramManager.holograms())
-								builder.suggest(hologram.name());
+                            hologramManager.holograms().stream()
+                                    .map(Hologram::name)
+                                    .filter(entry -> entry.toLowerCase().startsWith(builder.getRemainingLowerCase()))
+                                    .forEach(builder::suggest);
 
-							return builder.buildFuture();
-						})
-						.executes(ctx -> {
-							Player player = (Player) ctx.getSource().getExecutor();
-							String hologramName = StringArgumentType.getString(ctx, "hologram");
+                            return builder.buildFuture();
+                        })
+                        .executes(ctx -> {
+                            Player player = (Player) ctx.getSource().getExecutor();
+                            String hologramName = StringArgumentType.getString(ctx, "hologram");
 
-							HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
-							Hologram hologram = hologramManager.hologramByName(hologramName);
-							if (hologram == null) {
-								Lang.sendMessage(player, "niveriaholograms.hologram.teleport.doesnt_exist", hologramName);
-								return Command.SINGLE_SUCCESS;
-							}
+                            HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
+                            Hologram hologram = hologramManager.hologramByName(hologramName);
+                            if (hologram == null) {
+                                Lang.sendMessage(player, "niveriaholograms.hologram.teleport.doesnt_exist", hologramName);
+                                return Command.SINGLE_SUCCESS;
+                            }
 
-							player.teleportAsync(hologram.location().bukkitLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-							Lang.sendMessage(player, "niveriaholograms.hologram.teleport.teleported", hologram.name());
-							return Command.SINGLE_SUCCESS;
-						})
-				).build();
-	}
+                            player.teleportAsync(hologram.location().bukkitLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN)
+                                    .thenAccept(ignored ->
+                                            Lang.sendMessage(player, "niveriaholograms.hologram.teleport.teleported", hologram.name())
+                                    );
+                            return Command.SINGLE_SUCCESS;
+                        })
+                ).build();
+    }
 }

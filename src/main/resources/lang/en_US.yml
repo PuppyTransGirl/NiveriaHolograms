@@ -151,7 +151,7 @@ niveriaholograms:
         edited: "<prefix:holograms/> <separator> <ncolor:success>The text shadow of \"%s\" was successfully updated.</ncolor>"
 
       updateInterval:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>The update interval \"%s\" was successfully changed to \"%s\".</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>The update interval of hologram \"%s\" was successfully changed to \"%s\".</ncolor>"
 
       # General
       billboard:

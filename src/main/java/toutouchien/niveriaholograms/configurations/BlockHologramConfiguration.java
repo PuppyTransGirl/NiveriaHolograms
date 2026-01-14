@@ -5,32 +5,32 @@ import org.bukkit.block.BlockType;
 import toutouchien.niveriaholograms.configurations.special.GlowingHologramConfiguration;
 
 public class BlockHologramConfiguration extends GlowingHologramConfiguration {
-	private BlockState blockState = BlockType.GRASS_BLOCK.createBlockData().createBlockState();
+    private BlockState blockState = BlockType.GRASS_BLOCK.createBlockData().createBlockState();
 
-	public BlockHologramConfiguration() {
-		// Needed
-	}
+    public BlockHologramConfiguration() {
+        // Needed for HologramType
+    }
 
-	private BlockHologramConfiguration(GlowingHologramConfiguration glowingConfig) {
-		this.glowing(glowingConfig.glowing());
-		this.glowingColor(glowingConfig.glowingColor());
-	}
+    private BlockHologramConfiguration(GlowingHologramConfiguration glowingConfig) {
+        this.glowing(glowingConfig.glowing());
+        this.glowingColor(glowingConfig.glowingColor());
+    }
 
-	public BlockState blockState() {
-		return blockState;
-	}
+    public BlockState blockState() {
+        return blockState;
+    }
 
-	public BlockHologramConfiguration blockState(BlockState blockState) {
-		this.blockState = blockState;
-		return this;
-	}
+    public BlockHologramConfiguration blockState(BlockState blockState) {
+        this.blockState = blockState;
+        return this;
+    }
 
-	@Override
-	public BlockHologramConfiguration copy() {
-		BlockHologramConfiguration copy = new BlockHologramConfiguration(super.copy());
+    @Override
+    public BlockHologramConfiguration copy() {
+        BlockHologramConfiguration copy = new BlockHologramConfiguration(super.copy());
 
-		copy.blockState = this.blockState;
+        copy.blockState = this.blockState.copy();
 
-		return copy;
-	}
+        return copy;
+    }
 }

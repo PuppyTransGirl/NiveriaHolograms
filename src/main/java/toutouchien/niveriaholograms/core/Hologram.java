@@ -2,7 +2,6 @@ package toutouchien.niveriaholograms.core;
 
 import io.papermc.paper.adventure.PaperAdventure;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
-import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
@@ -15,6 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Player;
+import org.joml.Vector3f;
 import toutouchien.niveriaapi.utils.NMSUtils;
 import toutouchien.niveriaapi.utils.Task;
 import toutouchien.niveriaholograms.NiveriaHolograms;
@@ -33,9 +33,6 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class Hologram {
-    public static final TextColor TRANSPARENT = TextColor.color(0);
-    public static final int MAX_LINE_LENGTH = 1403;
-
     private static final ExecutorService EXECUTOR = Executors.newThreadPerTaskExecutor(
             Thread.ofVirtual()
             .name("NiveriaHolograms-Hologram-Sender-", 0)
@@ -46,7 +43,7 @@ public class Hologram {
     private final String name;
     private final UUID owner;
     private Display display;
-    private HologramUpdater updater;
+    private HologramUpdater<?, ?> updater;
     private CustomLocation location;
     private boolean locationDirty;
 
@@ -65,7 +62,6 @@ public class Hologram {
         this.name = newName;
         this.owner = original.owner;
         this.config = original.config.copy();
-        // n
         this.location = new CustomLocation(player.getLocation());
     }
 
@@ -193,10 +189,17 @@ public class Hologram {
                 if (display instanceof Display.TextDisplay textDisplay && config instanceof TextHologramConfiguration textConfig)
                     textDisplay.setText(PaperAdventure.asVanilla(textConfig.serializedText(player)));
 
-                // packDirty sends only the dirty values, which is more efficient when updating
-                // It's a lot more optimized than sending packAll everytime
-                // Reduces packet size by approximately 93.44% per update on a default text hologram
-                List<SynchedEntityData.DataValue<?>> data = display.getEntityData().packDirty();
+                /*
+                packDirty sends only the dirty values, which is more efficient when updating
+                It's a lot more optimized than sending packAll everytime
+                Reduces packet size by approximately 93.44% per update on a default text hologram
+
+                For some reason the scale needs packAll instead of packDirty
+                We could use getNonDefaultValues but if you put scale 1 after putting another scale it will be considered as a default value
+                 */
+                List<SynchedEntityData.DataValue<?>> data = config.scaleDirty() ? display.getEntityData().packAll() : display.getEntityData().packDirty();
+                this.config.scaleDirty(false);
+
                 // This packet can't be created before because the text is unique to each player
                 ClientboundSetEntityDataPacket dataPacket = data != null ? new ClientboundSetEntityDataPacket(display.getId(), data) : null;
 
@@ -212,7 +215,7 @@ public class Hologram {
         locationDirty = true;
     }
 
-    public void teleportTo(Location location) {
+    private void teleportTo(Location location) {
         boolean worldChanged = !this.location.world().equals(location.getWorld().getName());
         this.location = new CustomLocation(location);
         this.updateLocation();
@@ -249,7 +252,12 @@ public class Hologram {
         if (consumer == null)
             return;
 
-        consumer.accept((T) config);
+        Vector3f previousScale = new Vector3f(this.config.scale());
+        consumer.accept((T) this.config);
+        Vector3f scale = this.config.scale();
+        if (!scale.equals(previousScale))
+            this.config.scaleDirty(true);
+
         update();
         updateForAllPlayers();
         NiveriaHolograms.instance().hologramManager().saveHologram(this);

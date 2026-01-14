@@ -26,8 +26,10 @@ public class HologramEditCommand {
                         .suggests((ctx, builder) -> {
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
 
-                            for (Hologram hologram : hologramManager.holograms())
-                                builder.suggest(hologram.name());
+                            hologramManager.holograms().stream()
+                                    .map(Hologram::name)
+                                    .filter(entry -> entry.toLowerCase().startsWith(builder.getRemainingLowerCase()))
+                                    .forEach(builder::suggest);
 
                             return builder.buildFuture();
                         })

@@ -29,9 +29,10 @@ public class HologramEditPositionCommand {
         return Commands.literal("position")
                 .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.position"))
                 .then(Commands.argument("player", ArgumentTypes.player()).executes(HologramEditPositionCommand::getAfter))
-                .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.position", true)) // position argument requires a player
-                .then(Commands.argument("position", ArgumentTypes.finePosition()).executes(HologramEditPositionCommand::getAfter))
-                .build();
+                .then(Commands.argument("position", ArgumentTypes.finePosition())
+                        .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.position", true)) // position argument requires a player
+                        .executes(HologramEditPositionCommand::getAfter)
+                ).build();
     }
 
     @SuppressWarnings({"DataFlowIssue", "java:S2259"})

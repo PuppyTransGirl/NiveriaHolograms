@@ -14,6 +14,7 @@ import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
+import toutouchien.niveriaholograms.utils.HologramUtils;
 
 import java.util.List;
 import java.util.Locale;
@@ -30,7 +31,9 @@ public class HologramEditBackgroundCommand {
                         .suggests((ctx, builder) -> {
                             List<String> suggestions = List.of("aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white", "yellow", "transparent", "none", "default", "reset");
 
-                            suggestions.forEach(builder::suggest);
+                            suggestions.stream()
+                                    .filter(entry -> entry.toLowerCase().startsWith(builder.getRemainingLowerCase()))
+                                    .forEach(builder::suggest);
 
                             return builder.buildFuture();
                         })
@@ -55,7 +58,7 @@ public class HologramEditBackgroundCommand {
                             TextColor backgroundColor;
                             switch (option) {
                                 case "default", "reset" -> backgroundColor = null;
-                                case "transparent", "none" -> backgroundColor = Hologram.TRANSPARENT;
+                                case "transparent", "none" -> backgroundColor = HologramUtils.TRANSPARENT;
 
                                 default -> {
                                     TextColor textColor = option.startsWith("#")

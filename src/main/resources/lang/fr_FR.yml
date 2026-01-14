@@ -84,12 +84,12 @@ niveriaholograms:
     list:
       no_holograms: "<prefix:holograms/> <separator> <ncolor:default>Il n'y a pas d'hologrammes créés.</ncolor>"
       header: "<prefix:holograms/> <separator> <ncolor:primary>Liste des hologrammes (%s):</ncolor>"
-      hologram_entry: "<hover:show_text:'Clique ici pour te téléporter cet hologramme'><click:run_command:'/hologram teleport %s'><ncolor:default>- %s (Type: %s, Monde: %s, Position: X: %.2f Y: %.2f Z: %.2f)</ncolor></click></hover>"
+      hologram_entry: "<hover:show_text:'Clique ici pour te téléporter à cet hologramme'><click:run_command:'/hologram teleport %s'><ncolor:default>- %s (Type: %s, Monde: %s, Position: X: %.2f Y: %.2f Z: %.2f)</ncolor></click></hover>"
 
     nearby:
       no_holograms: "<prefix:holograms/> <separator> <ncolor:default>Il n'y a pas d'hologrammes dans un rayon de %s.</ncolor>"
       header: "<prefix:holograms/> <separator> <ncolor:primary>Hologrammes à proximité (%s):</ncolor>"
-      hologram_entry: "<hover:show_text:'Clique ici pour te téléporter cet hologramme'><click:run_command:'/hologram teleport %s'><ncolor:default>- %s (Type: %s, Monde: %s, Position: X: %.2f Y: %.2f Z: %.2f, Distance: %.2f)</ncolor></click></hover>"
+      hologram_entry: "<hover:show_text:'Clique ici pour te téléporter à cet hologramme'><click:run_command:'/hologram teleport %s'><ncolor:default>- %s (Type: %s, Monde: %s, Position: X: %.2f Y: %.2f Z: %.2f, Distance: %.2f)</ncolor></click></hover>"
 
     remove:
       doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>L'hologramme \"%s\" n'existe pas.</ncolor>"
@@ -151,7 +151,7 @@ niveriaholograms:
         edited: "<prefix:holograms/> <separator> <ncolor:success>L'ombre du texte \"%s\" a été mis à jour avec succès.</ncolor>"
 
       updateInterval:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>L'interval de mis à jour \"%s\" a été changé en \"%s\" avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>L'interval de mis à jour de l'hologramme \"%s\" a été changé en \"%s\" avec succès.</ncolor>"
 
       # General
       billboard:

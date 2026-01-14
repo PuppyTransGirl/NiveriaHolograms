@@ -19,6 +19,7 @@ import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.core.HologramType;
 import toutouchien.niveriaholograms.managers.HologramManager;
 import toutouchien.niveriaholograms.utils.CustomLocation;
+import toutouchien.niveriaholograms.utils.HologramUtils;
 
 import java.util.List;
 import java.util.UUID;
@@ -89,7 +90,11 @@ public class HologramLoader {
     }
 
     private void loadBlockConfiguration(ConfigurationSection section, BlockHologramConfiguration configuration) {
-        BlockData deserializedBlockData = Bukkit.createBlockData(section.getString("blockstate"));
+        String blockstate = section.getString("blockstate");
+        if (blockstate == null || blockstate.isBlank())
+            blockstate = "minecraft:stone";
+
+        BlockData deserializedBlockData = Bukkit.createBlockData(blockstate);
         configuration.blockState(deserializedBlockData.createBlockState());
     }
 
@@ -124,7 +129,7 @@ public class HologramLoader {
 
         return switch (background.toLowerCase()) {
             case "default" -> null;
-            case "transparent" -> Hologram.TRANSPARENT;
+            case "transparent" -> HologramUtils.TRANSPARENT;
             default -> background.startsWith("#")
                     ? TextColor.fromHexString(background)
                     : NamedTextColor.NAMES.value(background);

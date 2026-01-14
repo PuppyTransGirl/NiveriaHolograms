@@ -4,7 +4,7 @@ import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.world.entity.Display;
 import org.bukkit.entity.TextDisplay;
 import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
-import toutouchien.niveriaholograms.core.Hologram;
+import toutouchien.niveriaholograms.utils.HologramUtils;
 
 public class TextHologramUpdater extends HologramUpdater<Display.TextDisplay, TextHologramConfiguration> {
     private static final int BACKGROUND_ALPHA_MASK = 0xC8000000; // preserves alpha/flags used by Display
@@ -21,7 +21,7 @@ public class TextHologramUpdater extends HologramUpdater<Display.TextDisplay, Te
     }
 
     private void updateMaxLineLength() {
-        display.getEntityData().set(Display.TextDisplay.DATA_LINE_WIDTH_ID, Hologram.MAX_LINE_LENGTH);
+        display.getEntityData().set(Display.TextDisplay.DATA_LINE_WIDTH_ID, HologramUtils.MAX_LINE_LENGTH);
     }
 
     private void updateBackgroundColor() {
@@ -30,7 +30,7 @@ public class TextHologramUpdater extends HologramUpdater<Display.TextDisplay, Te
 
         if (background == null)
             newBackground = Display.TextDisplay.INITIAL_BACKGROUND;
-        else if (background == Hologram.TRANSPARENT)
+        else if (background == HologramUtils.TRANSPARENT)
             newBackground = 0;
         else
             newBackground = background.value() | BACKGROUND_ALPHA_MASK;

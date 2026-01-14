@@ -37,8 +37,11 @@ public class HologramEditInsertAfterCommand {
                                 return builder.buildFuture();
 
                             List<String> lines = configuration.text();
-                            for (int i = 1; i <= lines.size(); i++)
-                                builder.suggest(Integer.toString(i));
+                            for (int i = 1; i <= lines.size(); i++) {
+                                String iString = Integer.toString(i);
+                                if (iString.startsWith(builder.getRemainingLowerCase()))
+                                    builder.suggest(iString);
+                            }
 
                             return builder.buildFuture();
                         })

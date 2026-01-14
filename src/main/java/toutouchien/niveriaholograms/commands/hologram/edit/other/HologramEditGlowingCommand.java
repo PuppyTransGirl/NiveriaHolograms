@@ -28,9 +28,11 @@ public class HologramEditGlowingCommand {
                 .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.glowing"))
                 .then(Commands.argument("color", StringArgumentType.greedyString())
                         .suggests((ctx, builder) -> {
-                            List<String> suggestions = List.of("aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white", "yellow", "transparent", "none", "default");
+                            List<String> suggestions = List.of("aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white", "yellow", "none", "default");
 
-                            suggestions.forEach(builder::suggest);
+                            suggestions.stream()
+                                    .filter(entry -> entry.toLowerCase().startsWith(builder.getRemainingLowerCase()))
+                                    .forEach(builder::suggest);
 
                             return builder.buildFuture();
                         })

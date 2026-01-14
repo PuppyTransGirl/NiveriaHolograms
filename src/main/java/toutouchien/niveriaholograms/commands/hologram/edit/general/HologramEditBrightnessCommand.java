@@ -30,19 +30,27 @@ public class HologramEditBrightnessCommand {
                 .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.brightness"))
                 .then(Commands.argument("type", StringArgumentType.word())
                         .suggests((ctx, builder) -> {
-                            List.of("block", "sky").forEach(builder::suggest);
+                            List.copyOf(BRIGHTNESS_TYPES).stream()
+                                    .filter(entry -> entry.toLowerCase().startsWith(builder.getRemainingLowerCase()))
+                                    .forEach(builder::suggest);
+
                             return builder.buildFuture();
                         })
                         .then(Commands.argument("light", IntegerArgumentType.integer(0, 15))
                                 .suggests((ctx, builder) -> {
-                                    List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15).forEach(builder::suggest);
+                                    List<String> numbers = List.of("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15");
+
+                                    numbers.stream()
+                                            .filter(entry -> entry.toLowerCase().startsWith(builder.getRemainingLowerCase()))
+                                            .forEach(builder::suggest);
+
                                     return builder.buildFuture();
                                 })
                                 .executes(ctx -> {
                                     CommandSender sender = CommandUtils.sender(ctx);
                                     String hologramName = ctx.getArgument("hologram", String.class);
                                     String typeName = ctx.getArgument("type", String.class);
-                                    int light = ctx.getArgument("ligt", int.class);
+                                    int light = ctx.getArgument("light", int.class);
 
                                     HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                                     Hologram hologram = hologramManager.hologramByName(hologramName);

@@ -26,7 +26,7 @@ public class TextHologramConfiguration extends HologramConfiguration {
     private boolean updateIntervalDirty = true;
 
     public TextHologramConfiguration() {
-        // Needed
+        // Needed for HologramType
     }
 
     private TextHologramConfiguration(HologramConfiguration oldConfig) {
@@ -48,7 +48,7 @@ public class TextHologramConfiguration extends HologramConfiguration {
         if (serializedText.containsKey(uuid) && updateInterval == 0)
             return serializedText.get(uuid);
 
-        List<String> textLines = this.text;
+        List<String> textLines = this.text();
         TextComponent.Builder builder = Component.text();
 
         for (int i = 0; i < textLines.size(); i++) {
@@ -62,8 +62,9 @@ public class TextHologramConfiguration extends HologramConfiguration {
             builder.append(ComponentUtils.deserializeMM(line));
         }
 
-        this.serializedText.put(uuid, builder.build());
-        return builder.build();
+        TextComponent builtComponent = builder.build();
+        this.serializedText.put(uuid, builtComponent);
+        return builtComponent;
     }
 
     private String applyPapiPlaceholders(Player player, String line) {

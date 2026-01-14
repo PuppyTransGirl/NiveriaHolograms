@@ -14,53 +14,53 @@ import toutouchien.niveriaholograms.utils.CustomLocation;
 import java.util.Arrays;
 
 public class NiveriaHolograms extends JavaPlugin {
-	private static NiveriaHolograms instance;
+    private static NiveriaHolograms instance;
 
-	private HologramManager hologramManager;
+    private HologramManager hologramManager;
 
-	static {
-		ConfigurationSerialization.registerClass(CustomLocation.class, "CustomLocation");
-	}
+    static {
+        ConfigurationSerialization.registerClass(CustomLocation.class, "CustomLocation");
+    }
 
-	@Override
-	public void onLoad() {
-		instance = this;
-	}
+    @Override
+    public void onLoad() {
+        instance = this;
+    }
 
-	@Override
-	public void onEnable() {
-		this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
-			Commands registrar = commands.registrar();
-			Arrays.asList(
-					NiveriaHologramsCommand.get(),
-					HologramCommand.get()
-			).forEach(registrar::register);
-		});
+    @Override
+    public void onEnable() {
+        this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
+            Commands registrar = commands.registrar();
+            Arrays.asList(
+                    NiveriaHologramsCommand.get(),
+                    HologramCommand.get()
+            ).forEach(registrar::register);
+        });
 
-		Lang.load(this);
+        Lang.load(this);
 
-		(this.hologramManager = new HologramManager(this)).initialize();
+        (this.hologramManager = new HologramManager(this)).initialize();
 
-		getServer().getPluginManager().registerEvents(new HologramListener(this), this);
-	}
+        getServer().getPluginManager().registerEvents(new HologramListener(this), this);
+    }
 
-	@Override
-	public void onDisable() {
-		getServer().getScheduler().cancelTasks(this);
+    @Override
+    public void onDisable() {
+        getServer().getScheduler().cancelTasks(this);
 
-		this.hologramManager.shutdown();
-	}
+        this.hologramManager.shutdown();
+    }
 
-	public void reload() {
-		Lang.reload(this);
-		this.hologramManager.reload();
-	}
+    public void reload() {
+        Lang.reload(this);
+        this.hologramManager.reload();
+    }
 
-	public HologramManager hologramManager() {
-		return hologramManager;
-	}
+    public HologramManager hologramManager() {
+        return hologramManager;
+    }
 
-	public static NiveriaHolograms instance() {
-		return instance;
-	}
+    public static NiveriaHolograms instance() {
+        return instance;
+    }
 }

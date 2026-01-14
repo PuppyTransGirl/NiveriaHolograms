@@ -23,6 +23,7 @@ import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.core.HologramType;
 import toutouchien.niveriaholograms.managers.HologramManager;
 import toutouchien.niveriaholograms.utils.CustomLocation;
+import toutouchien.niveriaholograms.utils.HologramUtils;
 
 import java.util.Locale;
 
@@ -38,8 +39,10 @@ public class HologramInfoCommand {
                         .suggests((ctx, builder) -> {
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
 
-                            for (Hologram hologram : hologramManager.holograms())
-                                builder.suggest(hologram.name());
+                            hologramManager.holograms().stream()
+                                    .map(Hologram::name)
+                                    .filter(entry -> entry.toLowerCase().startsWith(builder.getRemainingLowerCase()))
+                                    .forEach(builder::suggest);
 
                             return builder.buildFuture();
                         })
@@ -129,7 +132,7 @@ public class HologramInfoCommand {
         if (background == null)
             return Lang.getString("niveriaholograms.hologram.info.other.default");
 
-        if (background == Hologram.TRANSPARENT)
+        if (background == HologramUtils.TRANSPARENT)
             return Lang.getString("niveriaholograms.hologram.info.other.transparent");
 
         return background.asHexString().toUpperCase(Locale.ROOT);

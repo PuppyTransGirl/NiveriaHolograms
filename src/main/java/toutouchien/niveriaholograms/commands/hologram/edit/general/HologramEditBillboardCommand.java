@@ -14,6 +14,8 @@ import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
+import java.util.Arrays;
+
 public class HologramEditBillboardCommand {
     private HologramEditBillboardCommand() {
         throw new IllegalStateException("Command class");
@@ -30,9 +32,11 @@ public class HologramEditBillboardCommand {
                             Hologram hologram = hologramManager.hologramByName(hologramName);
                             Display.BillboardConstraints currentBillboard = hologram == null ? null : hologram.configuration().billboard();
 
-                            for (Display.BillboardConstraints billboard : Display.BillboardConstraints.values())
-                                if (billboard != currentBillboard)
-                                    builder.suggest(billboard.name());
+                            Arrays.stream(Display.BillboardConstraints.values())
+                                    .filter(billboard -> billboard != currentBillboard)
+                                    .map(Enum::name)
+                                    .filter(entry -> entry.toLowerCase().startsWith(builder.getRemainingLowerCase()))
+                                    .forEach(builder::suggest);
 
                             return builder.buildFuture();
                         })

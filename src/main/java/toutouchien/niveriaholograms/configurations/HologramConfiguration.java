@@ -12,6 +12,7 @@ public class HologramConfiguration {
     private float shadowRadius = 0F;
     private float shadowStrength = 1F;
     private int visibilityDistance = -1;
+    private boolean scaleDirty;
 
     public Vector3f scale() {
         return scale;
@@ -39,6 +40,10 @@ public class HologramConfiguration {
 
     public int visibilityDistance() {
         return visibilityDistance;
+    }
+
+    public boolean scaleDirty() {
+        return scaleDirty;
     }
 
     public HologramConfiguration scale(Vector3f scale) {
@@ -76,6 +81,11 @@ public class HologramConfiguration {
         return this;
     }
 
+    public HologramConfiguration scaleDirty(boolean scaleDirty) {
+        this.scaleDirty = scaleDirty;
+        return this;
+    }
+
     public HologramConfiguration copy() {
         HologramConfiguration copy = new HologramConfiguration();
 
@@ -87,6 +97,7 @@ public class HologramConfiguration {
         copy.shadowRadius = this.shadowRadius;
         copy.shadowStrength = this.shadowStrength;
         copy.visibilityDistance = this.visibilityDistance;
+        copy.scaleDirty = this.scaleDirty;
 
         return copy;
     }

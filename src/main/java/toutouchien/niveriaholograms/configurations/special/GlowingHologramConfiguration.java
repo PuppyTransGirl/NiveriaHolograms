@@ -8,7 +8,7 @@ public class GlowingHologramConfiguration extends HologramConfiguration {
     private TextColor glowingColor;
 
     public GlowingHologramConfiguration() {
-        // Needed
+        // Needed for BlockHologramConfiguration & ItemHologramConfiguration (it's not used in HologramType)
     }
 
     private GlowingHologramConfiguration(HologramConfiguration basicConfig) {

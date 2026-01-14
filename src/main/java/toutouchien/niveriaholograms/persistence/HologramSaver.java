@@ -16,6 +16,7 @@ import toutouchien.niveriaholograms.configurations.special.GlowingHologramConfig
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.core.HologramType;
 import toutouchien.niveriaholograms.exceptions.HologramSaveException;
+import toutouchien.niveriaholograms.utils.HologramUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -267,7 +268,7 @@ public class HologramSaver {
         if (backgroundColor == null)
             return "default";
 
-        if (backgroundColor == Hologram.TRANSPARENT)
+        if (backgroundColor == HologramUtils.TRANSPARENT)
             return "transparent";
 
         if (backgroundColor instanceof NamedTextColor namedTextColor)
