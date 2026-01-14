@@ -63,7 +63,7 @@ public class HologramListener implements Listener {
 		for (String hologramName : pendingHolograms.remove(worldName)) {
 			ConfigurationSection section = hologramsSection.getConfigurationSection(hologramName);
 			if (section == null)
-				return;
+                continue;
 
 			this.hologramManager.loadHologram(section);
 		}

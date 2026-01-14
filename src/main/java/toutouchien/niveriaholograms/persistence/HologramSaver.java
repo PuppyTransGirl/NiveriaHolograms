@@ -12,6 +12,7 @@ import toutouchien.niveriaholograms.configurations.BlockHologramConfiguration;
 import toutouchien.niveriaholograms.configurations.HologramConfiguration;
 import toutouchien.niveriaholograms.configurations.ItemHologramConfiguration;
 import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
+import toutouchien.niveriaholograms.configurations.special.GlowingHologramConfiguration;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.core.HologramType;
 import toutouchien.niveriaholograms.exceptions.HologramSaveException;
@@ -192,20 +193,32 @@ public class HologramSaver {
         }
 
         switch (type) {
-            case BLOCK -> saveBlockConfiguration(section, (BlockHologramConfiguration) configuration);
-            case ITEM -> saveItemConfiguration(section, (ItemHologramConfiguration) configuration);
+            case BLOCK -> {
+                saveGlowingConfiguration(section, (GlowingHologramConfiguration) configuration);
+                saveBlockConfiguration(section, (BlockHologramConfiguration) configuration);
+            }
+
+            case ITEM -> {
+                saveGlowingConfiguration(section, (GlowingHologramConfiguration) configuration);
+                saveItemConfiguration(section, (ItemHologramConfiguration) configuration);
+            }
+
             case TEXT -> saveTextConfiguration(section, (TextHologramConfiguration) configuration);
+
+            default -> throw new IllegalArgumentException("Unsupported hologram type: " + type);
         }
+    }
+
+    private void saveGlowingConfiguration(ConfigurationSection section, GlowingHologramConfiguration configuration) {
+        section.set("glowing", glowingColor(configuration.glowingColor()));
     }
 
     private void saveBlockConfiguration(ConfigurationSection section, BlockHologramConfiguration configuration) {
         section.set("blockstate", configuration.blockState().getBlockData().getAsString(true));
-        section.set("glowing", glowingColor(configuration.glowingColor()));
     }
 
     private void saveItemConfiguration(ConfigurationSection section, ItemHologramConfiguration configuration) {
         section.set("itemstack", configuration.itemStack());
-        section.set("glowing", glowingColor(configuration.glowingColor()));
     }
 
     private void saveTextConfiguration(ConfigurationSection section, TextHologramConfiguration configuration) {

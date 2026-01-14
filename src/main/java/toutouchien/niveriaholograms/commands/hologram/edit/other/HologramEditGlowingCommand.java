@@ -11,8 +11,7 @@ import org.bukkit.command.CommandSender;
 import toutouchien.niveriaapi.lang.Lang;
 import toutouchien.niveriaapi.utils.CommandUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
-import toutouchien.niveriaholograms.configurations.BlockHologramConfiguration;
-import toutouchien.niveriaholograms.configurations.ItemHologramConfiguration;
+import toutouchien.niveriaholograms.configurations.special.GlowingHologramConfiguration;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
@@ -47,7 +46,7 @@ public class HologramEditGlowingCommand {
                                 return Command.SINGLE_SUCCESS;
                             }
 
-                            if (!(hologram.configuration() instanceof BlockHologramConfiguration) && !(hologram.configuration() instanceof ItemHologramConfiguration)) {
+                            if (!(hologram.configuration() instanceof GlowingHologramConfiguration)) {
                                 Lang.sendMessage(sender, "niveriaholograms.hologram.edit.only_block_and_item");
                                 return Command.SINGLE_SUCCESS;
                             }
@@ -72,35 +71,19 @@ public class HologramEditGlowingCommand {
                                 }
                             }
 
-                            applyGlowing(hologram, glowingColor);
+                            hologram.editConfig((GlowingHologramConfiguration config) -> {
+                                if (glowingColor == null) {
+                                    config.glowing(false);
+                                    return;
+                                }
+
+                                config.glowing(true);
+                                config.glowingColor(glowingColor);
+                            });
 
                             Lang.sendMessage(sender, "niveriaholograms.hologram.edit.glowing.edited", hologramName);
                             return Command.SINGLE_SUCCESS;
                         })
                 ).build();
-    }
-
-    private static void applyGlowing(Hologram hologram, TextColor glowingColor) {
-        if (hologram.configuration() instanceof BlockHologramConfiguration) {
-            hologram.editConfig((BlockHologramConfiguration config) -> {
-                if (glowingColor == null) {
-                    config.glowing(false);
-                    return;
-                }
-
-                config.glowing(true);
-                config.glowingColor(glowingColor);
-            });
-        } else if (hologram.configuration() instanceof ItemHologramConfiguration) {
-            hologram.editConfig((ItemHologramConfiguration config) -> {
-                if (glowingColor == null) {
-                    config.glowing(false);
-                    return;
-                }
-
-                config.glowing(true);
-                config.glowingColor(glowingColor);
-            });
-        }
     }
 }

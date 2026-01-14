@@ -1,52 +1,27 @@
 package toutouchien.niveriaholograms.configurations;
 
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import toutouchien.niveriaholograms.configurations.special.GlowingHologramConfiguration;
 
-public class ItemHologramConfiguration extends HologramConfiguration {
+public class ItemHologramConfiguration extends GlowingHologramConfiguration {
 	private ItemStack itemStack = new ItemStack(Material.APPLE);
-	private boolean glowing;
-	private TextColor glowingColor;
 
 	public ItemHologramConfiguration() {
 		// Needed
 	}
 
-	private ItemHologramConfiguration(HologramConfiguration basicConfig) {
-		this.scale(basicConfig.scale());
-		this.translation(basicConfig.translation());
-		this.billboard(basicConfig.billboard());
-		this.brightness(basicConfig.brightness());
-		this.shadowRadius(basicConfig.shadowRadius());
-		this.shadowStrength(basicConfig.shadowStrength());
-		this.visibilityDistance(basicConfig.visibilityDistance());
+	private ItemHologramConfiguration(GlowingHologramConfiguration basicConfig) {
+		this.glowing(basicConfig.glowing());
+		this.glowingColor(basicConfig.glowingColor());
 	}
 
 	public ItemStack itemStack() {
 		return itemStack;
 	}
 
-	public boolean glowing() {
-		return glowing;
-	}
-
-	public TextColor glowingColor() {
-		return glowingColor;
-	}
-
 	public ItemHologramConfiguration itemStack(ItemStack itemStack) {
 		this.itemStack = itemStack;
-		return this;
-	}
-
-	public ItemHologramConfiguration glowing(boolean glowing) {
-		this.glowing = glowing;
-		return this;
-	}
-
-	public ItemHologramConfiguration glowingColor(TextColor glowingColor) {
-		this.glowingColor = glowingColor;
 		return this;
 	}
 
@@ -55,8 +30,6 @@ public class ItemHologramConfiguration extends HologramConfiguration {
 		ItemHologramConfiguration copy = new ItemHologramConfiguration(super.copy());
 
 		copy.itemStack = this.itemStack.clone();
-		copy.glowing = this.glowing;
-		copy.glowingColor = this.glowingColor;
 
 		return copy;
 	}

@@ -14,6 +14,7 @@ import toutouchien.niveriaholograms.configurations.BlockHologramConfiguration;
 import toutouchien.niveriaholograms.configurations.HologramConfiguration;
 import toutouchien.niveriaholograms.configurations.ItemHologramConfiguration;
 import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
+import toutouchien.niveriaholograms.configurations.special.GlowingHologramConfiguration;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.core.HologramType;
 import toutouchien.niveriaholograms.managers.HologramManager;
@@ -43,9 +44,18 @@ public class HologramLoader {
         loadConfiguration(section, configuration);
 
         switch (type) {
-            case BLOCK -> loadBlockConfiguration(section, (BlockHologramConfiguration) configuration);
-            case ITEM -> loadItemConfiguration(section, (ItemHologramConfiguration) configuration);
+            case BLOCK -> {
+                loadGlowingConfiguration(section, (GlowingHologramConfiguration) configuration);
+                loadBlockConfiguration(section, (BlockHologramConfiguration) configuration);
+            }
+
+            case ITEM -> {
+                loadGlowingConfiguration(section, (GlowingHologramConfiguration) configuration);
+                loadItemConfiguration(section, (ItemHologramConfiguration) configuration);
+            }
+
             case TEXT -> loadTextConfiguration(section, (TextHologramConfiguration) configuration);
+
             default -> throw new IllegalArgumentException("Unsupported hologram type: " + type);
         }
 
@@ -67,10 +77,7 @@ public class HologramLoader {
         configuration.brightness(new Brightness(brightnessSection.getInt("block"), brightnessSection.getInt("sky")));
     }
 
-    private void loadBlockConfiguration(ConfigurationSection section, BlockHologramConfiguration configuration) {
-        BlockData deserializedBlockData = Bukkit.createBlockData(section.getString("blockstate"));
-        configuration.blockState(deserializedBlockData.createBlockState());
-
+    private void loadGlowingConfiguration(ConfigurationSection section, GlowingHologramConfiguration configuration) {
         TextColor glowingColor = loadGlowing(section);
         if (glowingColor == null) {
             configuration.glowing(false);
@@ -81,17 +88,13 @@ public class HologramLoader {
                 .glowingColor(glowingColor);
     }
 
+    private void loadBlockConfiguration(ConfigurationSection section, BlockHologramConfiguration configuration) {
+        BlockData deserializedBlockData = Bukkit.createBlockData(section.getString("blockstate"));
+        configuration.blockState(deserializedBlockData.createBlockState());
+    }
+
     private void loadItemConfiguration(ConfigurationSection section, ItemHologramConfiguration configuration) {
         configuration.itemStack(section.getItemStack("itemstack"));
-
-        TextColor glowingColor = loadGlowing(section);
-        if (glowingColor == null) {
-            configuration.glowing(false);
-            return;
-        }
-
-        configuration.glowing(true)
-                .glowingColor(glowingColor);
     }
 
     private void loadTextConfiguration(ConfigurationSection section, TextHologramConfiguration configuration) {
