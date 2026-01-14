@@ -180,11 +180,14 @@ public class Hologram {
                     .textDirty(false);
         }
 
-        sendDataPackets(targets, teleportPacket);
+        boolean usePackAll = this.config.scaleDirty();
+        if (usePackAll)
+            this.config.scaleDirty(false);
+
+        sendDataPackets(targets, teleportPacket, usePackAll);
     }
 
-    private void sendDataPackets(List<Player> targets, ClientboundTeleportEntityPacket teleportPacket) {
-        boolean usePackAll = config.scaleDirty();
+    private void sendDataPackets(List<Player> targets, ClientboundTeleportEntityPacket teleportPacket, boolean usePackAll) {
         EXECUTOR.submit(() -> {
             for (Player player : targets) {
                 if (display instanceof Display.TextDisplay textDisplay && config instanceof TextHologramConfiguration textConfig)
@@ -205,8 +208,6 @@ public class Hologram {
 
                 NMSUtils.sendNonNullPackets(player, teleportPacket, dataPacket);
             }
-
-            this.config.scaleDirty(false);
         });
     }
 

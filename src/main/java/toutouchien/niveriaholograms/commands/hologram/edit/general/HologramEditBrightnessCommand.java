@@ -31,7 +31,7 @@ public class HologramEditBrightnessCommand {
                 .then(Commands.argument("type", StringArgumentType.word())
                         .suggests((ctx, builder) -> {
                             BRIGHTNESS_TYPES.stream()
-                                    .filter(entry -> entry.toLowerCase().startsWith(builder.getRemainingLowerCase()))
+                                    .filter(entry -> entry.startsWith(builder.getRemainingLowerCase()))
                                     .forEach(builder::suggest);
 
                             return builder.buildFuture();
@@ -41,7 +41,7 @@ public class HologramEditBrightnessCommand {
                                     List<String> numbers = List.of("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15");
 
                                     numbers.stream()
-                                            .filter(entry -> entry.toLowerCase().startsWith(builder.getRemainingLowerCase()))
+                                            .filter(entry -> entry.startsWith(builder.getRemainingLowerCase()))
                                             .forEach(builder::suggest);
 
                                     return builder.buildFuture();
