@@ -5,9 +5,11 @@ import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.util.Brightness;
 import net.minecraft.world.entity.Display;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.TextDisplay;
+import org.bukkit.inventory.ItemStack;
 import org.joml.Vector3f;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.configurations.BlockHologramConfiguration;
@@ -92,14 +94,18 @@ public class HologramLoader {
     private void loadBlockConfiguration(ConfigurationSection section, BlockHologramConfiguration configuration) {
         String blockstate = section.getString("blockstate");
         if (blockstate == null || blockstate.isBlank())
-            blockstate = "minecraft:stone";
+            blockstate = "minecraft:grass_block";
 
         BlockData deserializedBlockData = Bukkit.createBlockData(blockstate);
         configuration.blockState(deserializedBlockData.createBlockState());
     }
 
     private void loadItemConfiguration(ConfigurationSection section, ItemHologramConfiguration configuration) {
-        configuration.itemStack(section.getItemStack("itemstack"));
+        ItemStack itemstack = section.getItemStack("itemstack");
+        if (itemstack == null)
+            itemstack = ItemStack.of(Material.APPLE);
+
+        configuration.itemStack(itemstack);
     }
 
     private void loadTextConfiguration(ConfigurationSection section, TextHologramConfiguration configuration) {

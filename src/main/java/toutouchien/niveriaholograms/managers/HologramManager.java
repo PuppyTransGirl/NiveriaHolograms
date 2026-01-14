@@ -73,7 +73,7 @@ public class HologramManager {
     }
 
     public void delete(Hologram hologram) {
-        this.holograms.remove(hologram.name());
+        this.holograms.remove(hologram.name().toLowerCase(Locale.ROOT));
         this.hologramSaver.deleteHologram(hologram);
     }
 
@@ -105,8 +105,8 @@ public class HologramManager {
     public void loadHologram(ConfigurationSection section) {
         String worldName = section.getObject("location", CustomLocation.class).world();
         if (Bukkit.getWorld(worldName) == null) {
-            List<String> loadedHolograms = pendingHolograms.computeIfAbsent(worldName, w -> new ArrayList<>());
-            loadedHolograms.add(section.getName());
+            pendingHolograms.computeIfAbsent(worldName, w -> Collections.synchronizedList(new ArrayList<>()))
+                    .add(section.getName());
             return;
         }
 

@@ -30,7 +30,7 @@ public class HologramEditBrightnessCommand {
                 .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.brightness"))
                 .then(Commands.argument("type", StringArgumentType.word())
                         .suggests((ctx, builder) -> {
-                            List.copyOf(BRIGHTNESS_TYPES).stream()
+                            BRIGHTNESS_TYPES.stream()
                                     .filter(entry -> entry.toLowerCase().startsWith(builder.getRemainingLowerCase()))
                                     .forEach(builder::suggest);
 

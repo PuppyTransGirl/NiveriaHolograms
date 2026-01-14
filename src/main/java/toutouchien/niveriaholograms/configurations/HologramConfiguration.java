@@ -97,7 +97,6 @@ public class HologramConfiguration {
         copy.shadowRadius = this.shadowRadius;
         copy.shadowStrength = this.shadowStrength;
         copy.visibilityDistance = this.visibilityDistance;
-        copy.scaleDirty = this.scaleDirty;
 
         return copy;
     }

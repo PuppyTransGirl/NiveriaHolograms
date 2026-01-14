@@ -47,5 +47,5 @@ public class HologramRemoveCommand {
                             return Command.SINGLE_SUCCESS;
                         })
                 ).build();
-	}
+    }
 }

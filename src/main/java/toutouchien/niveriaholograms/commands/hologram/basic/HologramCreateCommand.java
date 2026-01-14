@@ -67,7 +67,7 @@ public class HologramCreateCommand {
         }
 
         if (name.contains(".") || name.contains("+")) {
-            Lang.sendMessage(player, "niveriaholograms.hologram.create.invalid_characters");
+            Lang.sendMessage(player, "niveriaholograms.hologram.create.invalid_character");
             return false;
         }
 

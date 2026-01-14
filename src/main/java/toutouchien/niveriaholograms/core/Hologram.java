@@ -184,6 +184,7 @@ public class Hologram {
     }
 
     private void sendDataPackets(List<Player> targets, ClientboundTeleportEntityPacket teleportPacket) {
+        boolean usePackAll = config.scaleDirty();
         EXECUTOR.submit(() -> {
             for (Player player : targets) {
                 if (display instanceof Display.TextDisplay textDisplay && config instanceof TextHologramConfiguration textConfig)
@@ -197,14 +198,15 @@ public class Hologram {
                 For some reason the scale needs packAll instead of packDirty
                 We could use getNonDefaultValues but if you put scale 1 after putting another scale it will be considered as a default value
                  */
-                List<SynchedEntityData.DataValue<?>> data = config.scaleDirty() ? display.getEntityData().packAll() : display.getEntityData().packDirty();
-                this.config.scaleDirty(false);
+                List<SynchedEntityData.DataValue<?>> data = usePackAll ? display.getEntityData().packAll() : display.getEntityData().packDirty();
 
                 // This packet can't be created before because the text is unique to each player
                 ClientboundSetEntityDataPacket dataPacket = data != null ? new ClientboundSetEntityDataPacket(display.getId(), data) : null;
 
                 NMSUtils.sendNonNullPackets(player, teleportPacket, dataPacket);
             }
+
+            this.config.scaleDirty(false);
         });
     }
 

@@ -97,7 +97,7 @@ public class HologramInfoCommand {
                                                 backgroundText(text.background()),
                                                 text.textAlignment().name(),
                                                 text.seeThrough(),
-                                                text.shadowRadius(),
+                                                text.textShadow(),
                                                 text.updateInterval()
                                         );
 

@@ -68,7 +68,7 @@ public class HologramCloneCommand {
         }
 
         if (newHologramName.contains(".") || newHologramName.contains("+")) {
-            Lang.sendMessage(player, "niveriaholograms.hologram.clone.invalid_characters");
+            Lang.sendMessage(player, "niveriaholograms.hologram.clone.invalid_character");
             return false;
         }
 

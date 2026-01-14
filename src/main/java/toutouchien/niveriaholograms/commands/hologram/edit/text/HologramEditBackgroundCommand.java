@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Locale;
 
 public class HologramEditBackgroundCommand {
+    private static final List<String> COLORS = List.of("aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white", "yellow", "transparent", "none", "default", "reset");
+
     private HologramEditBackgroundCommand() {
         throw new IllegalStateException("Command class");
     }
@@ -29,9 +31,7 @@ public class HologramEditBackgroundCommand {
                 .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.background"))
                 .then(Commands.argument("color", StringArgumentType.greedyString())
                         .suggests((ctx, builder) -> {
-                            List<String> suggestions = List.of("aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white", "yellow", "transparent", "none", "default", "reset");
-
-                            suggestions.stream()
+                            COLORS.stream()
                                     .filter(entry -> entry.toLowerCase().startsWith(builder.getRemainingLowerCase()))
                                     .forEach(builder::suggest);
 
