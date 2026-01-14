@@ -108,13 +108,26 @@ public class HologramSaver {
             throw new HologramSaveException("Failed to save hologram to temporary file: " + tempFile.getAbsolutePath(), e);
         }
 
-        // Delete the original holograms.yml file
-        if (file.exists() && !file.delete())
-            throw new HologramSaveException("Failed to delete original holograms file: " + file.getAbsolutePath());
+        File backupFile = new File(file.getParent(), file.getName() + ".bak");
 
-        // Replace the original file with the temporary file by renaming it
-        if (!tempFile.renameTo(file))
+        // Rename original to backup (if exists)
+        if (file.exists()) {
+            backupFile.delete(); // Remove old backup if present
+            if (!file.renameTo(backupFile))
+                throw new HologramSaveException("Failed to backup original holograms file: " + file.getAbsolutePath());
+        }
+
+        // Rename temp to original
+        if (!tempFile.renameTo(file)) {
+            // Attempt recovery: restore backup
+            if (backupFile.exists())
+                backupFile.renameTo(file);
+
             throw new HologramSaveException("Failed to rename temporary holograms file to: " + file.getAbsolutePath());
+        }
+
+        // Clean up backup
+        backupFile.delete();
     }
 
     /**
@@ -144,13 +157,26 @@ public class HologramSaver {
             throw new HologramSaveException("Failed to save hologram deletion to temporary file: " + tempFile.getAbsolutePath(), e);
         }
 
-        // Delete the original holograms.yml file
-        if (file.exists() && !file.delete())
-            throw new HologramSaveException("Failed to delete original holograms file: " + file.getAbsolutePath());
+        File backupFile = new File(file.getParent(), file.getName() + ".bak");
 
-        // Replace the original file with the temporary file by renaming it
-        if (!tempFile.renameTo(file))
+        // Rename original to backup (if exists)
+        if (file.exists()) {
+            backupFile.delete(); // Remove old backup if present
+            if (!file.renameTo(backupFile))
+                throw new HologramSaveException("Failed to backup original holograms file: " + file.getAbsolutePath());
+        }
+
+        // Rename temp to original
+        if (!tempFile.renameTo(file)) {
+            // Attempt recovery: restore backup
+            if (backupFile.exists())
+                backupFile.renameTo(file);
+
             throw new HologramSaveException("Failed to rename temporary holograms file to: " + file.getAbsolutePath());
+        }
+
+        // Clean up backup
+        backupFile.delete();
     }
 
     public void shutdown() {
