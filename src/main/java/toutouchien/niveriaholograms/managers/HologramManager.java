@@ -32,7 +32,7 @@ public class HologramManager {
         this.hologramSaver = new HologramSaver(plugin);
 
         this.holograms = new ConcurrentHashMap<>();
-        this.pendingHolograms = new HashMap<>();
+        this.pendingHolograms = new ConcurrentHashMap<>();
     }
 
     public void initialize() {
