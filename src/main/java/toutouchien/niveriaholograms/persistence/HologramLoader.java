@@ -4,7 +4,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.util.Brightness;
 import net.minecraft.world.entity.Display;
-import org.bukkit.Material;
+import org.bukkit.Bukkit;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.TextDisplay;
 import org.joml.Vector3f;
@@ -67,7 +68,8 @@ public class HologramLoader {
     }
 
     private void loadBlockConfiguration(ConfigurationSection section, BlockHologramConfiguration configuration) {
-        configuration.material(Material.valueOf(section.getString("material")));
+        BlockData deserializedBlockData = Bukkit.createBlockData(section.getString("blockstate"));
+        configuration.blockState(deserializedBlockData.createBlockState());
 
         TextColor glowingColor = loadGlowing(section);
         if (glowingColor == null) {

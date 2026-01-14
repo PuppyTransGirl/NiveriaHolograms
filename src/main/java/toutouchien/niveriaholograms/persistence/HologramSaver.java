@@ -204,7 +204,7 @@ public class HologramSaver {
     }
 
     private void saveBlockConfiguration(ConfigurationSection section, BlockHologramConfiguration configuration) {
-        section.set("material", configuration.material().name());
+        section.set("blockstate", configuration.blockState().getBlockData().getAsString(true));
         section.set("glowing", glowingColor(configuration.glowingColor()));
     }
 

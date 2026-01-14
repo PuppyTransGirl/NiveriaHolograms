@@ -5,8 +5,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
-import io.papermc.paper.registry.RegistryKey;
-import org.bukkit.block.BlockType;
+import org.bukkit.block.BlockState;
 import org.bukkit.command.CommandSender;
 import toutouchien.niveriaapi.lang.Lang;
 import toutouchien.niveriaapi.utils.CommandUtils;
@@ -23,11 +22,11 @@ public class HologramEditBlockCommand {
     public static LiteralCommandNode<CommandSourceStack> get() {
         return Commands.literal("block")
                 .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.block"))
-                .then(Commands.argument("block", ArgumentTypes.resource(RegistryKey.BLOCK))
+                .then(Commands.argument("block", ArgumentTypes.blockState())
                         .executes(ctx -> {
                             CommandSender sender = CommandUtils.sender(ctx);
                             String hologramName = ctx.getArgument("hologram", String.class);
-                            BlockType block = ctx.getArgument("block", BlockType.class);
+                            BlockState blockState = ctx.getArgument("block", BlockState.class);
 
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                             Hologram hologram = hologramManager.hologramByName(hologramName);
@@ -41,16 +40,16 @@ public class HologramEditBlockCommand {
                                 return Command.SINGLE_SUCCESS;
                             }
 
-                            if (block.isAir()) {
+                            if (blockState.getType().isAir()) {
                                 Lang.sendMessage(sender, "niveriaholograms.hologram.edit.block.no_air");
                                 return Command.SINGLE_SUCCESS;
                             }
 
-                            hologram.editConfig((BlockHologramConfiguration config) -> {
-                                config.material(block.asMaterial()); // TODO: Change this deprecated method
-                            });
+                            hologram.editConfig((BlockHologramConfiguration config) ->
+                                    config.blockState(blockState)
+                            );
 
-                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.block.edited", hologramName, block.translationKey());
+                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.block.edited", hologramName, blockState.getType().translationKey());
                             return Command.SINGLE_SUCCESS;
                         })
                 ).build();

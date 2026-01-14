@@ -77,7 +77,7 @@ public class HologramInfoCommand {
                             switch (config) {
                                 case BlockHologramConfiguration block ->
                                         Lang.sendMessage(sender, "niveriaholograms.hologram.info.info_block",
-                                                block.material().name(),
+                                                block.blockState().getType().name(),
                                                 block.glowing(),
                                                 block.glowingColor() == null ? noGlowingColorText : block.glowingColor().asHexString()
                                         );

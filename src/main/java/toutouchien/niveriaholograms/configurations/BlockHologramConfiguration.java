@@ -1,10 +1,11 @@
 package toutouchien.niveriaholograms.configurations;
 
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Material;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.BlockType;
 
 public class BlockHologramConfiguration extends HologramConfiguration {
-	private Material material = Material.GRASS_BLOCK;
+	private BlockState blockState = BlockType.GRASS_BLOCK.createBlockData().createBlockState();
 	private boolean glowing;
 	private TextColor glowingColor;
 
@@ -22,8 +23,8 @@ public class BlockHologramConfiguration extends HologramConfiguration {
 		this.visibilityDistance(basicConfig.visibilityDistance());
 	}
 
-	public Material material() {
-		return material;
+	public BlockState blockState() {
+		return blockState;
 	}
 
 	public boolean glowing() {
@@ -34,8 +35,8 @@ public class BlockHologramConfiguration extends HologramConfiguration {
 		return glowingColor;
 	}
 
-	public BlockHologramConfiguration material(Material material) {
-		this.material = material;
+	public BlockHologramConfiguration blockState(BlockState blockState) {
+		this.blockState = blockState;
 		return this;
 	}
 
@@ -53,7 +54,7 @@ public class BlockHologramConfiguration extends HologramConfiguration {
 	public BlockHologramConfiguration copy() {
 		BlockHologramConfiguration copy = new BlockHologramConfiguration(super.copy());
 
-		copy.material = this.material;
+		copy.blockState = this.blockState;
 		copy.glowing = this.glowing;
 		copy.glowingColor = this.glowingColor;
 
