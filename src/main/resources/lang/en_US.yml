@@ -193,3 +193,5 @@ niveriaholograms:
       glowing:
         invalid_color: "<prefix:holograms/> <separator> <ncolor:error>The glow color \"%s\" is invalid.</ncolor>"
         edited: "<prefix:holograms/> <separator> <ncolor:success>The glowing status of hologram \"%s\" was successfully updated.</ncolor>"
+
+  default_text: "Use /hologram edit %s setLine 1 <your text>"

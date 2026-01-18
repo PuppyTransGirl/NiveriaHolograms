@@ -5,6 +5,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import toutouchien.niveriaapi.lang.Lang;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.configurations.HologramConfiguration;
 import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
@@ -52,7 +53,7 @@ public class HologramManager {
         Hologram hologram = createHologram(type, configuration, name, player.getUniqueId(), new CustomLocation(player.getLocation()));
 
         if (type == HologramType.TEXT)
-            ((TextHologramConfiguration) configuration).text(new ArrayList<>(List.of("Utilise /holo edit " + name + " setline 1 <ton texte>")));
+            ((TextHologramConfiguration) configuration).text(new ArrayList<>(List.of(Lang.getString("niveriaholograms.default_text", name))));
 
         hologram.create();
         hologram.createForAllPlayers();
