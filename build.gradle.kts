@@ -6,6 +6,7 @@ plugins {
 }
 
 val minecraftVersion: String by project
+val minMinecraftVersion: String by project
 val niveriaApiVersion: String by project
 val placeholderApiVersion: String by project
 val bStatsVersion: String by project
@@ -26,7 +27,7 @@ dependencies {
     paperweight.paperDevBundle("${minecraftVersion}-R0.1-SNAPSHOT")
 
     // Plugins
-    compileOnly("com.github.PuppyTransGirl:NiveriaAPI:v${niveriaApiVersion}")
+    compileOnly("com.github.PuppyTransGirl:NiveriaAPI:${niveriaApiVersion}")
     compileOnly("me.clip:placeholderapi:${placeholderApiVersion}")
 
     // Dependencies
@@ -53,7 +54,7 @@ tasks {
             modrinth("LuckPerms", "v5.5.17-bukkit")
             github("jpenilla", "TabTPS", "v1.3.29", "tabtps-paper-1.3.29.jar")
             modrinth("ServerLogViewer-Paper", "1.0.0")
-            github("PuppyTransGirl", "NiveriaAPI", "v${niveriaApiVersion}", "NiveriaAPI-${niveriaApiVersion}.jar")
+            github("PuppyTransGirl", "NiveriaAPI", niveriaApiVersion, "NiveriaAPI-${niveriaApiVersion}.jar")
             modrinth("PlaceholderAPI", placeholderApiVersion)
         }
     }
@@ -89,7 +90,7 @@ tasks {
 
         val props = mapOf(
             "version" to version,
-            "minecraftVersion" to minecraftVersion
+            "minMinecraftVersion" to minMinecraftVersion
         )
 
         inputs.properties(props)
