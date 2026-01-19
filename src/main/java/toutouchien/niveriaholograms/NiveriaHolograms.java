@@ -9,6 +9,7 @@ import toutouchien.niveriaholograms.commands.hologram.HologramCommand;
 import toutouchien.niveriaholograms.commands.niveriaholograms.NiveriaHologramsCommand;
 import toutouchien.niveriaholograms.listeners.HologramListener;
 import toutouchien.niveriaholograms.managers.HologramManager;
+import toutouchien.niveriaholograms.managers.MigrationManager;
 import toutouchien.niveriaholograms.utils.CustomLocation;
 
 import java.util.Arrays;
@@ -17,6 +18,7 @@ public class NiveriaHolograms extends JavaPlugin {
     private static NiveriaHolograms instance;
 
     private HologramManager hologramManager;
+    private MigrationManager migrationManager;
 
     static {
         ConfigurationSerialization.registerClass(CustomLocation.class, "CustomLocation");
@@ -40,6 +42,7 @@ public class NiveriaHolograms extends JavaPlugin {
         Lang.load(this);
 
         (this.hologramManager = new HologramManager(this)).initialize();
+        this.migrationManager = new MigrationManager(this);
 
         getServer().getPluginManager().registerEvents(new HologramListener(this), this);
     }
@@ -58,6 +61,10 @@ public class NiveriaHolograms extends JavaPlugin {
 
     public HologramManager hologramManager() {
         return hologramManager;
+    }
+
+    public MigrationManager migrationManager() {
+        return migrationManager;
     }
 
     public static NiveriaHolograms instance() {
