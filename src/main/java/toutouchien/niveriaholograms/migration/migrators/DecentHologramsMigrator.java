@@ -117,7 +117,14 @@ public class DecentHologramsMigrator implements Migrator {
         }
 
         List<Map<String, String>> firstPage = (List<Map<String, String>>) linesList;
-        if (firstPage.stream().anyMatch(line -> line.get("content") == null)) {
+        try {
+            for (Map<String, String> line : firstPage) {
+                if (line.get("content") == null) {
+                    Lang.sendMessage(player, "niveriaholograms.migrators.decentholograms.malformed_pages", name);
+                    return null;
+                }
+            }
+        } catch (ClassCastException e) {
             Lang.sendMessage(player, "niveriaholograms.migrators.decentholograms.malformed_pages", name);
             return null;
         }
