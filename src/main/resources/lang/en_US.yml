@@ -220,7 +220,7 @@ niveriaholograms:
       cannot_run: "<prefix:holograms/> <separator> <ncolor:error>The folder of holograms couldn't be found.</ncolor>"
 
       malformed_location: "<prefix:holograms/> <separator> <ncolor:error>\"%s\" couldn't be migrated, the location is malformed.</ncolor>"
-      malformed_pages: "<prefix:holograms/> <separator> <ncolor:error>\"%s\" couldn't be migrated, it doesn't contains any page.</ncolor>"
+      malformed_pages: "<prefix:holograms/> <separator> <ncolor:error>\"%s\" couldn't be migrated, it doesn't contain any page.</ncolor>"
       too_many_pages: "<prefix:holograms/> <separator> <ncolor:error>\"%s\" has %s pages, only the first page will be migrated.</ncolor>"
 
       migrated: "<prefix:holograms/> <separator> <ncolor:success>The holograms of DecentHolograms have been migrated. (%s holograms)</ncolor>"

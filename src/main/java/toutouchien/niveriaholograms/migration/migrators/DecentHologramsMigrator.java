@@ -135,9 +135,16 @@ public class DecentHologramsMigrator implements Migrator {
         }
 
         String world = splitLine[0];
-        double x = Double.parseDouble(splitLine[1]);
-        double y = Double.parseDouble(splitLine[2]);
-        double z = Double.parseDouble(splitLine[3]);
+        double x, y, z;
+
+        try {
+            x = Double.parseDouble(splitLine[1]);
+            y = Double.parseDouble(splitLine[2]);
+            z = Double.parseDouble(splitLine[3]);
+        } catch (NumberFormatException e) {
+            Lang.sendMessage(player, "niveriaholograms.migrators.decentholograms.malformed_location", name);
+            return null;
+        }
 
         return new CustomLocation(world, x, y, z, 0, 0);
     }

@@ -133,8 +133,8 @@ public class CustomLocation implements ConfigurationSerializable {
         return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
     }
 
-    @Override
     @NotNull
+    @Override
     public Map<String, Object> serialize() {
         Map<String, Object> data = new HashMap<>();
 
