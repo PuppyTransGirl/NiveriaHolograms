@@ -8,7 +8,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import toutouchien.niveriaapi.lang.Lang;
 import toutouchien.niveriaapi.utils.ComponentUtils;
+import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.core.HologramType;
@@ -30,6 +33,7 @@ public class DecentHologramsMigrator implements Migrator {
                     .hexColors() // enables parsing of hex formats like &#rrggbb and &x&r&r&g&g&b&b
                     .build();
 
+    @NotNull
     @Override
     public String name() {
         return "DecentHolograms";
@@ -40,6 +44,7 @@ public class DecentHologramsMigrator implements Migrator {
         return new File("plugins/DecentHolograms/holograms").isDirectory();
     }
 
+    @NotNull
     @Override
     public ObjectList<Hologram> migrate(@NotNull Player player) {
         Path hologramsPath = Path.of("plugins/DecentHolograms/holograms");
@@ -55,33 +60,56 @@ public class DecentHologramsMigrator implements Migrator {
                 File file = path.toFile();
 
                 Hologram hologram = migrateHologram(player, file);
+                if (hologram == null)
+                    continue;
+
                 holograms.add(hologram);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            NiveriaHolograms.instance().getSLF4JLogger().error("The DecentHolograms holograms couldn't be migrated", e);
         }
 
         return holograms;
     }
 
-    @NotNull
-    private Hologram migrateHologram(@NotNull Player player, File file) {
+    @Nullable
+    private Hologram migrateHologram(@NotNull Player player, @NotNull File file) {
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-        CustomLocation location = parseLocation(config.getString("location"));
+        String name = file.getName().replace(".yml", "");
+        CustomLocation location = parseLocation(name, player, config.getString("location"));
+        if (location == null)
+            return null;
 
         TextHologramConfiguration configuration = new TextHologramConfiguration();
         configuration.visibilityDistance(config.getInt("display-range", 48));
-        configuration.updateInterval(0); // DecentHolograms default update-interval to 20, it would be too inefficient to set all holograms to 20 update interval so we just set them to 0
-        configuration.text(parseLines(config));
 
-        return new Hologram(HologramType.TEXT, configuration, file.getName(), player.getUniqueId(), location);
+        List<String> text = parseLines(name, player, config);
+        if (text == null)
+            return null;
+
+        configuration.text(text);
+
+        // DecentHolograms default update-interval to 20, it would be too inefficient to set all holograms to 20 update interval so we just set them to 0
+        int updateInterval = config.getInt("update-interval", 20);
+        configuration.updateInterval(updateInterval == 20 ? 0 : updateInterval);
+
+        return new Hologram(HologramType.TEXT, configuration, name, player.getUniqueId(), location);
     }
 
     @SuppressWarnings("unchecked")
-    @NotNull
-    private List<String> parseLines(@NotNull FileConfiguration config) {
-        List<Map<String, ?>> firstPage = (List<Map<String, ?>>) config.getMapList("pages")
+    @Nullable
+    private List<String> parseLines(@NotNull String name, @NotNull Player player, @NotNull FileConfiguration config) {
+        List<Map<?, ?>> pages = config.getMapList("pages");
+        if (pages.isEmpty()) {
+            Lang.sendMessage(player, "niveriaholograms.migrators.decentholograms.malformed_pages", name);
+            return null;
+        }
+
+        if (pages.size() > 1)
+            Lang.sendMessage(player, "niveriaholograms.migrators.decentholograms.too_many_pages", name, pages.size());
+
+        List<Map<String, String>> firstPage = (List<Map<String, String>>) pages
                 .stream()
                 .findFirst()
                 .orElseThrow()
@@ -89,13 +117,22 @@ public class DecentHologramsMigrator implements Migrator {
 
         return firstPage
                 .stream()
-                .map(line -> legacyToMM((String) line.get("content")))
+                .map(line -> legacyToMM(line.get("content")))
                 .toList();
     }
 
-    @NotNull
-    private CustomLocation parseLocation(@NotNull String line) {
+    @Nullable
+    private CustomLocation parseLocation(@NotNull String name, @NotNull Player player, @Nullable String line) {
+        if (line == null) {
+            Lang.sendMessage(player, "niveriaholograms.migrators.decentholograms.malformed_location", name);
+            return null;
+        }
+
         String[] splitLine = line.split(":");
+        if (splitLine.length != 4) {
+            Lang.sendMessage(player, "niveriaholograms.migrators.decentholograms.malformed_location", name);
+            return null;
+        }
 
         String world = splitLine[0];
         double x = Double.parseDouble(splitLine[1]);
