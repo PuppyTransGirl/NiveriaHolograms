@@ -109,12 +109,13 @@ public class DecentHologramsMigrator implements Migrator {
         if (pages.size() > 1)
             Lang.sendMessage(player, "niveriaholograms.migrators.decentholograms.too_many_pages", name, pages.size());
 
-        List<Map<String, String>> firstPage = (List<Map<String, String>>) pages
-                .stream()
-                .findFirst()
-                .orElseThrow()
-                .get("lines");
+        Object linesObj = pages.getFirst().get("lines");
+        if (!(linesObj instanceof List<?> linesList)) {
+            Lang.sendMessage(player, "niveriaholograms.migrators.decentholograms.malformed_pages", name);
+            return null;
+        }
 
+        List<Map<String, String>> firstPage = (List<Map<String, String>>) linesList;
         return firstPage
                 .stream()
                 .map(line -> legacyToMM(line.get("content")))
