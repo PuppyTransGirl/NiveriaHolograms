@@ -91,7 +91,7 @@ public class DecentHologramsMigrator implements Migrator {
 
         configuration.text(text);
 
-        // DecentHolograms default update-interval to 20, it would be too inefficient to set all holograms to 20 update interval so we just set them to 0
+        // DecentHolograms default update-interval to 20, it would be too inefficient to set all holograms to 20 update interval so we just set them to 0 if they are at the default value
         int updateInterval = config.getInt("update-interval", 20);
         configuration.updateInterval(updateInterval == 20 ? 0 : updateInterval);
 
@@ -117,6 +117,11 @@ public class DecentHologramsMigrator implements Migrator {
         }
 
         List<Map<String, String>> firstPage = (List<Map<String, String>>) linesList;
+        if (firstPage.stream().anyMatch(line -> line.get("content") == null)) {
+            Lang.sendMessage(player, "niveriaholograms.migrators.decentholograms.malformed_pages", name);
+            return null;
+        }
+
         return firstPage
                 .stream()
                 .map(line -> legacyToMM(line.get("content")))
