@@ -76,7 +76,8 @@ public class DecentHologramsMigrator implements Migrator {
     private Hologram migrateHologram(@NotNull Player player, @NotNull File file) {
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-        String name = file.getName().replace(".yml", "");
+        String fileName = file.getName();
+        String name = fileName.substring(0, fileName.length() - 4);
         CustomLocation location = parseLocation(name, player, config.getString("location"));
         if (location == null)
             return null;
