@@ -4,14 +4,18 @@ import it.unimi.dsi.fastutil.objects.ObjectList;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import toutouchien.niveriaapi.lang.Lang;
+import toutouchien.niveriaapi.utils.Task;
+import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 import toutouchien.niveriaholograms.migration.migrators.DecentHologramsMigrator;
 
 public class MigrationManager {
+    private final NiveriaHolograms plugin;
     private final HologramManager hologramManager;
 
-    public MigrationManager(HologramManager hologramManager) {
+    public MigrationManager(NiveriaHolograms plugin, HologramManager hologramManager) {
+        this.plugin = plugin;
         this.hologramManager = hologramManager;
     }
 
@@ -22,15 +26,17 @@ public class MigrationManager {
             return;
         }
 
-        ObjectList<Hologram> migratedHolograms = migrator.migrate(player);
-        for (Hologram hologram : migratedHolograms) {
-            hologram.create();
-            hologram.createForAllPlayers();
+        Task.async(task -> {
+            ObjectList<Hologram> migratedHolograms = migrator.migrate(player);
+            for (Hologram hologram : migratedHolograms) {
+                hologram.create();
+                hologram.createForAllPlayers();
 
-            this.hologramManager.saveHologram(hologram);
-            this.hologramManager.addHologram(hologram);
-        }
+                this.hologramManager.saveHologram(hologram);
+                this.hologramManager.addHologram(hologram);
+            }
 
-        Lang.sendMessage(player, "niveriaholograms.migrators.decentholograms.migrated", migratedHolograms.size());
+            Lang.sendMessage(player, "niveriaholograms.migrators.decentholograms.migrated", migratedHolograms.size());
+        }, this.plugin);
     }
 }

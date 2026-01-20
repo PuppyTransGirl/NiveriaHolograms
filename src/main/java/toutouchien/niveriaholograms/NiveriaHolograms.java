@@ -42,7 +42,7 @@ public class NiveriaHolograms extends JavaPlugin {
         Lang.load(this);
 
         (this.hologramManager = new HologramManager(this)).initialize();
-        this.migrationManager = new MigrationManager(this.hologramManager);
+        this.migrationManager = new MigrationManager(this, this.hologramManager);
 
         getServer().getPluginManager().registerEvents(new HologramListener(this), this);
     }
