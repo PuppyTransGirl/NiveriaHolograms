@@ -62,8 +62,8 @@ public class MigrationMenu extends Menu {
     protected @NotNull MenuComponent root(@NotNull MenuContext context) {
         Button button = Button.create()
                 .item(ctx -> {
-                    File pluginFolder = new File("plugins/DecentHolograms/");
-                    String presence = "niveriaholograms.menu.migration.decentholograms.lore" + (pluginFolder.exists() ? "_present" : "_not_present");
+                    File pluginFolder = new File("plugins/DecentHolograms/holograms/");
+                    String presence = "niveriaholograms.menu.migration.decentholograms.lore" + (pluginFolder.isDirectory() ? "_present" : "_not_present");
 
                     return ItemBuilder.of(Material.PLAYER_HEAD)
                             .name(Lang.get("niveriaholograms.menu.migration.decentholograms.name"))
@@ -71,7 +71,7 @@ public class MigrationMenu extends Menu {
                             .headTexture("http://textures.minecraft.net/texture/a7ab5cf2dfdc9e8ee3c79db14226cdf41b1b15f67b1613184a49e3c13e379de")
                             .build();
                 })
-                .onClick(event -> NiveriaHolograms.instance().migrationManager())
+                .onClick(event -> NiveriaHolograms.instance().migrationManager().convertFromDecentHolograms(event.player()))
                 .build();
 
         return Grid.create()

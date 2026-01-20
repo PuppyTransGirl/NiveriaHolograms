@@ -9,7 +9,7 @@ import toutouchien.niveriaholograms.commands.hologram.HologramCommand;
 import toutouchien.niveriaholograms.commands.niveriaholograms.NiveriaHologramsCommand;
 import toutouchien.niveriaholograms.listeners.HologramListener;
 import toutouchien.niveriaholograms.managers.HologramManager;
-import toutouchien.niveriaholograms.managers.MigrationManager;
+import toutouchien.niveriaholograms.migration.MigrationManager;
 import toutouchien.niveriaholograms.utils.CustomLocation;
 
 import java.util.Arrays;
@@ -42,7 +42,7 @@ public class NiveriaHolograms extends JavaPlugin {
         Lang.load(this);
 
         (this.hologramManager = new HologramManager(this)).initialize();
-        this.migrationManager = new MigrationManager(this);
+        this.migrationManager = new MigrationManager(this.hologramManager);
 
         getServer().getPluginManager().registerEvents(new HologramListener(this), this);
     }
