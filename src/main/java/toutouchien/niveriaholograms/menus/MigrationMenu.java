@@ -71,7 +71,11 @@ public class MigrationMenu extends Menu {
                             .headTexture("http://textures.minecraft.net/texture/a7ab5cf2dfdc9e8ee3c79db14226cdf41b1b15f67b1613184a49e3c13e379de")
                             .build();
                 })
-                .onClick(event -> NiveriaHolograms.instance().migrationManager().convertFromDecentHolograms(event.player()))
+                .onClick(event -> {
+                    Player player = event.player();
+                    NiveriaHolograms.instance().migrationManager().convertFromDecentHolograms(player);
+                    player.closeInventory();
+                })
                 .build();
 
         return Grid.create()
