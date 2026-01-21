@@ -80,7 +80,7 @@ public class DecentHologramsMigrator implements Migrator {
 
             holograms.add(hologram);
         } catch (Exception e) {
-            Lang.sendMessage(player, "niveriaholograms.migrators.decentholograms.malformed_pages", name);
+            Lang.sendMessage(player, "niveriaholograms.migrators.decentholograms.cannot_migrate_hologram", name);
             NiveriaHolograms.instance().getSLF4JLogger().error("The hologram '{}' couldn't be migrated", name, e);
         }
     }
