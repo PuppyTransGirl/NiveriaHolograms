@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -53,17 +54,16 @@ public class DecentHologramsMigrator implements Migrator {
         try (Stream<Path> stream = Files.walk(hologramsPath)) {
             List<Path> ymlFiles = stream
                     .filter(Files::isRegularFile)
-                    .filter(p -> p.toString().toLowerCase().endsWith(".yml"))
+                    .filter(p -> p.toString().toLowerCase(Locale.ROOT).endsWith(".yml"))
                     .toList();
 
             for (Path path : ymlFiles) {
                 File file = path.toFile();
 
-                Hologram hologram = migrateHologram(player, file);
-                if (hologram == null)
-                    continue;
+                String fileName = file.getName();
+                String name = fileName.substring(0, fileName.length() - 4);
 
-                holograms.add(hologram);
+                fileToHologram(player, name, file, holograms);
             }
         } catch (IOException e) {
             NiveriaHolograms.instance().getSLF4JLogger().error("The DecentHolograms holograms couldn't be migrated", e);
@@ -72,12 +72,23 @@ public class DecentHologramsMigrator implements Migrator {
         return holograms;
     }
 
+    private void fileToHologram(@NotNull Player player, @NotNull String name, @NotNull File file, @NotNull ObjectList<Hologram> holograms) {
+        try {
+            Hologram hologram = migrateHologram(name, player, file);
+            if (hologram == null)
+                return;
+
+            holograms.add(hologram);
+        } catch (Exception e) {
+            Lang.sendMessage(player, "niveriaholograms.migrators.decentholograms.malformed_pages", name);
+            NiveriaHolograms.instance().getSLF4JLogger().error("The hologram '{}' couldn't be migrated", name, e);
+        }
+    }
+
     @Nullable
-    private Hologram migrateHologram(@NotNull Player player, @NotNull File file) {
+    private Hologram migrateHologram(@NotNull String name, @NotNull Player player, @NotNull File file) {
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-        String fileName = file.getName();
-        String name = fileName.substring(0, fileName.length() - 4);
         CustomLocation location = parseLocation(name, player, config.getString("location"));
         if (location == null)
             return null;
@@ -103,7 +114,7 @@ public class DecentHologramsMigrator implements Migrator {
     private List<String> parseLines(@NotNull String name, @NotNull Player player, @NotNull FileConfiguration config) {
         List<Map<?, ?>> pages = config.getMapList("pages");
         if (pages.isEmpty()) {
-            Lang.sendMessage(player, "niveriaholograms.migrators.decentholograms.malformed_pages", name);
+            Lang.sendMessage(player, "niveriaholograms.migrators.decentholograms.no_page", name);
             return null;
         }
 
