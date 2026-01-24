@@ -2,9 +2,12 @@ package toutouchien.niveriaholograms;
 
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SingleLineChart;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 import toutouchien.niveriaapi.lang.Lang;
+import toutouchien.niveriaapi.updatechecker.UpdateChecker;
 import toutouchien.niveriaholograms.commands.hologram.HologramCommand;
 import toutouchien.niveriaholograms.commands.niveriaholograms.NiveriaHologramsCommand;
 import toutouchien.niveriaholograms.listeners.HologramListener;
@@ -15,10 +18,13 @@ import toutouchien.niveriaholograms.utils.CustomLocation;
 import java.util.Arrays;
 
 public class NiveriaHolograms extends JavaPlugin {
+    private static final int BSTATS_PLUGIN_ID = 29011;
     private static NiveriaHolograms instance;
 
     private HologramManager hologramManager;
     private MigrationManager migrationManager;
+
+    private Metrics bStats;
 
     static {
         ConfigurationSerialization.registerClass(CustomLocation.class, "CustomLocation");
@@ -39,19 +45,29 @@ public class NiveriaHolograms extends JavaPlugin {
             ).forEach(registrar::register);
         });
 
+        saveDefaultConfig();
+
         Lang.load(this);
 
         (this.hologramManager = new HologramManager(this)).initialize();
         this.migrationManager = new MigrationManager(this, this.hologramManager);
 
+        this.bStats = new Metrics(this, BSTATS_PLUGIN_ID);
+        this.bStats.addCustomChart(new SingleLineChart("holograms_amount", () -> this.hologramManager.holograms().size()));
+
+
         getServer().getPluginManager().registerEvents(new HologramListener(this), this);
+
+        new UpdateChecker(this, "j3tHqIoj", "niveriaholograms.new_update");
     }
 
     @Override
     public void onDisable() {
-        getServer().getScheduler().cancelTasks(this);
+        this.bStats.shutdown();
 
         this.hologramManager.shutdown();
+
+        getServer().getScheduler().cancelTasks(this);
     }
 
     public void reload() {
