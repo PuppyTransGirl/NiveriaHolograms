@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import toutouchien.niveriaapi.lang.Lang;
 import toutouchien.niveriaapi.utils.CommandUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
-import toutouchien.niveriaholograms.menus.MigrationMenu;
+import toutouchien.niveriaholograms.migration.MigrationMenu;
 
 public class NiveriaHologramsCommand {
     private NiveriaHologramsCommand() {

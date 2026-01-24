@@ -1,4 +1,4 @@
-package toutouchien.niveriaholograms.menus;
+package toutouchien.niveriaholograms.migration;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -24,17 +24,6 @@ public class MigrationMenu extends Menu {
      */
     public MigrationMenu(@NotNull Player player) {
         super(player);
-    }
-
-    /**
-     * Constructs a new Menu with the specified player and context.
-     *
-     * @param player  the player who will interact with this menu
-     * @param context the menu context for component interaction
-     * @throws NullPointerException if player or context is null
-     */
-    public MigrationMenu(@NotNull Player player, @NotNull MenuContext context) {
-        super(player, context);
     }
 
     /**
