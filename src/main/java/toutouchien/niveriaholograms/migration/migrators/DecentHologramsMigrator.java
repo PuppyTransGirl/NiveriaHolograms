@@ -23,10 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class DecentHologramsMigrator implements Migrator {
@@ -124,18 +121,46 @@ public class DecentHologramsMigrator implements Migrator {
             return null;
         }
 
-        List<Map<String, String>> firstPage = (List<Map<String, String>>) linesList;
-        for (Map<String, String> line : firstPage) {
+        List<Map<String, Object>> firstPage = (List<Map<String, Object>>) linesList;
+        for (Map<String, Object> line : firstPage) {
             if (line.get("content") == null) {
                 Lang.sendMessage(player, "niveriaholograms.migrators.decentholograms.malformed_pages", name);
                 return null;
             }
         }
 
-        return firstPage
-                .stream()
-                .map(line -> LegacyToMiniMessage.convert(line.get("content")))
-                .toList();
+        List<String> result = new ArrayList<>();
+        for (int i = 0; i < firstPage.size(); i++) {
+            Map<String, Object> line = firstPage.get(i);
+
+            // Convert content
+            String content = String.valueOf(line.get("content"));
+            String converted = LegacyToMiniMessage.convert(content);
+            result.add(converted);
+
+            // If this line has a height value equal to 0.5 and there is a following line
+            // insert the filler empty line represented by "<white></white>"
+            Object heightObj = line.get("height");
+            if (heightObj != null && i < firstPage.size() - 1) {
+                boolean isHalf = false;
+                if (heightObj instanceof Number number) {
+                    isHalf = Math.abs(number.doubleValue() - 0.5) < 1e-9;
+                } else {
+                    try {
+                        double d = Double.parseDouble(String.valueOf(heightObj));
+                        isHalf = Math.abs(d - 0.5) < 1e-9;
+                    } catch (NumberFormatException ignored) {
+                        // ignore malformed height
+                        // it's not critical for migration
+                    }
+                }
+
+                if (isHalf)
+                    result.add("<white></white>");
+            }
+        }
+
+        return result;
     }
 
     @Nullable
