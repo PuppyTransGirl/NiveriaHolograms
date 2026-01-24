@@ -195,3 +195,7 @@ niveriaholograms:
         edited: "<prefix:holograms/> <separator> <ncolor:success>The glowing status of hologram \"%s\" was successfully updated.</ncolor>"
 
   default_text: "Use /hologram edit %s setLine 1 <your text>"
+
+  new_update: |-
+    <prefix:holograms/> <separator> <ncolor:default>There is a new version of <ncolor:primary>NiveriaHolograms</ncolor>: <ncolor:error>%s</ncolor> → <ncolor:success>%s</ncolor></ncolor>
+    <ncolor:default>Download link: <ncolor:secondary><click:open_url:"https://modrinth.com/plugin/niveriaholograms">https://modrinth.com/plugin/niveriaholograms</click></ncolor></ncolor>

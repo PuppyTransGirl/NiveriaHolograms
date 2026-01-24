@@ -7,6 +7,7 @@ import org.bstats.charts.SingleLineChart;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 import toutouchien.niveriaapi.lang.Lang;
+import toutouchien.niveriaapi.updatechecker.UpdateChecker;
 import toutouchien.niveriaholograms.commands.hologram.HologramCommand;
 import toutouchien.niveriaholograms.commands.niveriaholograms.NiveriaHologramsCommand;
 import toutouchien.niveriaholograms.listeners.HologramListener;
@@ -42,6 +43,8 @@ public class NiveriaHolograms extends JavaPlugin {
             ).forEach(registrar::register);
         });
 
+        saveDefaultConfig();
+
         Lang.load(this);
 
         (this.hologramManager = new HologramManager(this)).initialize();
@@ -51,6 +54,8 @@ public class NiveriaHolograms extends JavaPlugin {
 
 
         getServer().getPluginManager().registerEvents(new HologramListener(this), this);
+
+        new UpdateChecker(this, "j3tHqIoj", "niveriaholograms.new_update");
     }
 
     @Override
