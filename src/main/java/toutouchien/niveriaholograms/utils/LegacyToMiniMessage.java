@@ -1,8 +1,9 @@
 package toutouchien.niveriaholograms.utils;
 
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,25 +30,24 @@ public final class LegacyToMiniMessage {
         COLOR_MAP.put('e', "yellow");
         COLOR_MAP.put('f', "white");
 
-        FORMAT_MAP.put('k', "obfuscated"); // §k
-        FORMAT_MAP.put('l', "bold");       // §l
-        FORMAT_MAP.put('m', "strikethrough"); // §m
-        FORMAT_MAP.put('n', "underlined"); // §n
-        FORMAT_MAP.put('o', "italic");     // §o
+        FORMAT_MAP.put('k', "obfuscated");
+        FORMAT_MAP.put('l', "bold");
+        FORMAT_MAP.put('m', "strikethrough");
+        FORMAT_MAP.put('n', "underlined");
+        FORMAT_MAP.put('o', "italic");
     }
 
+    // Single-character legacy codes like &6 or §l
+    private static final Pattern SINGLE_PATTERN = Pattern.compile("[§&]([0-9A-FK-ORa-fk-or])");
+
     // Matches (?:&#|#)RRGGBB
-    private static final Pattern AMP_HASH_PATTERN =
-            Pattern.compile("(?:&#|#)([0-9A-Fa-f]{6})");
+    private static final Pattern AMP_HASH_PATTERN = Pattern.compile("(?:&#|#)([0-9A-Fa-f]{6})");
 
     // Matches Minecraft-style §x§R§R... (or &x&...)
     private static final Pattern HEX_PATTERN = Pattern.compile(
             "[§&][xX][§&]([0-9A-Fa-f])[§&]([0-9A-Fa-f])[§&]([0-9A-Fa-f])"
-                    + "[§&]([0-9A-Fa-f])[§&]([0-9A-Fa-f])[§&]([0-9A-Fa-f])");
-
-    // Single-character legacy codes like &6 or §l
-    private static final Pattern SINGLE_PATTERN =
-            Pattern.compile("[§&]([0-9A-FK-ORa-fk-or])");
+                    + "[§&]([0-9A-Fa-f])[§&]([0-9A-Fa-f])[§&]([0-9A-Fa-f])"
+    );
 
     private LegacyToMiniMessage() {
         throw new IllegalStateException("Utility class");
@@ -81,22 +81,24 @@ public final class LegacyToMiniMessage {
         return finalOut.toString();
     }
 
-    private static @NonNull Matcher matcher(String input) {
+    @NotNull
+    private static Matcher matcher(String input) {
         Matcher ampHash = AMP_HASH_PATTERN.matcher(input);
-        StringBuffer step1 = new StringBuffer();
+        StringBuffer step = new StringBuffer();
         while (ampHash.find()) {
-            String hex = ampHash.group(1).toUpperCase();
-            ampHash.appendReplacement(step1, "<#" + hex + ">");
+            String hex = ampHash.group(1).toUpperCase(Locale.ROOT);
+            ampHash.appendReplacement(step, "<#" + hex + ">");
         }
 
-        ampHash.appendTail(step1);
-        String intermediate = convertMinecraftStyle(step1);
+        ampHash.appendTail(step);
+        String intermediate = convertMinecraftStyle(step);
 
         // Convert single-character legacy codes (&6, §l, etc.)
         return SINGLE_PATTERN.matcher(intermediate);
     }
 
-    private static @NonNull String convertMinecraftStyle(StringBuffer step1) {
+    @NotNull
+    private static String convertMinecraftStyle(StringBuffer step1) {
         String stage1 = step1.toString();
 
         // Convert Minecraft-style §x§R... -> <#RRGGBB>
@@ -104,7 +106,7 @@ public final class LegacyToMiniMessage {
         StringBuilder hexReplaced = new StringBuilder();
         while (hexMatcher.find()) {
             String hex = (hexMatcher.group(1) + hexMatcher.group(2) + hexMatcher.group(3)
-                    + hexMatcher.group(4) + hexMatcher.group(5) + hexMatcher.group(6)).toUpperCase();
+                    + hexMatcher.group(4) + hexMatcher.group(5) + hexMatcher.group(6)).toUpperCase(Locale.ROOT);
             hexMatcher.appendReplacement(hexReplaced, "<#" + hex + ">");
         }
 
