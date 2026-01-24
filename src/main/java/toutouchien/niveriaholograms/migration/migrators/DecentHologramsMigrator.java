@@ -2,8 +2,11 @@ package toutouchien.niveriaholograms.migration.migrators;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.minecraft.world.entity.Display;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -25,6 +28,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public class DecentHologramsMigrator implements Migrator {
@@ -32,6 +36,12 @@ public class DecentHologramsMigrator implements Migrator {
             LegacyComponentSerializer.builder()
                     .character('&')
                     .hexColors() // enables parsing of hex formats like &#rrggbb and &x&r&r&g&g&b&b
+                    .build();
+
+    private static final LegacyComponentSerializer OTHER_LEGACY =
+            LegacyComponentSerializer.builder()
+                    .character('§')
+                    .hexColors() // enables parsing of hex formats like §#rrggbb and §x§r§r§g§g§b§b
                     .build();
 
     @NotNull
@@ -94,6 +104,7 @@ public class DecentHologramsMigrator implements Migrator {
             return null;
 
         TextHologramConfiguration configuration = new TextHologramConfiguration();
+        configuration.billboard(Display.BillboardConstraints.VERTICAL);
         configuration.visibilityDistance(config.getInt("display-range", 48));
 
         List<String> text = parseLines(name, player, config);
@@ -128,16 +139,11 @@ public class DecentHologramsMigrator implements Migrator {
         }
 
         List<Map<String, String>> firstPage = (List<Map<String, String>>) linesList;
-        try {
-            for (Map<String, String> line : firstPage) {
-                if (line.get("content") == null) {
-                    Lang.sendMessage(player, "niveriaholograms.migrators.decentholograms.malformed_pages", name);
-                    return null;
-                }
+        for (Map<String, String> line : firstPage) {
+            if (line.get("content") == null) {
+                Lang.sendMessage(player, "niveriaholograms.migrators.decentholograms.malformed_pages", name);
+                return null;
             }
-        } catch (ClassCastException e) {
-            Lang.sendMessage(player, "niveriaholograms.migrators.decentholograms.malformed_pages", name);
-            return null;
         }
 
         return firstPage
@@ -162,6 +168,16 @@ public class DecentHologramsMigrator implements Migrator {
         String world = splitLine[0];
         double x, y, z;
 
+        Optional<String> loadedWorld = Bukkit.getWorlds().stream()
+                .map(World::getName)
+                .filter(worldName -> worldName.equals(world))
+                .findAny();
+
+        if (loadedWorld.isEmpty()) {
+            Lang.sendMessage(player, "niveriaholograms.migrators.decentholograms.invalid_world", name, world);
+            return null;
+        }
+
         try {
             x = Double.parseDouble(splitLine[1]);
             y = Double.parseDouble(splitLine[2]);
@@ -176,7 +192,10 @@ public class DecentHologramsMigrator implements Migrator {
 
     @NotNull
     private String legacyToMM(@NotNull String legacy) {
-        Component comp = LEGACY.deserialize(legacy);
+        TextComponent comp = OTHER_LEGACY.deserialize(legacy);
+        String temp = LEGACY.serialize(comp);
+        comp = LEGACY.deserialize(temp);
+
         return ComponentUtils.serializeMM(comp);
     }
 }
