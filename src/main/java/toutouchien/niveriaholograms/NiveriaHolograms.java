@@ -15,7 +15,7 @@ import toutouchien.niveriaholograms.managers.HologramManager;
 import toutouchien.niveriaholograms.migration.MigrationManager;
 import toutouchien.niveriaholograms.utils.CustomLocation;
 
-import java.util.Arrays;
+import java.util.List;
 
 public class NiveriaHolograms extends JavaPlugin {
     private static final int BSTATS_PLUGIN_ID = 29011;
@@ -39,10 +39,8 @@ public class NiveriaHolograms extends JavaPlugin {
     public void onEnable() {
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
             Commands registrar = commands.registrar();
-            Arrays.asList(
-                    NiveriaHologramsCommand.get(),
-                    HologramCommand.get()
-            ).forEach(registrar::register);
+            registrar.register(NiveriaHologramsCommand.get());
+            registrar.register(HologramCommand.get(), List.of("holo", "nholo"));
         });
 
         saveDefaultConfig();
