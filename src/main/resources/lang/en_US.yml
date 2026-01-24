@@ -221,7 +221,7 @@ niveriaholograms:
 
       cannot_migrate_hologram: "<prefix:holograms/> <separator> <ncolor:error>\"%s\" couldn't be migrated, please check the console.</ncolor>"
       malformed_location: "<prefix:holograms/> <separator> <ncolor:error>\"%s\" couldn't be migrated, the location is malformed.</ncolor>"
-      invalid_world: "<prefix:holograms/> <separator> <ncolor:error>\"%s\" couldn't be migrated, the world \"%s\" doesn't exists</ncolor>"
+      invalid_world: "<prefix:holograms/> <separator> <ncolor:error>\"%s\" couldn't be migrated, the world \"%s\" doesn't exist</ncolor>"
       no_page: "<prefix:holograms/> <separator> <ncolor:error>\"%s\" couldn't be migrated, it doesn't contain any page.</ncolor>"
       too_many_pages: "<prefix:holograms/> <separator> <ncolor:error>\"%s\" has %s pages, only the first page will be migrated.</ncolor>"
       malformed_pages: "<prefix:holograms/> <separator> <ncolor:error>\"%s\" couldn't be migrated, the page is malformed.</ncolor>"
