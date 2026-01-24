@@ -60,7 +60,6 @@ public class NiveriaHolograms extends JavaPlugin {
         this.hologramManager.shutdown();
 
         getServer().getScheduler().cancelTasks(this);
-
     }
 
     public void reload() {
