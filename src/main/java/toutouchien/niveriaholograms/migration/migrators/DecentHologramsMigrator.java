@@ -2,8 +2,6 @@ package toutouchien.niveriaholograms.migration.migrators;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.minecraft.world.entity.Display;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -13,13 +11,13 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import toutouchien.niveriaapi.lang.Lang;
-import toutouchien.niveriaapi.utils.ComponentUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.core.HologramType;
 import toutouchien.niveriaholograms.migration.Migrator;
 import toutouchien.niveriaholograms.utils.CustomLocation;
+import toutouchien.niveriaholograms.utils.LegacyToMiniMessage;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,18 +30,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 public class DecentHologramsMigrator implements Migrator {
-    private static final LegacyComponentSerializer LEGACY =
-            LegacyComponentSerializer.builder()
-                    .character('&')
-                    .hexColors() // enables parsing of hex formats like &#rrggbb and &x&r&r&g&g&b&b
-                    .build();
-
-    private static final LegacyComponentSerializer OTHER_LEGACY =
-            LegacyComponentSerializer.builder()
-                    .character('§')
-                    .hexColors() // enables parsing of hex formats like §#rrggbb and §x§r§r§g§g§b§b
-                    .build();
-
     @NotNull
     @Override
     public String name() {
@@ -148,7 +134,7 @@ public class DecentHologramsMigrator implements Migrator {
 
         return firstPage
                 .stream()
-                .map(line -> legacyToMM(line.get("content")))
+                .map(line -> LegacyToMiniMessage.convert(line.get("content")))
                 .toList();
     }
 
@@ -188,14 +174,5 @@ public class DecentHologramsMigrator implements Migrator {
         }
 
         return new CustomLocation(world, x, y, z, 0, 0);
-    }
-
-    @NotNull
-    private String legacyToMM(@NotNull String legacy) {
-        TextComponent comp = OTHER_LEGACY.deserialize(legacy);
-        String temp = LEGACY.serialize(comp);
-        comp = LEGACY.deserialize(temp);
-
-        return ComponentUtils.serializeMM(comp);
     }
 }
