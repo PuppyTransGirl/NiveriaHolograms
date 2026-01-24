@@ -195,3 +195,7 @@ niveriaholograms:
         edited: "<prefix:holograms/> <separator> <ncolor:success>La brillance de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
   default_text: "Utilise /hologram edit %s setLine 1 <ton texte>"
+
+  new_update: |-
+    <prefix:niveria/> <separator> <ncolor:default>Il y a une nouvelle version de <ncolor:primary>NiveriaHolograms</ncolor>: <ncolor:error>%s</ncolor> → <ncolor:success>%s</ncolor></ncolor>
+    <ncolor:default>Lien de téléchargement: <ncolor:secondary><click:open_url:"https://modrinth.com/plugin/niveriaholograms">https://modrinth.com/plugin/niveriaholograms</click></ncolor></ncolor>
