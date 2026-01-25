@@ -5,19 +5,19 @@
 special-tags:
   # ---------------- PREFIXES ----------------
   prefix:
-    holograms: "<gradient:#FC67FA:#F4C4F3>ʜᴏʟᴏɢʀᴀᴍѕ</gradient>"
+    holograms: "<gradient:#4BC0C8:#7EE8FA>ʜᴏʟᴏɢʀᴀᴍѕ</gradient>"
 
   # ---------------- COLORS ----------------
   ncolor:
-    primary: "#FC67FA"
-    secondary: "#F4C4F3"
-    success: "#7AF291"
-    error: "#F27474"
-    default: "#B0AEC1"
+    nhprimary: "#4BC0C8"
+    nhsecondary: "#7EE8FA"
+    nhsuccess: "#7AF291"
+    nherror: "#F27474"
+    nhdefault: "#B0AEC1"
 
   # ---------------- OTHER ----------------
   other:
-    separator: "<#B0AEC1>»</#B0AEC1>"
+    nhseparator: "<#B0AEC1>»</#B0AEC1>"
 
 # ============================================================
 # ======================== FEATURES ==========================
@@ -25,28 +25,28 @@ special-tags:
 
 niveriaholograms:
   reload:
-    done: "<prefix:holograms/> <separator> <ncolor:success>NiveriaHolograms a été rechargé. (%s ms)</ncolor>"
+    done: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>NiveriaHolograms a été rechargé. (%s ms)</ncolor>"
 
   hologram:
     clone:
-      doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>L'hologramme \"%s\" n'existe pas.</ncolor>"
-      name_too_long: "<prefix:holograms/> <separator> <ncolor:error>Le nom de l'hologramme est trop long. Il ne peut pas dépasser %s caractères.</ncolor>"
-      invalid_character: "<prefix:holograms/> <separator> <ncolor:error>Le nom de l'hologramme contient des caractères invalides.</ncolor>"
-      already_exists: "<prefix:holograms/> <separator> <ncolor:error>Un hologramme avec ce nom existe déjà.</ncolor>"
-      cloned: "<prefix:holograms/> <separator> <ncolor:success>Hologramme \"%s\" cloné en \"%s\" avec succès.</ncolor>"
+      doesnt_exist: "<prefix:holograms/> <nhseparator> <ncolor:nherror>L'hologramme \"%s\" n'existe pas.</ncolor>"
+      name_too_long: "<prefix:holograms/> <nhseparator> <ncolor:nherror>Le nom de l'hologramme est trop long. Il ne peut pas dépasser %s caractères.</ncolor>"
+      invalid_character: "<prefix:holograms/> <nhseparator> <ncolor:nherror>Le nom de l'hologramme contient des caractères invalides.</ncolor>"
+      already_exists: "<prefix:holograms/> <nhseparator> <ncolor:nherror>Un hologramme avec ce nom existe déjà.</ncolor>"
+      cloned: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>Hologramme \"%s\" cloné en \"%s\" avec succès.</ncolor>"
 
     create:
-      invalid_type: "<prefix:holograms/> <separator> <ncolor:error>Le type d'hologramme \"%s\" est invalide.</ncolor>"
-      name_too_long: "<prefix:holograms/> <separator> <ncolor:error>Le nom de l'hologramme est trop long. Il ne peut pas dépasser %s caractères.</ncolor>"
-      invalid_character: "<prefix:holograms/> <separator> <ncolor:error>Le nom de l'hologramme contient des caractères invalides.</ncolor>"
-      already_exists: "<prefix:holograms/> <separator> <ncolor:error>Un hologramme avec ce nom existe déjà.</ncolor>"
-      created: "<prefix:holograms/> <separator> <ncolor:success>Hologramme \"%s\" de type \"%s\" créé avec succès.</ncolor>"
+      invalid_type: "<prefix:holograms/> <nhseparator> <ncolor:nherror>Le type d'hologramme \"%s\" est invalide.</ncolor>"
+      name_too_long: "<prefix:holograms/> <nhseparator> <ncolor:nherror>Le nom de l'hologramme est trop long. Il ne peut pas dépasser %s caractères.</ncolor>"
+      invalid_character: "<prefix:holograms/> <nhseparator> <ncolor:nherror>Le nom de l'hologramme contient des caractères invalides.</ncolor>"
+      already_exists: "<prefix:holograms/> <nhseparator> <ncolor:nherror>Un hologramme avec ce nom existe déjà.</ncolor>"
+      created: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>Hologramme \"%s\" de type \"%s\" créé avec succès.</ncolor>"
 
     info:
-      doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>L'hologramme \"%s\" n'existe pas.</ncolor>"
+      doesnt_exist: "<prefix:holograms/> <nhseparator> <ncolor:nherror>L'hologramme \"%s\" n'existe pas.</ncolor>"
       info: |
-        <prefix:holograms/> <separator> <ncolor:primary>Informations sur l'hologramme "%s":</ncolor>
-        <ncolor:default>- Type: %s
+        <prefix:holograms/> <nhseparator> <ncolor:nhprimary>Informations sur l'hologramme "%s":</ncolor>
+        <ncolor:nhdefault>- Type: %s
         - Position: X: %.2f Y: %.2f Z: %.2f
         - Monde: %s
         - Rotation: %.2f %.2f
@@ -58,19 +58,19 @@ niveriaholograms:
         - Distance de visibilité: %s</ncolor>
 
       info_block: |
-        <ncolor:default>- Bloc: %s
+        <ncolor:nhdefault>- Bloc: %s
         - Brillant: %s
         - Couleur de brillance: %s
         </ncolor>
 
       info_item: |
-        <ncolor:default>- Item: %s
+        <ncolor:nhdefault>- Item: %s
         - Brillant: %s
         - Couleur de brillance: %s
         </ncolor>
 
       info_text: |
-        <ncolor:default>- Couleur de fond: %s
+        <ncolor:nhdefault>- Couleur de fond: %s
         - Alignement du texte: %s
         - Transparent: %s
         - Ombre du texte: %s
@@ -82,120 +82,120 @@ niveriaholograms:
         no_glowing_color: "Aucune"
 
     list:
-      no_holograms: "<prefix:holograms/> <separator> <ncolor:default>Il n'y a pas d'hologrammes créés.</ncolor>"
-      header: "<prefix:holograms/> <separator> <ncolor:primary>Liste des hologrammes (%s):</ncolor>"
-      hologram_entry: "<hover:show_text:'Clique ici pour te téléporter à cet hologramme'><click:run_command:'/hologram teleport %s'><ncolor:default>- %s (Type: %s, Monde: %s, Position: X: %.2f Y: %.2f Z: %.2f)</ncolor></click></hover>"
+      no_holograms: "<prefix:holograms/> <nhseparator> <ncolor:nhdefault>Il n'y a pas d'hologrammes créés.</ncolor>"
+      header: "<prefix:holograms/> <nhseparator> <ncolor:nhprimary>Liste des hologrammes (%s):</ncolor>"
+      hologram_entry: "<hover:show_text:'Clique ici pour te téléporter à cet hologramme'><click:run_command:'/hologram teleport %s'><ncolor:nhdefault>- %s (Type: %s, Monde: %s, Position: X: %.2f Y: %.2f Z: %.2f)</ncolor></click></hover>"
 
     nearby:
-      no_holograms: "<prefix:holograms/> <separator> <ncolor:default>Il n'y a pas d'hologrammes dans un rayon de %s.</ncolor>"
-      header: "<prefix:holograms/> <separator> <ncolor:primary>Hologrammes à proximité (%s):</ncolor>"
-      hologram_entry: "<hover:show_text:'Clique ici pour te téléporter à cet hologramme'><click:run_command:'/hologram teleport %s'><ncolor:default>- %s (Type: %s, Monde: %s, Position: X: %.2f Y: %.2f Z: %.2f, Distance: %.2f)</ncolor></click></hover>"
+      no_holograms: "<prefix:holograms/> <nhseparator> <ncolor:nhdefault>Il n'y a pas d'hologrammes dans un rayon de %s.</ncolor>"
+      header: "<prefix:holograms/> <nhseparator> <ncolor:nhprimary>Hologrammes à proximité (%s):</ncolor>"
+      hologram_entry: "<hover:show_text:'Clique ici pour te téléporter à cet hologramme'><click:run_command:'/hologram teleport %s'><ncolor:nhdefault>- %s (Type: %s, Monde: %s, Position: X: %.2f Y: %.2f Z: %.2f, Distance: %.2f)</ncolor></click></hover>"
 
     remove:
-      doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>L'hologramme \"%s\" n'existe pas.</ncolor>"
-      removed: "<prefix:holograms/> <separator> <ncolor:success>Hologramme \"%s\" supprimé avec succès.</ncolor>"
+      doesnt_exist: "<prefix:holograms/> <nhseparator> <ncolor:nherror>L'hologramme \"%s\" n'existe pas.</ncolor>"
+      removed: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>Hologramme \"%s\" supprimé avec succès.</ncolor>"
 
     teleport:
-      doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>L'hologramme \"%s\" n'existe pas.</ncolor>"
-      teleported: "<prefix:holograms/> <separator> <ncolor:success>Téléporté à l'hologramme \"%s\" avec succès.</ncolor>"
+      doesnt_exist: "<prefix:holograms/> <nhseparator> <ncolor:nherror>L'hologramme \"%s\" n'existe pas.</ncolor>"
+      teleported: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>Téléporté à l'hologramme \"%s\" avec succès.</ncolor>"
 
     edit:
-      doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>L'hologramme \"%s\" n'existe pas.</ncolor>"
-      only_block: "<prefix:holograms/> <separator> <ncolor:error>Cette option ne peut être modifiée que pour les hologrammes de type bloc.</ncolor>"
-      only_item: "<prefix:holograms/> <separator> <ncolor:error>Cette option ne peut être modifiée que pour les hologrammes de type item.</ncolor>"
-      only_text: "<prefix:holograms/> <separator> <ncolor:error>Cette option ne peut être modifiée que pour les hologrammes de type texte.</ncolor>"
-      only_block_and_item: "<prefix:holograms/> <separator> <ncolor:error>Cette option ne peut être modifiée que pour les hologrammes de type bloc et item.</ncolor>"
+      doesnt_exist: "<prefix:holograms/> <nhseparator> <ncolor:nherror>L'hologramme \"%s\" n'existe pas.</ncolor>"
+      only_block: "<prefix:holograms/> <nhseparator> <ncolor:nherror>Cette option ne peut être modifiée que pour les hologrammes de type bloc.</ncolor>"
+      only_item: "<prefix:holograms/> <nhseparator> <ncolor:nherror>Cette option ne peut être modifiée que pour les hologrammes de type item.</ncolor>"
+      only_text: "<prefix:holograms/> <nhseparator> <ncolor:nherror>Cette option ne peut être modifiée que pour les hologrammes de type texte.</ncolor>"
+      only_block_and_item: "<prefix:holograms/> <nhseparator> <ncolor:nherror>Cette option ne peut être modifiée que pour les hologrammes de type bloc et item.</ncolor>"
 
       # Block
       block:
-        no_air: "<prefix:holograms/> <separator> <ncolor:error>Le bloc ne peut pas être de l'air.</ncolor>"
-        edited: "<prefix:holograms/> <separator> <ncolor:success>Le bloc de l'hologramme \"%s\" a été changé en \"<lang:%s/>\" avec succès.</ncolor>"
+        no_air: "<prefix:holograms/> <nhseparator> <ncolor:nherror>Le bloc ne peut pas être de l'air.</ncolor>"
+        edited: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>Le bloc de l'hologramme \"%s\" a été changé en \"<lang:%s/>\" avec succès.</ncolor>"
 
       # Item
       item:
-        no_item: "<prefix:holograms/> <separator> <ncolor:error>Vous devez tenir un item dans votre main principale.</ncolor>"
-        edited: "<prefix:holograms/> <separator> <ncolor:success>L'item de l'hologramme \"%s\" a été changé en \"<lang:%s/>\" avec succès.</ncolor>"
+        no_item: "<prefix:holograms/> <nhseparator> <ncolor:nherror>Vous devez tenir un item dans votre main principale.</ncolor>"
+        edited: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>L'item de l'hologramme \"%s\" a été changé en \"<lang:%s/>\" avec succès.</ncolor>"
 
       # Text
       addLine:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>Le texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>Le texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
       background:
-        invalid_color: "<prefix:holograms/> <separator> <ncolor:error>La couleur du fond \"%s\" est invalide.</ncolor>"
-        edited: "<prefix:holograms/> <separator> <ncolor:success>La couleur du fond de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        invalid_color: "<prefix:holograms/> <nhseparator> <ncolor:nherror>La couleur du fond \"%s\" est invalide.</ncolor>"
+        edited: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>La couleur du fond de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
       insertAfter:
-        invalid_line: "<prefix:holograms/> <separator> <ncolor:error>Le numéro de la ligne \"%s\" est invalide.</ncolor>"
-        edited: "<prefix:holograms/> <separator> <ncolor:success>Le texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        invalid_line: "<prefix:holograms/> <nhseparator> <ncolor:nherror>Le numéro de la ligne \"%s\" est invalide.</ncolor>"
+        edited: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>Le texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
       insertBefore:
-        invalid_line: "<prefix:holograms/> <separator> <ncolor:error>Le numéro de la ligne \"%s\" est invalide.</ncolor>"
-        edited: "<prefix:holograms/> <separator> <ncolor:success>Le texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        invalid_line: "<prefix:holograms/> <nhseparator> <ncolor:nherror>Le numéro de la ligne \"%s\" est invalide.</ncolor>"
+        edited: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>Le texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
       removeLine:
-        invalid_line: "<prefix:holograms/> <separator> <ncolor:error>Le numéro de la ligne \"%s\" est invalide.</ncolor>"
-        edited: "<prefix:holograms/> <separator> <ncolor:success>Le texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        invalid_line: "<prefix:holograms/> <nhseparator> <ncolor:nherror>Le numéro de la ligne \"%s\" est invalide.</ncolor>"
+        edited: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>Le texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
       seeThrough:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>L'affichage de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>L'affichage de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
       setLine:
-        invalid_line: "<prefix:holograms/> <separator> <ncolor:error>Le numéro de la ligne \"%s\" est invalide.</ncolor>"
-        edited: "<prefix:holograms/> <separator> <ncolor:success>Le texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        invalid_line: "<prefix:holograms/> <nhseparator> <ncolor:nherror>Le numéro de la ligne \"%s\" est invalide.</ncolor>"
+        edited: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>Le texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
       textAlignment:
-        invalid_textAlignment: "<prefix:holograms/> <separator> <ncolor:error>La valeur d'alignement du texte \"%s\" est invalide.</ncolor>"
-        edited: "<prefix:holograms/> <separator> <ncolor:success>L'alignement du texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        invalid_textAlignment: "<prefix:holograms/> <nhseparator> <ncolor:nherror>La valeur d'alignement du texte \"%s\" est invalide.</ncolor>"
+        edited: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>L'alignement du texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
       textShadow:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>L'ombre du texte \"%s\" a été mis à jour avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>L'ombre du texte \"%s\" a été mis à jour avec succès.</ncolor>"
 
       updateInterval:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>L'interval de mis à jour de l'hologramme \"%s\" a été changé en \"%s\" avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>L'interval de mis à jour de l'hologramme \"%s\" a été changé en \"%s\" avec succès.</ncolor>"
 
       # General
       billboard:
-        invalid_billboard: "<prefix:holograms/> <separator> <ncolor:error>La valeur de billboard \"%s\" est invalide.</ncolor>"
-        edited: "<prefix:holograms/> <separator> <ncolor:success>Le billboard de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        invalid_billboard: "<prefix:holograms/> <nhseparator> <ncolor:nherror>La valeur de billboard \"%s\" est invalide.</ncolor>"
+        edited: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>Le billboard de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
       brightness:
-        invalid_type: "<prefix:holograms/> <separator> <ncolor:error>La valeur de type de lumière \"%s\" est invalide.</ncolor>"
-        edited: "<prefix:holograms/> <separator> <ncolor:success>La lumière de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        invalid_type: "<prefix:holograms/> <nhseparator> <ncolor:nherror>La valeur de type de lumière \"%s\" est invalide.</ncolor>"
+        edited: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>La lumière de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
       pitch:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>Le pitch de l'hologramme \"%s\" a été changé en \"%.2f\" avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>Le pitch de l'hologramme \"%s\" a été changé en \"%.2f\" avec succès.</ncolor>"
 
       position:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>La position de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>La position de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
       rotation:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>Le pitch de l'hologramme \"%s\" a été changé en \"%.2f %.2f\" avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>Le pitch de l'hologramme \"%s\" a été changé en \"%.2f %.2f\" avec succès.</ncolor>"
 
       scale:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>La taille de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>La taille de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
       shadowRadius:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>Le rayon de l'ombre de l'hologramme \"%s\" a été changé en \"%.2f\" avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>Le rayon de l'ombre de l'hologramme \"%s\" a été changé en \"%.2f\" avec succès.</ncolor>"
 
       shadowStrength:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>La force de l'ombre de l'hologramme \"%s\" a été changé en \"%.2f\" avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>La force de l'ombre de l'hologramme \"%s\" a été changé en \"%.2f\" avec succès.</ncolor>"
 
       translate:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>La translation de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>La translation de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
       visibilityDistance:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>La distance d'affichage de l'hologramme \"%s\" a été changé en \"%s\" avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>La distance d'affichage de l'hologramme \"%s\" a été changé en \"%s\" avec succès.</ncolor>"
 
       yaw:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>Le yaw de l'hologramme \"%s\" a été changé en \"%.2f\" avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>Le yaw de l'hologramme \"%s\" a été changé en \"%.2f\" avec succès.</ncolor>"
 
       # Other
       glowing:
-        invalid_color: "<prefix:holograms/> <separator> <ncolor:error>La couleur de brillance \"%s\" est invalide.</ncolor>"
-        edited: "<prefix:holograms/> <separator> <ncolor:success>La brillance de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        invalid_color: "<prefix:holograms/> <nhseparator> <ncolor:nherror>La couleur de brillance \"%s\" est invalide.</ncolor>"
+        edited: "<prefix:holograms/> <nhseparator> <ncolor:nhsuccess>La brillance de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
   default_text: "Utilise /hologram edit %s setLine 1 <ton texte>"
 
   new_update: |-
-    <prefix:holograms/> <separator> <ncolor:default>Il y a une nouvelle version de <ncolor:primary>NiveriaHolograms</ncolor>: <ncolor:error>%s</ncolor> → <ncolor:success>%s</ncolor></ncolor>
-    <ncolor:default>Lien de téléchargement: <ncolor:secondary><click:open_url:"https://modrinth.com/plugin/niveriaholograms">https://modrinth.com/plugin/niveriaholograms</click></ncolor></ncolor>
+    <prefix:holograms/> <nhseparator> <ncolor:nhdefault>Il y a une nouvelle version de <ncolor:nhprimary>NiveriaHolograms</ncolor>: <ncolor:nherror>%s</ncolor> → <ncolor:nhsuccess>%s</ncolor></ncolor>
+    <ncolor:nhdefault>Lien de téléchargement: <ncolor:nhsecondary><click:open_url:"https://modrinth.com/plugin/niveriaholograms">https://modrinth.com/plugin/niveriaholograms</click></ncolor></ncolor>
