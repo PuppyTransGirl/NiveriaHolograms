@@ -141,23 +141,24 @@ public class DecentHologramsMigrator implements Migrator {
             // If this line has a height value equal to 0.5 and there is a following line
             // insert the filler empty line represented by "<white></white>"
             Object heightObj = line.get("height");
-            if (heightObj != null && i < firstPage.size() - 1) {
-                boolean isHalf = false;
-                if (heightObj instanceof Number number) {
-                    isHalf = Math.abs(number.doubleValue() - 0.5) < 1e-9;
-                } else {
-                    try {
-                        double d = Double.parseDouble(String.valueOf(heightObj));
-                        isHalf = Math.abs(d - 0.5) < 1e-9;
-                    } catch (NumberFormatException ignored) {
-                        // ignore malformed height
-                        // it's not critical for migration
-                    }
-                }
+            if (heightObj == null || i >= firstPage.size() - 1)
+                continue;
 
-                if (isHalf)
-                    result.add("<white></white>");
+            boolean isHalf = false;
+            if (heightObj instanceof Number number) {
+                isHalf = Math.abs(number.doubleValue() - 0.5) < 1e-9;
+            } else {
+                try {
+                    double d = Double.parseDouble(String.valueOf(heightObj));
+                    isHalf = Math.abs(d - 0.5) < 1e-9;
+                } catch (NumberFormatException ignored) {
+                    // ignore malformed height
+                    // it's not critical for migration
+                }
             }
+
+            if (isHalf)
+                result.add("<white></white>");
         }
 
         return result;
