@@ -210,7 +210,7 @@ niveriaholograms:
           
           %s
           
-          <ncolor:default>»</ncolor> <ncolor:primary>ᴄʟɪᴄᴋ</ncolor> <ncolor:secondary>ᴘᴏᴜʀ ʀᴀʟɪsᴇʀ ʟᴀ ᴍɪɢʀᴀᴛɪᴏɴ</ncolor>
+          <ncolor:default>»</ncolor> <ncolor:primary>ᴄʟɪᴄᴋ</ncolor> <ncolor:secondary>ᴘᴏᴜʀ ꜰᴀɪʀᴇ ʟᴀ ᴍɪɢʀᴀᴛɪᴏɴ</ncolor>
 
         lore_present: <ncolor:success>Le dossier des hologrammes DecentHolograms est présent</ncolor>
         lore_not_present: <ncolor:error>Le dossier des hologrammes DecentHolograms est introuvable</ncolor>
@@ -225,7 +225,7 @@ niveriaholograms:
           
           %s
           
-          <ncolor:default>»</ncolor> <ncolor:primary>ᴄʟɪᴄᴋ</ncolor> <ncolor:secondary>ᴘᴏᴜʀ ʀᴀʟɪsᴇʀ ʟᴀ ᴍɪɢʀᴀᴛɪᴏɴ</ncolor>
+          <ncolor:default>»</ncolor> <ncolor:primary>ᴄʟɪᴄᴋ</ncolor> <ncolor:secondary>ᴘᴏᴜʀ ꜰᴀɪʀᴇ ʟᴀ ᴍɪɢʀᴀᴛɪᴏɴ</ncolor>
 
         lore_present: <ncolor:success>Le fichier des hologrammes FancyHolograms est présent</ncolor>
         lore_not_present: <ncolor:error>Le fichier des hologrammes FancyHolograms est introuvable</ncolor>

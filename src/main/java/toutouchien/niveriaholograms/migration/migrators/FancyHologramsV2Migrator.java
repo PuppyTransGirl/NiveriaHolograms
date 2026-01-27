@@ -55,13 +55,23 @@ public class FancyHologramsV2Migrator implements Migrator {
     private void fileToHolograms(@NotNull Player player, @NotNull File file, @NotNull ObjectList<Hologram> holograms) {
         FileConfiguration hologramsFile = YamlConfiguration.loadConfiguration(file);
         ConfigurationSection hologramsSection = hologramsFile.getConfigurationSection("holograms");
-        for (String key : hologramsSection.getKeys(false)) {
-            ConfigurationSection section = hologramsSection.getConfigurationSection(key);
-            Hologram hologram = migrateHologram(key, player, section);
-            if (hologram == null)
-                return;
+        if (hologramsSection == null) {
+            NiveriaHolograms.instance().getSLF4JLogger().warn("FancyHolograms file has no 'holograms' section");
+            return;
+        }
 
-            holograms.add(hologram);
+        for (String key : hologramsSection.getKeys(false)) {
+            try {
+                ConfigurationSection section = hologramsSection.getConfigurationSection(key);
+                Hologram hologram = migrateHologram(key, player, section);
+                if (hologram == null)
+                    continue;
+
+                holograms.add(hologram);
+            } catch (Exception e) {
+                Lang.sendMessage(player, "niveriaholograms.migrator.fancyholograms.cannot_migrate_hologram", key);
+                NiveriaHolograms.instance().getSLF4JLogger().error("The hologram '{}' couldn't be migrated", key, e);
+            }
         }
     }
 
@@ -152,11 +162,21 @@ public class FancyHologramsV2Migrator implements Migrator {
             return null;
         }
 
-        double x = section.getObject("x", Number.class).doubleValue();
-        double y = section.getObject("y", Number.class).doubleValue();
-        double z = section.getObject("z", Number.class).doubleValue();
-        float yaw = section.getObject("yaw", Number.class).floatValue();
-        float pitch = section.getObject("pitch", Number.class).floatValue();
+        Number xNum = section.getObject("x", Number.class);
+        Number yNum = section.getObject("y", Number.class);
+        Number zNum = section.getObject("z", Number.class);
+        Number yawNum = section.getObject("yaw", Number.class);
+        Number pitchNum = section.getObject("pitch", Number.class);
+        if (xNum == null || yNum == null || zNum == null || yawNum == null || pitchNum == null) {
+            Lang.sendMessage(player, "niveriaholograms.migrator.fancyholograms.malformed_location", name);
+            return null;
+        }
+
+        double x = xNum.doubleValue();
+        double y = yNum.doubleValue();
+        double z = zNum.doubleValue();
+        float yaw = yawNum.floatValue();
+        float pitch = pitchNum.floatValue();
 
         return new CustomLocation(world, x, y, z, yaw, pitch);
     }
