@@ -28,6 +28,7 @@ import toutouchien.niveriaholograms.utils.LegacyToMiniMessage;
 
 import java.io.File;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 public class FancyHologramsV2Migrator implements Migrator {
@@ -53,8 +54,9 @@ public class FancyHologramsV2Migrator implements Migrator {
 
     private void fileToHolograms(@NotNull Player player, @NotNull File file, @NotNull ObjectList<Hologram> holograms) {
         FileConfiguration hologramsFile = YamlConfiguration.loadConfiguration(file);
-        for (String key : hologramsFile.getKeys(false)) {
-            ConfigurationSection section = hologramsFile.getConfigurationSection(key);
+        ConfigurationSection hologramsSection = hologramsFile.getConfigurationSection("holograms");
+        for (String key : hologramsSection.getKeys(false)) {
+            ConfigurationSection section = hologramsSection.getConfigurationSection(key);
             Hologram hologram = migrateHologram(key, player, section);
             if (hologram == null)
                 return;
@@ -65,7 +67,7 @@ public class FancyHologramsV2Migrator implements Migrator {
 
     @Nullable
     private Hologram migrateHologram(@NotNull String name, @NotNull Player player, @NotNull ConfigurationSection section) {
-        HologramType type = HologramType.valueOf(section.getString("type"));
+        HologramType type = HologramType.valueOf(section.getString("type").toUpperCase(Locale.ROOT));
         CustomLocation location = parseLocation(name, player, section.getConfigurationSection("location"));
         Vector3f scale = new Vector3f(
                 section.getObject("scale_x", Number.class).floatValue(),
@@ -77,12 +79,12 @@ public class FancyHologramsV2Migrator implements Migrator {
                 section.getObject("translation_y", Number.class).floatValue(),
                 section.getObject("translation_z", Number.class).floatValue()
         );
-        Display.BillboardConstraints billboard = Display.BillboardConstraints.valueOf(section.getString("billboard"));
+        Display.BillboardConstraints billboard = Display.BillboardConstraints.valueOf(section.getString("billboard", "CENTER").toUpperCase(Locale.ROOT));
         float shadowRadius = section.getObject("shadow_radius", Number.class).floatValue();
         float shadowStrength = section.getObject("shadow_strength", Number.class).floatValue();
         int visibilityDistance = section.getObject("visibility_distance", Number.class).intValue();
 
-        HologramConfiguration config = new HologramConfiguration()
+        HologramConfiguration config = type.createConfiguration()
                 .scale(scale)
                 .translation(translation)
                 .billboard(billboard)
@@ -93,7 +95,7 @@ public class FancyHologramsV2Migrator implements Migrator {
         switch (type) {
             case BLOCK -> {
                 BlockHologramConfiguration blockConfig = (BlockHologramConfiguration) config;
-                blockConfig.blockState(Material.valueOf(section.getString("block")).asBlockType().createBlockData().createBlockState());
+                blockConfig.blockState(Material.valueOf(section.getString("block").toUpperCase(Locale.ROOT)).asBlockType().createBlockData().createBlockState());
             }
 
             case ITEM -> {
@@ -103,11 +105,12 @@ public class FancyHologramsV2Migrator implements Migrator {
 
             case TEXT -> {
                 TextHologramConfiguration textConfig = (TextHologramConfiguration) config;
-                textConfig.textAlignment(TextDisplay.TextAlignment.valueOf(section.getString("text_alignment")));
+                textConfig.textAlignment(TextDisplay.TextAlignment.valueOf(section.getString("text_alignment").toUpperCase(Locale.ROOT)));
                 textConfig.seeThrough(section.getBoolean("see_through"));
                 textConfig.textShadow(section.getBoolean("text_shadow"));
+
                 int updateInterval = section.getObject("update_text_interval", Number.class).intValue();
-                textConfig.updateInterval(updateInterval == 20 ? 0 : updateInterval);
+                textConfig.updateInterval(updateInterval == 20 || updateInterval == -1 ? 0 : updateInterval);
                 List<String> text = parseLines(name, player, section);
                 if (text == null)
                     return null;

@@ -105,7 +105,7 @@ public class TextHologramConfiguration extends HologramConfiguration {
     }
 
     public TextHologramConfiguration text(List<String> text) {
-        this.text = text;
+        this.text = new ArrayList<>(text); // Make the text modifiable
         this.serializedText.clear();
         this.textDirty = true;
         return this;

@@ -117,40 +117,40 @@ niveriaholograms:
         edited: "<prefix:holograms/> <separator> <ncolor:success>The item of hologram \"%s\" was successfully changed to \"<lang:%s/>\".</ncolor>"
 
       # Text
-      addLine:
+      addline:
         edited: "<prefix:holograms/> <separator> <ncolor:success>The text of hologram \"%s\" was successfully updated.</ncolor>"
 
       background:
         invalid_color: "<prefix:holograms/> <separator> <ncolor:error>The background color \"%s\" is invalid.</ncolor>"
         edited: "<prefix:holograms/> <separator> <ncolor:success>The background color of hologram \"%s\" was successfully updated.</ncolor>"
 
-      insertAfter:
+      insertafter:
         invalid_line: "<prefix:holograms/> <separator> <ncolor:error>The line number \"%s\" is invalid.</ncolor>"
         edited: "<prefix:holograms/> <separator> <ncolor:success>The text of hologram \"%s\" was successfully updated.</ncolor>"
 
-      insertBefore:
+      insertbefore:
         invalid_line: "<prefix:holograms/> <separator> <ncolor:error>The line number \"%s\" is invalid.</ncolor>"
         edited: "<prefix:holograms/> <separator> <ncolor:success>The text of hologram \"%s\" was successfully updated.</ncolor>"
 
-      removeLine:
+      removeline:
         invalid_line: "<prefix:holograms/> <separator> <ncolor:error>The line number \"%s\" is invalid.</ncolor>"
         edited: "<prefix:holograms/> <separator> <ncolor:success>The text of hologram \"%s\" was successfully updated.</ncolor>"
 
-      seeThrough:
+      seethrough:
         edited: "<prefix:holograms/> <separator> <ncolor:success>The see-through setting of hologram \"%s\" was successfully updated.</ncolor>"
 
-      setLine:
+      setline:
         invalid_line: "<prefix:holograms/> <separator> <ncolor:error>The line number \"%s\" is invalid.</ncolor>"
         edited: "<prefix:holograms/> <separator> <ncolor:success>The text of hologram \"%s\" was successfully updated.</ncolor>"
 
-      textAlignment:
-        invalid_textAlignment: "<prefix:holograms/> <separator> <ncolor:error>The text alignment value \"%s\" is invalid.</ncolor>"
+      textalignment:
+        invalid_textalignment: "<prefix:holograms/> <separator> <ncolor:error>The text alignment value \"%s\" is invalid.</ncolor>"
         edited: "<prefix:holograms/> <separator> <ncolor:success>The text alignment of hologram \"%s\" was successfully updated.</ncolor>"
 
-      textShadow:
+      textshadow:
         edited: "<prefix:holograms/> <separator> <ncolor:success>The text shadow of \"%s\" was successfully updated.</ncolor>"
 
-      updateInterval:
+      updateinterval:
         edited: "<prefix:holograms/> <separator> <ncolor:success>The update interval of hologram \"%s\" was successfully changed to \"%s\".</ncolor>"
 
       # General
@@ -174,16 +174,16 @@ niveriaholograms:
       scale:
         edited: "<prefix:holograms/> <separator> <ncolor:success>The scale of hologram \"%s\" was successfully updated.</ncolor>"
 
-      shadowRadius:
+      shadowradius:
         edited: "<prefix:holograms/> <separator> <ncolor:success>The shadow radius of hologram \"%s\" was successfully changed to \"%.2f\".</ncolor>"
 
-      shadowStrength:
+      shadowstrength:
         edited: "<prefix:holograms/> <separator> <ncolor:success>The shadow strength of hologram \"%s\" was successfully changed to \"%.2f\".</ncolor>"
 
       translate:
         edited: "<prefix:holograms/> <separator> <ncolor:success>The translation of hologram \"%s\" was successfully updated.</ncolor>"
 
-      visibilityDistance:
+      visibilitydistance:
         edited: "<prefix:holograms/> <separator> <ncolor:success>The visibility distance of hologram \"%s\" was successfully changed to \"%s\".</ncolor>"
 
       yaw:
@@ -194,7 +194,7 @@ niveriaholograms:
         invalid_color: "<prefix:holograms/> <separator> <ncolor:error>The glow color \"%s\" is invalid.</ncolor>"
         edited: "<prefix:holograms/> <separator> <ncolor:success>The glowing status of hologram \"%s\" was successfully updated.</ncolor>"
 
-  default_text: "Use /hologram edit %s setLine 1 <your text>"
+  default_text: "Use /hologram edit %s setline 1 <your text>"
 
   menu:
     migration:
@@ -216,7 +216,7 @@ niveriaholograms:
         lore_not_present: <ncolor:error>The DecentHolograms holograms folder isn't present</ncolor>
 
       fancyholograms:
-        name: "<#2770F8>Migrate from FancyHolograms V2</#2770F8>"
+        name: "<#F3C735>Migrate from FancyHolograms V2</#F3C735>"
         lore: |-
           <dark_gray>Free Plugin</dark_gray>
 

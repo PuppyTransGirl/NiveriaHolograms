@@ -117,40 +117,40 @@ niveriaholograms:
         edited: "<prefix:holograms/> <separator> <ncolor:success>L'item de l'hologramme \"%s\" a été changé en \"<lang:%s/>\" avec succès.</ncolor>"
 
       # Text
-      addLine:
+      addline:
         edited: "<prefix:holograms/> <separator> <ncolor:success>Le texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
       background:
         invalid_color: "<prefix:holograms/> <separator> <ncolor:error>La couleur du fond \"%s\" est invalide.</ncolor>"
         edited: "<prefix:holograms/> <separator> <ncolor:success>La couleur du fond de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
-      insertAfter:
+      insertafter:
         invalid_line: "<prefix:holograms/> <separator> <ncolor:error>Le numéro de la ligne \"%s\" est invalide.</ncolor>"
         edited: "<prefix:holograms/> <separator> <ncolor:success>Le texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
-      insertBefore:
+      insertbefore:
         invalid_line: "<prefix:holograms/> <separator> <ncolor:error>Le numéro de la ligne \"%s\" est invalide.</ncolor>"
         edited: "<prefix:holograms/> <separator> <ncolor:success>Le texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
-      removeLine:
+      removeline:
         invalid_line: "<prefix:holograms/> <separator> <ncolor:error>Le numéro de la ligne \"%s\" est invalide.</ncolor>"
         edited: "<prefix:holograms/> <separator> <ncolor:success>Le texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
-      seeThrough:
+      seethrough:
         edited: "<prefix:holograms/> <separator> <ncolor:success>L'affichage de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
-      setLine:
+      setline:
         invalid_line: "<prefix:holograms/> <separator> <ncolor:error>Le numéro de la ligne \"%s\" est invalide.</ncolor>"
         edited: "<prefix:holograms/> <separator> <ncolor:success>Le texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
-      textAlignment:
-        invalid_textAlignment: "<prefix:holograms/> <separator> <ncolor:error>La valeur d'alignement du texte \"%s\" est invalide.</ncolor>"
+      textalignment:
+        invalid_textalignment: "<prefix:holograms/> <separator> <ncolor:error>La valeur d'alignement du texte \"%s\" est invalide.</ncolor>"
         edited: "<prefix:holograms/> <separator> <ncolor:success>L'alignement du texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
-      textShadow:
+      textshadow:
         edited: "<prefix:holograms/> <separator> <ncolor:success>L'ombre du texte \"%s\" a été mis à jour avec succès.</ncolor>"
 
-      updateInterval:
+      updateinterval:
         edited: "<prefix:holograms/> <separator> <ncolor:success>L'interval de mis à jour de l'hologramme \"%s\" a été changé en \"%s\" avec succès.</ncolor>"
 
       # General
@@ -174,16 +174,16 @@ niveriaholograms:
       scale:
         edited: "<prefix:holograms/> <separator> <ncolor:success>La taille de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
-      shadowRadius:
+      shadowradius:
         edited: "<prefix:holograms/> <separator> <ncolor:success>Le rayon de l'ombre de l'hologramme \"%s\" a été changé en \"%.2f\" avec succès.</ncolor>"
 
-      shadowStrength:
+      shadowstrength:
         edited: "<prefix:holograms/> <separator> <ncolor:success>La force de l'ombre de l'hologramme \"%s\" a été changé en \"%.2f\" avec succès.</ncolor>"
 
       translate:
         edited: "<prefix:holograms/> <separator> <ncolor:success>La translation de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
-      visibilityDistance:
+      visibilitydistance:
         edited: "<prefix:holograms/> <separator> <ncolor:success>La distance d'affichage de l'hologramme \"%s\" a été changé en \"%s\" avec succès.</ncolor>"
 
       yaw:
@@ -194,7 +194,7 @@ niveriaholograms:
         invalid_color: "<prefix:holograms/> <separator> <ncolor:error>La couleur de brillance \"%s\" est invalide.</ncolor>"
         edited: "<prefix:holograms/> <separator> <ncolor:success>La brillance de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
-  default_text: "Utilise /hologram edit %s setLine 1 <ton texte>"
+  default_text: "Utilise /hologram edit %s setline 1 <ton texte>"
 
   new_update: |-
     <prefix:holograms/> <separator> <ncolor:default>Il y a une nouvelle version de <ncolor:primary>NiveriaHolograms</ncolor>: <ncolor:error>%s</ncolor> → <ncolor:success>%s</ncolor></ncolor>

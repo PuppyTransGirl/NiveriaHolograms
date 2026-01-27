@@ -1,116 +1,199 @@
 package toutouchien.niveriaholograms.utils;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Utility to convert legacy Minecraft color/format codes (e.g. {@code &a}, {@code §l}, hex
+ * forms like {@code &#RRGGBB} or {@code &x&R&R&G&G&B&B}) into MiniMessage-like tags
+ * (e.g. {@code <green>}, {@code <bold>}, {@code <#RRGGBB>}).
+ *
+ * <p>Behavior highlights:
+ * - Legacy color codes reset active text formatting (decorations) - this implementation
+ * closes decoration tags when a new color (including hex) is opened.
+ * - {@code &r} resets both decorations and the active color.
+ *
+ * <p>This class is not instantiable and provides a single static entry point:
+ * {@link #convert(String)}.
+ */
 public final class LegacyToMiniMessage {
-    private static final Map<Character, String> COLOR_MAP = new HashMap<>();
-    private static final Map<Character, String> FORMAT_MAP = new HashMap<>();
+    private static final Map<Character, String> COLOR_MAP = Map.ofEntries(
+            Map.entry('0', "black"),
+            Map.entry('1', "dark_blue"),
+            Map.entry('2', "dark_green"),
+            Map.entry('3', "dark_aqua"),
+            Map.entry('4', "dark_red"),
+            Map.entry('5', "dark_purple"),
+            Map.entry('6', "gold"),
+            Map.entry('7', "gray"),
+            Map.entry('8', "dark_gray"),
+            Map.entry('9', "blue"),
+            Map.entry('a', "green"),
+            Map.entry('b', "aqua"),
+            Map.entry('c', "red"),
+            Map.entry('d', "light_purple"),
+            Map.entry('e', "yellow"),
+            Map.entry('f', "white")
+    );
 
-    static {
-        COLOR_MAP.put('0', "black");
-        COLOR_MAP.put('1', "dark_blue");
-        COLOR_MAP.put('2', "dark_green");
-        COLOR_MAP.put('3', "dark_aqua");
-        COLOR_MAP.put('4', "dark_red");
-        COLOR_MAP.put('5', "dark_purple");
-        COLOR_MAP.put('6', "gold");
-        COLOR_MAP.put('7', "gray");
-        COLOR_MAP.put('8', "dark_gray");
-        COLOR_MAP.put('9', "blue");
-        COLOR_MAP.put('a', "green");
-        COLOR_MAP.put('b', "aqua");
-        COLOR_MAP.put('c', "red");
-        COLOR_MAP.put('d', "light_purple");
-        COLOR_MAP.put('e', "yellow");
-        COLOR_MAP.put('f', "white");
+    private static final Map<Character, String> FORMAT_MAP = Map.of(
+            'k', "obfuscated",
+            'l', "bold",
+            'm', "strikethrough",
+            'n', "underlined",
+            'o', "italic"
+    );
 
-        FORMAT_MAP.put('k', "obfuscated");
-        FORMAT_MAP.put('l', "bold");
-        FORMAT_MAP.put('m', "strikethrough");
-        FORMAT_MAP.put('n', "underlined");
-        FORMAT_MAP.put('o', "italic");
-    }
-
-    // Single-character legacy codes like &6 or §l
-    private static final Pattern SINGLE_PATTERN = Pattern.compile("[§&]([0-9A-FK-ORa-fk-or])");
-
-    // Matches (?:&#|#)RRGGBB
-    private static final Pattern AMP_HASH_PATTERN = Pattern.compile("(?:&#|#)([0-9A-Fa-f]{6})");
-
-    // Matches Minecraft-style §x§R§R... (or &x&...)
-    private static final Pattern HEX_PATTERN = Pattern.compile(
-            "[§&][xX][§&]([0-9A-Fa-f])[§&]([0-9A-Fa-f])[§&]([0-9A-Fa-f])"
-                    + "[§&]([0-9A-Fa-f])[§&]([0-9A-Fa-f])[§&]([0-9A-Fa-f])"
+    /**
+     * Master regex that matches:
+     * - Hex colors in forms "&#RRGGBB" or "#RRGGBB" (group 1)
+     * - The "§x§R§R§G§G§B§B" hex colors style (group 2)
+     * - Standard legacy codes (group 3)
+     */
+    private static final Pattern MASTER_PATTERN = Pattern.compile(
+            "(?:&#|#)([0-9A-Fa-f]{6})|"
+                    + "[§&][xX]((?:[§&][0-9A-Fa-f]){6})|"
+                    + "[§&]([0-9A-FK-ORa-fk-or])"
     );
 
     private LegacyToMiniMessage() {
         throw new IllegalStateException("Utility class");
     }
 
-    public static String convert(String input) {
-        if (input == null || input.isEmpty())
+    /**
+     * Convert a string containing legacy Minecraft formatting codes into a string using
+     * MiniMessage-like tags.
+     *
+     * <p>Examples:
+     * - "&aHello" -> "<green>Hello"
+     * - "&#FF00FFText" -> "<#FF00FF>Text"
+     * - "&lBold" -> "<bold>Bold"
+     *
+     * @param input non-null input string. If empty, the same empty string is returned.
+     * @return converted string with MiniMessage-like tags
+     */
+    @NotNull
+    public static String convert(@NotNull String input) {
+        if (input.isEmpty())
             return input;
 
-        // Convert &#RRGGBB and #RRGGBB -> <#RRGGBB>
-        Matcher singleMatcher = matcher(input);
-        StringBuilder finalOut = new StringBuilder();
-        while (singleMatcher.find()) {
-            char code = Character.toLowerCase(singleMatcher.group(1).charAt(0));
+        Matcher matcher = MASTER_PATTERN.matcher(input);
+        StringBuilder builder = new StringBuilder();
 
-            if (COLOR_MAP.containsKey(code)) {
-                singleMatcher.appendReplacement(finalOut, "<" + COLOR_MAP.get(code) + ">");
-                continue;
+        Set<String> activeDecorations = new LinkedHashSet<>();
+        // Track the active color so we can close it manually when switching colors/resetting
+        String activeColor = null;
+
+        while (matcher.find()) {
+            StringBuilder replacement = new StringBuilder();
+
+            // CASE 1 & 2: Hex Colors
+            String hexColor = null;
+            if (matcher.group(1) != null)
+                hexColor = matcher.group(1).toUpperCase(Locale.ROOT);
+            else if (matcher.group(2) != null)
+                hexColor = matcher.group(2).replaceAll("[§&]", "").toUpperCase(Locale.ROOT);
+
+            if (hexColor != null) {
+                // 1. Close Decorations (Legacy behavior: color resets formats)
+                replacement.append(closeDecorations(activeDecorations));
+
+                // 2. Close previous color if any
+                if (activeColor != null) {
+                    replacement.append("</").append(activeColor).append(">");
+                }
+
+                // 3. Open new hex color
+                activeColor = "#" + hexColor;
+                replacement.append("<").append(activeColor).append(">");
+            }
+            // CASE 3: Standard Legacy Code (colors/formats/reset)
+            else if (matcher.group(3) != null) {
+                activeColor = convertStandardLegacyCode(matcher, replacement, activeDecorations, activeColor);
             }
 
-            if (FORMAT_MAP.containsKey(code)) {
-                singleMatcher.appendReplacement(finalOut, "<" + FORMAT_MAP.get(code) + ">");
-                continue;
+            matcher.appendReplacement(builder, Matcher.quoteReplacement(replacement.toString()));
+        }
+
+        matcher.appendTail(builder);
+        return builder.toString();
+    }
+
+    /**
+     * Handle standard single-character legacy codes (color, format, reset).
+     *
+     * <p>This method updates {@code replacement} with the tags to open/close and returns the
+     * potentially updated active color value.
+     *
+     * @param matcher           matcher positioned on the match; group(3) contains the code char
+     * @param replacement       builder for the replacement text (tags)
+     * @param activeDecorations ordered set of currently open decoration tags
+     * @param activeColor       currently active color tag (without angle brackets), or null
+     * @return the updated active color (may be same as input, new value, or null if closed)
+     */
+    @Nullable
+    private static String convertStandardLegacyCode(
+            @NotNull Matcher matcher,
+            @NotNull StringBuilder replacement,
+            @NotNull Set<String> activeDecorations,
+            @Nullable String activeColor
+    ) {
+        char code = Character.toLowerCase(matcher.group(3).charAt(0));
+
+        if (code == 'r') {
+            // &r -> Close ALL decorations AND the active color
+            replacement.append(closeDecorations(activeDecorations));
+            if (activeColor != null) {
+                replacement.append("</").append(activeColor).append(">");
+                activeColor = null;
             }
+        } else if (COLOR_MAP.containsKey(code)) {
+            // New legacy color: reset decorations and switch color
+            replacement.append(closeDecorations(activeDecorations));
 
-            singleMatcher.appendReplacement(finalOut, "");
+            if (activeColor != null)
+                replacement.append("</").append(activeColor).append(">");
+
+            String newColor = COLOR_MAP.get(code);
+            activeColor = newColor;
+            replacement.append("<").append(newColor).append(">");
+        } else if (FORMAT_MAP.containsKey(code)) {
+            // Decoration: open if not already active
+            String tag = FORMAT_MAP.get(code);
+            if (!activeDecorations.contains(tag)) {
+                activeDecorations.add(tag);
+                replacement.append("<").append(tag).append(">");
+            }
         }
 
-        singleMatcher.appendTail(finalOut);
-
-        return finalOut.toString();
+        return activeColor;
     }
 
+    /**
+     * Close all active decoration tags in reverse order of opening.
+     *
+     * <p>Example: if active contains ["bold", "italic"] then this returns
+     * "</italic></bold>" and clears the {@code active} set.
+     *
+     * @param active the ordered set of open decoration tags
+     * @return string containing closing tags in correct order, or empty string if none
+     */
     @NotNull
-    private static Matcher matcher(String input) {
-        Matcher ampHash = AMP_HASH_PATTERN.matcher(input);
-        StringBuffer step = new StringBuffer();
-        while (ampHash.find()) {
-            String hex = ampHash.group(1).toUpperCase(Locale.ROOT);
-            ampHash.appendReplacement(step, "<#" + hex + ">");
-        }
+    private static String closeDecorations(@NotNull Set<String> active) {
+        if (active.isEmpty())
+            return "";
 
-        ampHash.appendTail(step);
-        String intermediate = convertMinecraftStyle(step);
+        StringBuilder closer = new StringBuilder();
+        List<String> toClose = new ArrayList<>(active).reversed();
 
-        // Convert single-character legacy codes (&6, §l, etc.)
-        return SINGLE_PATTERN.matcher(intermediate);
-    }
+        for (String tag : toClose)
+            closer.append("</").append(tag).append(">");
 
-    @NotNull
-    private static String convertMinecraftStyle(StringBuffer step1) {
-        String stage1 = step1.toString();
-
-        // Convert Minecraft-style §x§R... -> <#RRGGBB>
-        Matcher hexMatcher = HEX_PATTERN.matcher(stage1);
-        StringBuilder hexReplaced = new StringBuilder();
-        while (hexMatcher.find()) {
-            String hex = (hexMatcher.group(1) + hexMatcher.group(2) + hexMatcher.group(3)
-                    + hexMatcher.group(4) + hexMatcher.group(5) + hexMatcher.group(6)).toUpperCase(Locale.ROOT);
-            hexMatcher.appendReplacement(hexReplaced, "<#" + hex + ">");
-        }
-
-        hexMatcher.appendTail(hexReplaced);
-        return hexReplaced.toString();
+        active.clear();
+        return closer.toString();
     }
 }
