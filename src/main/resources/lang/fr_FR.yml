@@ -151,7 +151,7 @@ niveriaholograms:
         edited: "<prefix:holograms/> <separator> <ncolor:success>L'ombre du texte \"%s\" a été mis à jour avec succès.</ncolor>"
 
       updateinterval:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>L'interval de mis à jour de l'hologramme \"%s\" a été changé en \"%s\" avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>L'intervalle de mise à jour de l'hologramme \"%s\" a été changé en \"%s\" avec succès.</ncolor>"
 
       # General
       billboard:
@@ -169,7 +169,7 @@ niveriaholograms:
         edited: "<prefix:holograms/> <separator> <ncolor:success>La position de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
 
       rotation:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>Le pitch de l'hologramme \"%s\" a été changé en \"%.2f %.2f\" avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>La rotation de l'hologramme \"%s\" a été changé en \"%.2f %.2f\" avec succès.</ncolor>"
 
       scale:
         edited: "<prefix:holograms/> <separator> <ncolor:success>La taille de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
@@ -249,7 +249,7 @@ niveriaholograms:
 
         cannot_migrate_hologram: "<prefix:holograms/> <separator> <ncolor:error>\"%s\" n'a pas pu être migré, veuillez vérifier la console.</ncolor>"
         malformed_location: "<prefix:holograms/> <separator> <ncolor:error>\"%s\" n'a pas pu être migré, l'emplacement est mal formé.</ncolor>"
-        invalid_world: "<prefix:holograms/> <separator> <ncolor:error>\"%s\" n'a pas pu être migré, le monde \"%s\" n'existe pas</ncolor>"
+        invalid_world: "<prefix:holograms/> <separator> <ncolor:error>\"%s\" n'a pas pu être migré, le monde \"%s\" n'existe pas.</ncolor>"
 
         migrated: "<prefix:holograms/> <separator> <ncolor:success>Les hologrammes de FancyHolograms V2 ont été migrés. (%s hologrammes)</ncolor>"
 

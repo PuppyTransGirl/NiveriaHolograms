@@ -249,7 +249,7 @@ niveriaholograms:
 
       cannot_migrate_hologram: "<prefix:holograms/> <separator> <ncolor:error>\"%s\" couldn't be migrated, please check the console.</ncolor>"
       malformed_location: "<prefix:holograms/> <separator> <ncolor:error>\"%s\" couldn't be migrated, the location is malformed.</ncolor>"
-      invalid_world: "<prefix:holograms/> <separator> <ncolor:error>\"%s\" couldn't be migrated, the world \"%s\" doesn't exist</ncolor>"
+      invalid_world: "<prefix:holograms/> <separator> <ncolor:error>\"%s\" couldn't be migrated, the world \"%s\" doesn't exist.</ncolor>"
 
       migrated: "<prefix:holograms/> <separator> <ncolor:success>The holograms of FancyHolograms V2 have been migrated. (%s holograms)</ncolor>"
 
