@@ -6,9 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import toutouchien.niveriaholograms.core.Hologram;
 
 public interface Migrator {
-    @NotNull
-    String name();
-
     boolean canRun();
 
     @NotNull

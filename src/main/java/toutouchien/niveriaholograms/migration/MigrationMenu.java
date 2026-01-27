@@ -49,10 +49,10 @@ public class MigrationMenu extends Menu {
      */
     @Override
     protected @NotNull MenuComponent root(@NotNull MenuContext context) {
-        Button button = Button.create()
+        Button decentHologramsButton = Button.create()
                 .item(ctx -> {
-                    File pluginFolder = new File("plugins/DecentHolograms/holograms/");
-                    String presence = "niveriaholograms.menu.migration.decentholograms.lore" + (pluginFolder.isDirectory() ? "_present" : "_not_present");
+                    File pluginHolograms = new File("plugins/DecentHolograms/holograms/");
+                    String presence = "niveriaholograms.menu.migration.decentholograms.lore" + (pluginHolograms.isDirectory() ? "_present" : "_not_present");
 
                     return ItemBuilder.of(Material.PLAYER_HEAD)
                             .name(Lang.get("niveriaholograms.menu.migration.decentholograms.name"))
@@ -67,9 +67,28 @@ public class MigrationMenu extends Menu {
                 })
                 .build();
 
+        Button fancyHologramsButton = Button.create()
+                .item(ctx -> {
+                    File pluginHolograms = new File("plugins/FancyHolograms/holograms.yml");
+                    String presence = "niveriaholograms.menu.migration.fancyholograms.lore" + (pluginHolograms.isFile() ? "_present" : "_not_present");
+
+                    return ItemBuilder.of(Material.PLAYER_HEAD)
+                            .name(Lang.get("niveriaholograms.menu.migration.fancyholograms.name"))
+                            .lore(Lang.getList("niveriaholograms.menu.migration.fancyholograms.lore", Lang.getString(presence)))
+                            .headTexture("http://textures.minecraft.net/texture/70dc9420c14fcab98dcd6f5ad51e8ebe2bb97895976caa70578f73c66dfbd")
+                            .build();
+                })
+                .onClick(event -> {
+                    Player player = event.player();
+                    NiveriaHolograms.instance().migrationManager().convertFromFancyHologramsV2(player);
+                    player.closeInventory();
+                })
+                .build();
+
         return Grid.create()
                 .size(9, 3)
-                .add(context, 13, button)
+                .add(context, 11, decentHologramsButton)
+                .add(context, 15, fancyHologramsButton)
                 .build();
     }
 }
