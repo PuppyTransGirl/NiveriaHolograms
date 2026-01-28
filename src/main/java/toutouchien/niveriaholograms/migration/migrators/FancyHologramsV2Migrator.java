@@ -79,6 +79,9 @@ public class FancyHologramsV2Migrator implements Migrator {
     private Hologram migrateHologram(@NotNull String name, @NotNull Player player, @NotNull ConfigurationSection section) {
         HologramType type = HologramType.valueOf(section.getString("type").toUpperCase(Locale.ROOT));
         CustomLocation location = parseLocation(name, player, section.getConfigurationSection("location"));
+        if (location == null)
+            return null;
+
         Vector3f scale = new Vector3f(
                 section.getObject("scale_x", Number.class).floatValue(),
                 section.getObject("scale_y", Number.class).floatValue(),
