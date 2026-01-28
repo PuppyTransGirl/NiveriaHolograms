@@ -18,13 +18,13 @@ public class HologramEditShadowRadiusCommand {
     }
 
     public static LiteralCommandNode<CommandSourceStack> get() {
-        return Commands.literal("shadowRadius")
+        return Commands.literal("shadowradius")
                 .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.shadowradius"))
-                .then(Commands.argument("shadowRadius", FloatArgumentType.floatArg(0))
+                .then(Commands.argument("shadowradius", FloatArgumentType.floatArg(0))
                         .executes(ctx -> {
                             CommandSender sender = CommandUtils.sender(ctx);
                             String hologramName = ctx.getArgument("hologram", String.class);
-                            float shadowRadius = ctx.getArgument("shadowRadius", float.class);
+                            float shadowRadius = ctx.getArgument("shadowradius", float.class);
 
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                             Hologram hologram = hologramManager.hologramByName(hologramName);
@@ -37,7 +37,7 @@ public class HologramEditShadowRadiusCommand {
                                     config.shadowRadius(shadowRadius)
                             );
 
-                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.shadowRadius.edited", hologramName, shadowRadius);
+                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.shadowradius.edited", hologramName, shadowRadius);
                             return Command.SINGLE_SUCCESS;
                         })
                 ).build();

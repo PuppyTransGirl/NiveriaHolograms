@@ -22,7 +22,7 @@ public class HologramEditInsertAfterCommand {
     }
 
     public static LiteralCommandNode<CommandSourceStack> get() {
-        return Commands.literal("insertAfter")
+        return Commands.literal("insertafter")
                 .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.insertafter"))
                 .then(Commands.argument("line", IntegerArgumentType.integer(1))
                         .suggests((ctx, builder) -> {
@@ -66,7 +66,7 @@ public class HologramEditInsertAfterCommand {
 
                                     List<String> lines = configuration.text();
                                     if (line > lines.size()) {
-                                        Lang.sendMessage(sender, "niveriaholograms.hologram.edit.insertAfter.invalid_line", line);
+                                        Lang.sendMessage(sender, "niveriaholograms.hologram.edit.insertafter.invalid_line", line);
                                         return Command.SINGLE_SUCCESS;
                                     }
 
@@ -74,7 +74,7 @@ public class HologramEditInsertAfterCommand {
                                             config.addTextAfter(line - 1, text)
                                     );
 
-                                    Lang.sendMessage(sender, "niveriaholograms.hologram.edit.insertAfter.edited", hologramName);
+                                    Lang.sendMessage(sender, "niveriaholograms.hologram.edit.insertafter.edited", hologramName);
                                     return Command.SINGLE_SUCCESS;
                                 })
                         )

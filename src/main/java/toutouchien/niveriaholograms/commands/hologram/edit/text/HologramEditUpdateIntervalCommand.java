@@ -19,13 +19,13 @@ public class HologramEditUpdateIntervalCommand {
     }
 
     public static LiteralCommandNode<CommandSourceStack> get() {
-        return Commands.literal("updateInterval")
+        return Commands.literal("updateinterval")
                 .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.updateinterval"))
-                .then(Commands.argument("updateInterval", IntegerArgumentType.integer(0, 53568000)) // 53568000 is the number of ticks equals to 31 days
+                .then(Commands.argument("updateinterval", IntegerArgumentType.integer(0, 53568000)) // 53568000 is the number of ticks equals to 31 days
                         .executes(ctx -> {
                             CommandSender sender = CommandUtils.sender(ctx);
                             String hologramName = ctx.getArgument("hologram", String.class);
-                            int updateInterval = ctx.getArgument("updateInterval", int.class);
+                            int updateInterval = ctx.getArgument("updateinterval", int.class);
 
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                             Hologram hologram = hologramManager.hologramByName(hologramName);
@@ -43,7 +43,7 @@ public class HologramEditUpdateIntervalCommand {
                                     config.updateInterval(updateInterval)
                             );
 
-                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.updateInterval.edited", hologramName, updateInterval);
+                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.updateinterval.edited", hologramName, updateInterval);
                             return Command.SINGLE_SUCCESS;
                         })
                 ).build();

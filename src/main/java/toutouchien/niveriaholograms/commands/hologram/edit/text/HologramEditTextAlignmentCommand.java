@@ -21,9 +21,9 @@ public class HologramEditTextAlignmentCommand {
     }
 
     public static LiteralCommandNode<CommandSourceStack> get() {
-        return Commands.literal("textAlignment")
+        return Commands.literal("textalignment")
                 .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.textalignment"))
-                .then(Commands.argument("textAlignment", StringArgumentType.word())
+                .then(Commands.argument("textalignment", StringArgumentType.word())
                         .suggests((ctx, builder) -> {
                             String hologramName = ctx.getArgument("hologram", String.class);
 
@@ -45,7 +45,7 @@ public class HologramEditTextAlignmentCommand {
                         .executes(ctx -> {
                             CommandSender sender = CommandUtils.sender(ctx);
                             String hologramName = ctx.getArgument("hologram", String.class);
-                            String textAlignmentName = ctx.getArgument("textAlignment", String.class);
+                            String textAlignmentName = ctx.getArgument("textalignment", String.class);
 
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                             Hologram hologram = hologramManager.hologramByName(hologramName);
@@ -61,7 +61,7 @@ public class HologramEditTextAlignmentCommand {
 
                             TextDisplay.TextAlignment textAlignment = StringUtils.match(textAlignmentName, TextDisplay.TextAlignment.class, null);
                             if (textAlignment == null) {
-                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.textAlignment.invalid_textAlignment", textAlignmentName);
+                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.textalignment.invalid_textalignment", textAlignmentName);
                                 return Command.SINGLE_SUCCESS;
                             }
 
@@ -69,7 +69,7 @@ public class HologramEditTextAlignmentCommand {
                                     config.textAlignment(textAlignment)
                             );
 
-                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.textAlignment.edited", hologramName);
+                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.textalignment.edited", hologramName);
                             return Command.SINGLE_SUCCESS;
                         })
                 ).build();

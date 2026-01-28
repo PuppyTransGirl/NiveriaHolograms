@@ -19,13 +19,13 @@ public class HologramEditSeeThroughCommand {
     }
 
     public static LiteralCommandNode<CommandSourceStack> get() {
-        return Commands.literal("seeThrough")
+        return Commands.literal("seethrough")
                 .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.seethrough"))
-                .then(Commands.argument("seeThrough", BoolArgumentType.bool())
+                .then(Commands.argument("seethrough", BoolArgumentType.bool())
                         .executes(ctx -> {
                             CommandSender sender = CommandUtils.sender(ctx);
                             String hologramName = ctx.getArgument("hologram", String.class);
-                            boolean seeThrough = ctx.getArgument("seeThrough", boolean.class);
+                            boolean seeThrough = ctx.getArgument("seethrough", boolean.class);
 
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                             Hologram hologram = hologramManager.hologramByName(hologramName);
@@ -43,7 +43,7 @@ public class HologramEditSeeThroughCommand {
                                     config.seeThrough(seeThrough)
                             );
 
-                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.seeThrough.edited", hologramName);
+                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.seethrough.edited", hologramName);
                             return Command.SINGLE_SUCCESS;
                         })
                 ).build();

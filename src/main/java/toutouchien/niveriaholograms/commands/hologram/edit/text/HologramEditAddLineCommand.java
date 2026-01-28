@@ -19,7 +19,7 @@ public class HologramEditAddLineCommand {
     }
 
     public static LiteralCommandNode<CommandSourceStack> get() {
-        return Commands.literal("addLine")
+        return Commands.literal("addline")
                 .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.addline"))
                 .then(Commands.argument("text", StringArgumentType.greedyString())
                         .executes(ctx -> {
@@ -43,7 +43,7 @@ public class HologramEditAddLineCommand {
                                     config.addText(text)
                             );
 
-                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.addLine.edited", hologramName);
+                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.addline.edited", hologramName);
                             return Command.SINGLE_SUCCESS;
                         })
                 ).build();

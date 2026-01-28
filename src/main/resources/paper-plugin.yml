@@ -3,8 +3,7 @@ version: '${version}'
 main: toutouchien.niveriaholograms.NiveriaHolograms
 api-version: '${minMinecraftVersion}'
 load: STARTUP
-authors: [ Toutouchien ]
-website: niveria.fr
+authors: [ PuppyTransGirl ]
 
 dependencies:
   server:

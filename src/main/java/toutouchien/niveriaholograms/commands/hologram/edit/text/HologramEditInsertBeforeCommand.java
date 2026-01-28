@@ -22,7 +22,7 @@ public class HologramEditInsertBeforeCommand {
     }
 
     public static LiteralCommandNode<CommandSourceStack> get() {
-        return Commands.literal("insertBefore")
+        return Commands.literal("insertbefore")
                 .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.insertbefore"))
                 .then(Commands.argument("line", IntegerArgumentType.integer(1))
                         .suggests((ctx, builder) -> {
@@ -66,7 +66,7 @@ public class HologramEditInsertBeforeCommand {
 
                                     List<String> lines = configuration.text();
                                     if (line > lines.size()) {
-                                        Lang.sendMessage(sender, "niveriaholograms.hologram.edit.insertBefore.invalid_line", line);
+                                        Lang.sendMessage(sender, "niveriaholograms.hologram.edit.insertbefore.invalid_line", line);
                                         return Command.SINGLE_SUCCESS;
                                     }
 
@@ -74,7 +74,7 @@ public class HologramEditInsertBeforeCommand {
                                             config.addTextBefore(line - 1, text)
                                     );
 
-                                    Lang.sendMessage(sender, "niveriaholograms.hologram.edit.insertBefore.edited", hologramName);
+                                    Lang.sendMessage(sender, "niveriaholograms.hologram.edit.insertbefore.edited", hologramName);
                                     return Command.SINGLE_SUCCESS;
                                 })
                         )

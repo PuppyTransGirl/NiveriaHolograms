@@ -18,13 +18,13 @@ public class HologramEditVisibilityDistanceCommand {
     }
 
     public static LiteralCommandNode<CommandSourceStack> get() {
-        return Commands.literal("visibilityDistance")
+        return Commands.literal("visibilitydistance")
                 .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.visibilitydistance"))
-                .then(Commands.argument("visibilityDistance", IntegerArgumentType.integer(-1))
+                .then(Commands.argument("visibilitydistance", IntegerArgumentType.integer(-1))
                         .executes(ctx -> {
                             CommandSender sender = CommandUtils.sender(ctx);
                             String hologramName = ctx.getArgument("hologram", String.class);
-                            int visibilityDistance = ctx.getArgument("visibilityDistance", int.class);
+                            int visibilityDistance = ctx.getArgument("visibilitydistance", int.class);
 
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                             Hologram hologram = hologramManager.hologramByName(hologramName);
@@ -37,7 +37,7 @@ public class HologramEditVisibilityDistanceCommand {
                                     config.visibilityDistance(visibilityDistance)
                             );
 
-                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.visibilityDistance.edited", hologramName, visibilityDistance);
+                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.visibilitydistance.edited", hologramName, visibilityDistance);
                             return Command.SINGLE_SUCCESS;
                         })
                 ).build();

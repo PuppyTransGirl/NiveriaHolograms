@@ -19,13 +19,13 @@ public class HologramEditTextShadowCommand {
     }
 
     public static LiteralCommandNode<CommandSourceStack> get() {
-        return Commands.literal("textShadow")
+        return Commands.literal("textshadow")
                 .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.textshadow"))
-                .then(Commands.argument("textShadow", BoolArgumentType.bool())
+                .then(Commands.argument("textshadow", BoolArgumentType.bool())
                         .executes(ctx -> {
                             CommandSender sender = CommandUtils.sender(ctx);
                             String hologramName = ctx.getArgument("hologram", String.class);
-                            boolean textShadow = ctx.getArgument("textShadow", boolean.class);
+                            boolean textShadow = ctx.getArgument("textshadow", boolean.class);
 
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                             Hologram hologram = hologramManager.hologramByName(hologramName);
@@ -43,7 +43,7 @@ public class HologramEditTextShadowCommand {
                                     config.textShadow(textShadow)
                             );
 
-                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.textShadow.edited", hologramName);
+                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.textshadow.edited", hologramName);
                             return Command.SINGLE_SUCCESS;
                         })
                 ).build();
