@@ -11,10 +11,12 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 import toutouchien.niveriaapi.lang.Lang;
+import toutouchien.niveriaapi.utils.StringUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.configurations.BlockHologramConfiguration;
 import toutouchien.niveriaholograms.configurations.HologramConfiguration;
@@ -108,19 +110,20 @@ public class FancyHologramsV2Migrator implements Migrator {
         switch (type) {
             case BLOCK -> {
                 BlockHologramConfiguration blockConfig = (BlockHologramConfiguration) config;
-                blockConfig.blockState(Material.valueOf(section.getString("block").toUpperCase(Locale.ROOT)).asBlockType().createBlockData().createBlockState());
+                Material material = StringUtils.match(section.getString("block", "GRASS_BLOCK").toUpperCase(Locale.ROOT), Material.class, Material.GRASS_BLOCK);
+                blockConfig.blockState(material.asBlockType().createBlockData().createBlockState());
             }
 
             case ITEM -> {
                 ItemHologramConfiguration itemConfig = (ItemHologramConfiguration) config;
-                itemConfig.itemStack(section.getItemStack("item"));
+                itemConfig.itemStack(section.getItemStack("item", ItemStack.of(Material.APPLE)));
             }
 
             case TEXT -> {
                 TextHologramConfiguration textConfig = (TextHologramConfiguration) config;
-                textConfig.textAlignment(TextDisplay.TextAlignment.valueOf(section.getString("text_alignment").toUpperCase(Locale.ROOT)));
-                textConfig.seeThrough(section.getBoolean("see_through"));
-                textConfig.textShadow(section.getBoolean("text_shadow"));
+                textConfig.textAlignment(TextDisplay.TextAlignment.valueOf(section.getString("text_alignment", "CENTER").toUpperCase(Locale.ROOT)));
+                textConfig.seeThrough(section.getBoolean("see_through", false));
+                textConfig.textShadow(section.getBoolean("text_shadow", true));
 
                 int updateInterval = section.getObject("update_text_interval", Number.class).intValue();
                 textConfig.updateInterval(updateInterval == 20 || updateInterval == -1 ? 0 : updateInterval);
