@@ -121,7 +121,7 @@ public class FancyHologramsV2Migrator implements Migrator {
 
                 int updateInterval = section.getObject("update_text_interval", Number.class).intValue();
                 textConfig.updateInterval(updateInterval == 20 || updateInterval == -1 ? 0 : updateInterval);
-                List<String> text = parseLines(name, player, section);
+                List<String> text = parseLines(section);
                 if (text == null)
                     return null;
 
@@ -133,7 +133,7 @@ public class FancyHologramsV2Migrator implements Migrator {
     }
 
     @Nullable
-    private List<String> parseLines(@NotNull String name, @NotNull Player player, @NotNull ConfigurationSection section) {
+    private List<String> parseLines(@NotNull ConfigurationSection section) {
         List<String> loadedText = section.getStringList("text");
         if (loadedText.isEmpty())
             return null;
