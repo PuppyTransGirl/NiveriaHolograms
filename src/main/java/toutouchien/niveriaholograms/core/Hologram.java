@@ -217,8 +217,8 @@ public class Hologram {
         locationDirty = true;
     }
 
-    private void teleportTo(CustomLocation location) {
-        boolean worldChanged = !this.location.world().equals(location.world());
+    private void teleportTo(CustomLocation location, String oldWorld) {
+        boolean worldChanged = !oldWorld.equals(location.world());
         this.updateLocation();
 
         if (!worldChanged)
@@ -242,8 +242,9 @@ public class Hologram {
         if (consumer == null)
             return;
 
+        String oldWorld = location.world();
         consumer.accept(location);
-        teleportTo(location);
+        teleportTo(location, oldWorld);
         updateForAllPlayers();
         NiveriaHolograms.instance().hologramManager().saveHologram(this);
     }

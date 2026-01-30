@@ -5,6 +5,7 @@ import net.minecraft.util.Brightness;
 import net.minecraft.world.entity.Display;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import toutouchien.niveriaholograms.configurations.HologramConfiguration;
 
 public abstract class HologramUpdater<D extends Display, C extends HologramConfiguration> {
@@ -41,24 +42,18 @@ public abstract class HologramUpdater<D extends Display, C extends HologramConfi
     }
 
     private void updateTransformation() {
-        // This is for 1.21.4 support
-        // Don't ask me why this works I don't know
-        Vector3f translation = config.translation() != null
-                ? new Vector3f(config.translation())
-                : null;
+        // This FINALLY fixes 1.21.4 support
+        Vector3fc jomlTrans = config.translation(); // Trans :3
+        Vector3fc jomlScale = config.scale();
 
-        Vector3f scale = config.scale() != null
-                ? new Vector3f(config.scale())
-                : null;
-
-        Quaternionf leftRotation = new Quaternionf();
-        Quaternionf rightRotation = new Quaternionf();
+        Vector3f translation = new Vector3f(jomlTrans.x(), jomlTrans.y(), jomlTrans.z());
+        Vector3f scale = new Vector3f(jomlScale.x(), jomlScale.y(), jomlScale.z());
 
         display.setTransformation(new Transformation(
                 translation,
-                leftRotation,
+                new Quaternionf(),
                 scale,
-                rightRotation
+                new Quaternionf()
         ));
     }
 
