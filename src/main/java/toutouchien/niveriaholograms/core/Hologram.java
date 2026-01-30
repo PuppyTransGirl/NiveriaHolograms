@@ -11,7 +11,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.PositionMoveRotation;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Player;
 import org.joml.Vector3f;
@@ -218,9 +217,8 @@ public class Hologram {
         locationDirty = true;
     }
 
-    private void teleportTo(Location location) {
-        boolean worldChanged = !this.location.world().equals(location.getWorld().getName());
-        this.location = new CustomLocation(location);
+    private void teleportTo(CustomLocation location) {
+        boolean worldChanged = !this.location.world().equals(location.world());
         this.updateLocation();
 
         if (!worldChanged)
@@ -228,7 +226,7 @@ public class Hologram {
 
         this.deleteForAllPlayers(worldChanged);
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if (!player.getWorld().getName().equals(location.getWorld().getName()))
+            if (!player.getWorld().getName().equals(location.world()))
                 continue;
 
             NMSUtils.sendPacket(player, new ClientboundTeleportEntityPacket(
@@ -245,7 +243,7 @@ public class Hologram {
             return;
 
         consumer.accept(location);
-        teleportTo(location.bukkitLocation());
+        teleportTo(location);
         updateForAllPlayers();
         NiveriaHolograms.instance().hologramManager().saveHologram(this);
     }
