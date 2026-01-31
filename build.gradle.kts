@@ -8,7 +8,6 @@ plugins {
 val minecraftVersion: String by project
 val minMinecraftVersion: String by project
 val niveriaApiVersion: String by project
-val placeholderApiVersion: String by project
 val bStatsVersion: String by project
 
 group = "toutouchien.niveriaholograms"
@@ -20,7 +19,6 @@ repositories {
 
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://jitpack.io")
-    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 }
 
 dependencies {
@@ -28,7 +26,6 @@ dependencies {
 
     // Plugins
     compileOnly("com.github.PuppyTransGirl:NiveriaAPI:${niveriaApiVersion}")
-    compileOnly("me.clip:placeholderapi:${placeholderApiVersion}")
 
     // Dependencies
     implementation("org.bstats:bstats-bukkit:${bStatsVersion}")
@@ -55,7 +52,7 @@ tasks {
             github("jpenilla", "TabTPS", "v1.3.29", "tabtps-paper-1.3.29.jar")
             modrinth("ServerLogViewer-Paper", "1.0.0")
             modrinth("NiveriaAPI", niveriaApiVersion)
-            modrinth("PlaceholderAPI", placeholderApiVersion)
+            modrinth("PlaceholderAPI", "2.11.7")
         }
     }
 

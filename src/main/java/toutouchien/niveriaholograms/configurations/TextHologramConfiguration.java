@@ -3,13 +3,13 @@ package toutouchien.niveriaholograms.configurations;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
 import toutouchien.niveriaapi.NiveriaAPI;
 import toutouchien.niveriaapi.hook.HookManager;
 import toutouchien.niveriaapi.hook.HookType;
 import toutouchien.niveriaapi.hook.impl.PlaceholderAPIHook;
-import toutouchien.niveriaapi.utils.ComponentUtils;
 import toutouchien.niveriaholograms.utils.LegacyToMiniMessage;
 
 import java.util.*;
@@ -58,15 +58,14 @@ public class TextHologramConfiguration extends HologramConfiguration {
                 builder.appendNewline();
 
             String line = textLines.get(i);
-
             line = applyPapiPlaceholders(player, line);
 
             // We have to run a conversion because CMI treats modern standards as a suggestion.
             // It insists on burying legacy color codes inside placeholder values—like
             // "§25§7d"—effectively forcing us to play janitor for their 2014-era formatting
             // choices just to get a clean MiniMessage string.
-            String mmString = LegacyToMiniMessage.convert(line);
-            builder.append(ComponentUtils.deserializeMM(mmString));
+            String mmString = LegacyToMiniMessage.convertPlaceholders(line);
+            builder.append(MiniMessage.miniMessage().deserialize(mmString));
         }
 
         TextComponent builtComponent = builder.build();

@@ -55,9 +55,21 @@ public final class LegacyToMiniMessage {
      * - Standard legacy codes (group 3)
      */
     private static final Pattern MASTER_PATTERN = Pattern.compile(
-            "(?:&#|#)([0-9A-Fa-f]{6})|"
-                    + "[§&][xX]((?:[§&][0-9A-Fa-f]){6})|"
-                    + "[§&]([0-9A-FK-ORa-fk-or])"
+            "(?:&#|#)([0-9A-Fa-f]{6})|" // &#RRGGBB
+                    + "[§&][xX]((?:[§&][0-9A-Fa-f]){6})|" // &x&R&R&G&G&B&B / §x§R§R§G§G§B§B
+                    + "[§&]([0-9A-FK-ORa-fk-or])" // &c / §c / &r / §r etc.
+    );
+
+    /**
+     * Master regex that matches:
+     * - Hex colors in forms "&#RRGGBB" (group 1)
+     * - The "§x§R§R§G§G§B§B" hex colors style (group 2)
+     * - Standard legacy codes (group 3)
+     */
+    private static final Pattern MASTER_PLACEHOLDERS_PATTERN = Pattern.compile(
+            "&#([0-9A-Fa-f]{6})|" // &#RRGGBB only, not plain #RRGGBB
+                    + "[§&][xX]((?:[§&][0-9A-Fa-f]){6})|" // &x&R&R&G&G&B&B / §x§R§R§G§G§B§B
+                    + "[§&]([0-9A-FK-ORa-fk-or])" // &c / §c / &r / §r etc.
     );
 
     private LegacyToMiniMessage() {
@@ -116,6 +128,45 @@ public final class LegacyToMiniMessage {
             }
 
             matcher.appendReplacement(builder, Matcher.quoteReplacement(replacement.toString()));
+        }
+
+        matcher.appendTail(builder);
+        return builder.toString();
+    }
+
+    @NotNull
+    public static String convertPlaceholders(@NotNull String input) {
+        if (input.isEmpty())
+            return input;
+
+        Matcher matcher = MASTER_PLACEHOLDERS_PATTERN.matcher(input);
+        StringBuilder builder = new StringBuilder();
+
+        while (matcher.find()) {
+            String replacement;
+
+            // Case: &#RRGGBB or #RRGGBB
+            if (matcher.group(1) != null) {
+                String hex = matcher.group(1).toUpperCase(Locale.ROOT);
+                replacement = "<#" + hex + ">";
+            }
+            // Case: §x§R§R§G§G§B§B or &x&R&R&G&G&B&B
+            else if (matcher.group(2) != null) {
+                String seq = matcher.group(2).replaceAll("[§&]", "").toUpperCase(Locale.ROOT);
+                replacement = "<#" + seq + ">";
+            }
+            // Case: single-character legacy code (&/§ + char)
+            else {
+                char code = Character.toLowerCase(matcher.group(3).charAt(0));
+                if (code == 'r')
+                    replacement = "<white>";
+                else {
+                    String name = COLOR_MAP.get(code);
+                    replacement = "<" + (name != null ? name : "white") + ">";
+                }
+            }
+
+            matcher.appendReplacement(builder, Matcher.quoteReplacement(replacement));
         }
 
         matcher.appendTail(builder);
