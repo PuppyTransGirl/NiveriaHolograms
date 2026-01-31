@@ -21,7 +21,7 @@ public class HologramEditRemoveLineCommand {
     }
 
     public static LiteralCommandNode<CommandSourceStack> get() {
-        return Commands.literal("removeLine")
+        return Commands.literal("removeline")
                 .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.removeline"))
                 .then(Commands.argument("line", IntegerArgumentType.integer(1))
                         .suggests((ctx, builder) -> {
@@ -63,7 +63,7 @@ public class HologramEditRemoveLineCommand {
 
                             List<String> lines = configuration.text();
                             if (line > lines.size()) {
-                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.removeLine.invalid_line", line);
+                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.removeline.invalid_line", line);
                                 return Command.SINGLE_SUCCESS;
                             }
 
@@ -71,7 +71,7 @@ public class HologramEditRemoveLineCommand {
                                     config.removeText(line - 1)
                             );
 
-                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.removeLine.edited", hologramName);
+                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.removeline.edited", hologramName);
                             return Command.SINGLE_SUCCESS;
                         })
                 ).build();

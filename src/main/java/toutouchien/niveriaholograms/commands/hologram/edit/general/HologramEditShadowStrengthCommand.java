@@ -18,13 +18,13 @@ public class HologramEditShadowStrengthCommand {
     }
 
     public static LiteralCommandNode<CommandSourceStack> get() {
-        return Commands.literal("shadowStrength")
+        return Commands.literal("shadowstrength")
                 .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.shadowstrength"))
-                .then(Commands.argument("shadowStrength", FloatArgumentType.floatArg(0))
+                .then(Commands.argument("shadowstrength", FloatArgumentType.floatArg(0))
                         .executes(ctx -> {
                             CommandSender sender = CommandUtils.sender(ctx);
                             String hologramName = ctx.getArgument("hologram", String.class);
-                            float shadowStrength = ctx.getArgument("shadowStrength", float.class);
+                            float shadowStrength = ctx.getArgument("shadowstrength", float.class);
 
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                             Hologram hologram = hologramManager.hologramByName(hologramName);
@@ -37,7 +37,7 @@ public class HologramEditShadowStrengthCommand {
                                     config.shadowStrength(shadowStrength)
                             );
 
-                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.shadowStrength.edited", hologramName, shadowStrength);
+                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.shadowstrength.edited", hologramName, shadowStrength);
                             return Command.SINGLE_SUCCESS;
                         })
                 ).build();

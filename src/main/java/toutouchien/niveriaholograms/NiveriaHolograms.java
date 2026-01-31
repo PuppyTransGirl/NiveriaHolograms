@@ -12,15 +12,17 @@ import toutouchien.niveriaholograms.commands.hologram.HologramCommand;
 import toutouchien.niveriaholograms.commands.niveriaholograms.NiveriaHologramsCommand;
 import toutouchien.niveriaholograms.listeners.HologramListener;
 import toutouchien.niveriaholograms.managers.HologramManager;
+import toutouchien.niveriaholograms.migration.MigrationManager;
 import toutouchien.niveriaholograms.utils.CustomLocation;
 
-import java.util.Arrays;
+import java.util.List;
 
 public class NiveriaHolograms extends JavaPlugin {
     private static final int BSTATS_PLUGIN_ID = 29011;
     private static NiveriaHolograms instance;
 
     private HologramManager hologramManager;
+    private MigrationManager migrationManager;
 
     private Metrics bStats;
 
@@ -37,10 +39,8 @@ public class NiveriaHolograms extends JavaPlugin {
     public void onEnable() {
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
             Commands registrar = commands.registrar();
-            Arrays.asList(
-                    NiveriaHologramsCommand.get(),
-                    HologramCommand.get()
-            ).forEach(registrar::register);
+            registrar.register(NiveriaHologramsCommand.get());
+            registrar.register(HologramCommand.get(), List.of("holo", "nholo"));
         });
 
         saveDefaultConfig();
@@ -48,10 +48,10 @@ public class NiveriaHolograms extends JavaPlugin {
         Lang.load(this);
 
         (this.hologramManager = new HologramManager(this)).initialize();
+        this.migrationManager = new MigrationManager(this, this.hologramManager);
 
         this.bStats = new Metrics(this, BSTATS_PLUGIN_ID);
         this.bStats.addCustomChart(new SingleLineChart("holograms_amount", () -> this.hologramManager.holograms().size()));
-
 
         getServer().getPluginManager().registerEvents(new HologramListener(this), this);
 
@@ -74,6 +74,10 @@ public class NiveriaHolograms extends JavaPlugin {
 
     public HologramManager hologramManager() {
         return hologramManager;
+    }
+
+    public MigrationManager migrationManager() {
+        return migrationManager;
     }
 
     public static NiveriaHolograms instance() {

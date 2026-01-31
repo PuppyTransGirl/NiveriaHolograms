@@ -53,7 +53,7 @@ public class HologramManager {
         Hologram hologram = createHologram(type, configuration, name, player.getUniqueId(), new CustomLocation(player.getLocation()));
 
         if (type == HologramType.TEXT)
-            ((TextHologramConfiguration) configuration).text(new ArrayList<>(List.of(Lang.getString("niveriaholograms.default_text", name))));
+            ((TextHologramConfiguration) configuration).text(List.of(Lang.getString("niveriaholograms.default_text", name)));
 
         hologram.create();
         hologram.createForAllPlayers();

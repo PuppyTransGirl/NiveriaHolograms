@@ -25,7 +25,7 @@ public class HologramEditSetLineCommand {
     }
 
     public static LiteralCommandNode<CommandSourceStack> get() {
-        return Commands.literal("setLine")
+        return Commands.literal("setline")
                 .requires(css -> CommandUtils.defaultRequirements(css, "niveriaholograms.command.hologram.edit.setline"))
                 .then(Commands.argument("line", IntegerArgumentType.integer(1))
                         .suggests((ctx, builder) -> {
@@ -82,7 +82,7 @@ public class HologramEditSetLineCommand {
                                             config.text(line - 1, text)
                                     );
 
-                                    Lang.sendMessage(sender, "niveriaholograms.hologram.edit.setLine.edited", hologramName);
+                                    Lang.sendMessage(sender, "niveriaholograms.hologram.edit.setline.edited", hologramName);
                                     return Command.SINGLE_SUCCESS;
                                 })
                         )
@@ -102,7 +102,7 @@ public class HologramEditSetLineCommand {
 
         List<String> lines = configuration.text();
         if (line > lines.size()) {
-            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.setLine.invalid_line", line);
+            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.setline.invalid_line", line);
             return false;
         }
         return true;

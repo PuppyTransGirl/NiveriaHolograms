@@ -11,7 +11,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.PositionMoveRotation;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Player;
 import org.joml.Vector3f;
@@ -35,8 +34,8 @@ import java.util.stream.Collectors;
 public class Hologram {
     private static final ExecutorService EXECUTOR = Executors.newThreadPerTaskExecutor(
             Thread.ofVirtual()
-            .name("NiveriaHolograms-Hologram-Sender-", 0)
-            .factory()
+                    .name("NiveriaHolograms-Hologram-Sender-", 0)
+                    .factory()
     );
     private final HologramType type;
     private final HologramConfiguration config;
@@ -218,34 +217,33 @@ public class Hologram {
         locationDirty = true;
     }
 
-    private void teleportTo(Location location) {
-        boolean worldChanged = !this.location.world().equals(location.getWorld().getName());
-        this.location = new CustomLocation(location);
+    private void teleportTo(CustomLocation location, String oldWorld) {
+        boolean worldChanged = !oldWorld.equals(location.world());
         this.updateLocation();
 
         if (!worldChanged)
             return;
 
-        this.deleteForAllPlayers(worldChanged);
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (!player.getWorld().getName().equals(location.getWorld().getName()))
-                continue;
+        List<Player> allPlayers = List.copyOf(Bukkit.getOnlinePlayers());
+        List<Player> targets = allPlayers.stream()
+                .filter(p -> p.getWorld().getName().equals(location.world()))
+                .toList();
 
-            NMSUtils.sendPacket(player, new ClientboundTeleportEntityPacket(
-                    display.getId(),
-                    PositionMoveRotation.of(display),
-                    Set.of(),
-                    false
-            ));
-        }
+        EXECUTOR.submit(() -> {
+            for (Player player : allPlayers)
+                this.delete(player);
+            for (Player player : targets)
+                this.create(player);
+        });
     }
 
     public void editLocation(Consumer<CustomLocation> consumer) {
         if (consumer == null)
             return;
 
+        String oldWorld = location.world();
         consumer.accept(location);
-        teleportTo(location.bukkitLocation());
+        teleportTo(location, oldWorld);
         updateForAllPlayers();
         NiveriaHolograms.instance().hologramManager().saveHologram(this);
     }
