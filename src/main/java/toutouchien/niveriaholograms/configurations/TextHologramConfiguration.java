@@ -15,6 +15,7 @@ import toutouchien.niveriaholograms.utils.LegacyToMiniMessage;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+@SuppressWarnings("UnusedReturnValue")
 public class TextHologramConfiguration extends HologramConfiguration {
     private List<String> text = new ArrayList<>();
     private final Map<UUID, Component> serializedText = new ConcurrentHashMap<>();

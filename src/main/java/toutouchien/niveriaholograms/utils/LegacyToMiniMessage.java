@@ -103,9 +103,8 @@ public final class LegacyToMiniMessage {
                 replacement.append(closeDecorations(activeDecorations));
 
                 // 2. Close previous color if any
-                if (activeColor != null) {
+                if (activeColor != null)
                     replacement.append("</").append(activeColor).append(">");
-                }
 
                 // 3. Open new hex color
                 activeColor = "#" + hexColor;

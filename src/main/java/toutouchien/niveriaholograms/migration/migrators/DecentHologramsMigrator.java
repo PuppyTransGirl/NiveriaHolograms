@@ -75,22 +75,30 @@ public class DecentHologramsMigrator implements Migrator {
     @Nullable
     private Hologram migrateHologram(@NotNull String name, @NotNull Player player, @NotNull File file) {
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+        List<Map<String, Object>> rawLines = firstPageLines(name, player, config);
+        if (rawLines == null)
+            return null;
+
+        // Sum all heights from first to last - 1
+        double heightOffset = 0;
+        for (int i = 0; i < rawLines.size() - 1; i++)
+            heightOffset += lineHeight(rawLines.get(i));
 
         CustomLocation location = parseLocation(name, player, config.getString("location"));
         if (location == null)
             return null;
 
+        // Apply the calculated height offset to the Y coordinate
+        location.y(location.y() - heightOffset);
+
         TextHologramConfiguration configuration = new TextHologramConfiguration();
         configuration.billboard(Display.BillboardConstraints.VERTICAL);
         configuration.visibilityDistance(config.getInt("display-range", 48));
 
-        List<String> text = parseLines(name, player, config);
-        if (text == null)
-            return null;
-
+        // Legacy conversion & spacing logic
+        List<String> text = processPageLines(rawLines);
         configuration.text(text);
 
-        // DecentHolograms default update-interval to 20, it would be too inefficient to set all holograms to 20 update interval so we just set them to 0 if they are at the default value
         int updateInterval = config.getInt("update-interval", 20);
         configuration.updateInterval(updateInterval == 20 ? 0 : updateInterval);
 
@@ -99,7 +107,7 @@ public class DecentHologramsMigrator implements Migrator {
 
     @SuppressWarnings("unchecked")
     @Nullable
-    private List<String> parseLines(@NotNull String name, @NotNull Player player, @NotNull FileConfiguration config) {
+    private List<Map<String, Object>> firstPageLines(@NotNull String name, @NotNull Player player, @NotNull FileConfiguration config) {
         List<Map<?, ?>> pages = config.getMapList("pages");
         if (pages.isEmpty()) {
             Lang.sendMessage(player, "niveriaholograms.migrator.decentholograms.no_page", name);
@@ -123,35 +131,50 @@ public class DecentHologramsMigrator implements Migrator {
             }
         }
 
+        return firstPage;
+    }
+
+    private double lineHeight(Map<String, Object> line) {
+        Object heightObj = line.get("height");
+        if (heightObj == null)
+            return 0.0;
+
+        if (heightObj instanceof Number number)
+            return number.doubleValue();
+
+        try {
+            return Double.parseDouble(String.valueOf(heightObj));
+        } catch (NumberFormatException ignored) {
+            return 0.0;
+        }
+    }
+
+    /**
+     * Processes raw lines: Converts content and adds filler lines based on height.
+     */
+    private List<String> processPageLines(@NotNull List<Map<String, Object>> lines) {
         List<String> result = new ArrayList<>();
-        for (int i = 0; i < firstPage.size(); i++) {
-            Map<String, Object> line = firstPage.get(i);
+
+        for (int i = 0; i < lines.size(); i++) {
+            Map<String, Object> line = lines.get(i);
 
             // Convert content
             String content = String.valueOf(line.get("content"));
             String converted = LegacyToMiniMessage.convert(content);
             result.add(converted);
 
-            // If this line has a height value equal to 0.5 and there is a following line
-            // insert the filler empty line represented by "<white></white>"
+            // Check conditions to skip spacing logic
             Object heightObj = line.get("height");
-            if (heightObj == null || i >= firstPage.size() - 1)
+            if (heightObj == null || i >= lines.size() - 1)
                 continue;
 
-            boolean isHalf = false;
-            if (heightObj instanceof Number number) {
-                isHalf = Math.abs(number.doubleValue() - 0.5) < 1e-9;
-            } else {
-                try {
-                    double d = Double.parseDouble(String.valueOf(heightObj));
-                    isHalf = Math.abs(d - 0.5) < 1e-9;
-                } catch (NumberFormatException ignored) {
-                    // ignore malformed height
-                    // it's not critical for migration
-                }
-            }
+            double height = lineHeight(line);
 
-            if (isHalf)
+            // Calculate number of filler lines
+            // Logic: 0.5-0.9 -> 1, 1.0-1.4 -> 2, etc. => floor(height * 2)
+            int linesToAdd = (int) (height * 2);
+
+            for (int j = 0; j < linesToAdd; j++)
                 result.add("<white></white>");
         }
 
