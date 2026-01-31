@@ -111,3 +111,6 @@ This project is licensed under the GNU General Public License v3.0. See the [LIC
 
 ## Support
 Open an issue on the repository or contact the repository owner via GitHub for support, feature requests or questions.
+
+## Acknowledgements
+- Thanks to [FancyHolograms](https://github.com/FancyInnovations/FancyPlugins) who I took the command layout inspiration from.
