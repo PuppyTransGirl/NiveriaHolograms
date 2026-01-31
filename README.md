@@ -1,5 +1,14 @@
 # NiveriaHolograms
 
+<div align="center">
+
+[![Modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/available/modrinth_vector.svg)](https://modrinth.com/plugin/niveriaholograms)
+![Unsupported spigot](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/unsupported/spigot_vector.svg)
+
+[![CodeFactor](https://www.codefactor.io/repository/github/puppytransgirl/niveriaholograms/badge)](https://www.codefactor.io/repository/github/puppytransgirl/niveriaapi) [![GitHub Release](https://img.shields.io/github/v/release/PuppyTransGirl/NiveriaHolograms?label=version)](https://github.com/PuppyTransGirl/NiveriaAPI/releases/latest)
+
+</div>
+
 NiveriaHolograms is a Minecraft plugin that provides persistent, configurable holograms (text, item, block) with a full command set and migration utility. \
 It is built for Paper and depends on NiveriaAPI.
 
