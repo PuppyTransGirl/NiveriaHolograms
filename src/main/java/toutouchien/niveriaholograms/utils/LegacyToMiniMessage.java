@@ -162,7 +162,7 @@ public final class LegacyToMiniMessage {
                     replacement = "<white>";
                 else {
                     String name = COLOR_MAP.get(code);
-                    replacement = "<" + (name != null ? name : "white") + ">";
+                    replacement = "<" + (name != null ? name : FORMAT_MAP.get(code)) + ">";
                 }
             }
 
