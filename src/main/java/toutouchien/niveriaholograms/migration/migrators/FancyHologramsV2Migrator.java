@@ -126,7 +126,7 @@ public class FancyHologramsV2Migrator implements Migrator {
                 textConfig.textShadow(section.getBoolean("text_shadow", true));
 
                 int updateInterval = section.getObject("update_text_interval", Number.class).intValue();
-                textConfig.updateInterval(updateInterval == 20 || updateInterval == -1 ? 0 : updateInterval);
+                textConfig.updateInterval(updateInterval);
                 List<String> text = parseLines(section);
                 if (text == null)
                     return null;

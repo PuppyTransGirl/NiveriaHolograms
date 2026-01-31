@@ -99,8 +99,8 @@ public class DecentHologramsMigrator implements Migrator {
         List<String> text = processPageLines(rawLines);
         configuration.text(text);
 
-        int updateInterval = config.getInt("update-interval", 20);
-        configuration.updateInterval(updateInterval == 20 ? 0 : updateInterval);
+        int updateInterval = config.getInt("update-interval", 0);
+        configuration.updateInterval(updateInterval);
 
         return new Hologram(HologramType.TEXT, configuration, name, player.getUniqueId(), location);
     }
