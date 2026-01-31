@@ -3,6 +3,21 @@
 NiveriaHolograms is a Minecraft plugin that provides persistent, configurable holograms (text, item, block) with a full command set and migration utility. \
 It is built for Paper and depends on NiveriaAPI.
 
+## Table of contents
+- [Features](#features)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Basic Usage & Commands](#basic-usage--commands)
+  - [/niveriaholograms](#niveriaholograms)
+  - [/hologram (aliases: /holo, /nholo)](#hologram-aliases-holo-nholo)
+  - [Examples (common subcommands)](#examples-common-subcommands)
+- [Permissions](#permissions)
+- [Migration](#migration)
+- [Contributing](#contributing)
+- [License](#license)
+- [Support](#support)
+- [Acknowledgements](#acknowledgements)
+
 ## Features
 - Create persistent holograms of multiple types:
   - Text holograms (multi-line text, colors, formatting)
