@@ -5,7 +5,7 @@
 [![Modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/available/modrinth_vector.svg)](https://modrinth.com/plugin/niveriaholograms)
 ![Unsupported spigot](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/unsupported/spigot_vector.svg)
 
-[![CodeFactor](https://www.codefactor.io/repository/github/puppytransgirl/niveriaholograms/badge)](https://www.codefactor.io/repository/github/puppytransgirl/niveriaapi) [![GitHub Release](https://img.shields.io/github/v/release/PuppyTransGirl/NiveriaHolograms?label=version)](https://github.com/PuppyTransGirl/NiveriaAPI/releases/latest)
+[![CodeFactor](https://www.codefactor.io/repository/github/puppytransgirl/niveriaholograms/badge)](https://www.codefactor.io/repository/github/puppytransgirl/niveriaapi) [![GitHub Release](https://img.shields.io/github/v/release/PuppyTransGirl/NiveriaHolograms?label=version)](https://github.com/PuppyTransGirl/NiveriaHolograms/releases/latest)
 
 </div>
 
