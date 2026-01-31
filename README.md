@@ -10,7 +10,7 @@
 </div>
 
 NiveriaHolograms is a Minecraft plugin that provides persistent, configurable holograms (text, item, block) with a full command set and migration utility. \
-It is built for Paper and depends on NiveriaAPI.
+It is built for Paper and depends on [NiveriaAPI](https://modrinth.com/plugin/niveriaapi).
 
 ## Table of contents
 - [Features](#features)
@@ -124,7 +124,7 @@ If you are unsure about exact argument names or available options, run a subcomm
 - niveriaholograms.command.niveriaholograms.migrate - migration GUI
 
 ## Migration
-Use `/niveriaholograms migrate` to open the migration GUI (MigrationMenu).
+Use `/niveriaholograms migrate` to open the migration GUI.
 
 ## Contributing
 Contributions are welcome !
