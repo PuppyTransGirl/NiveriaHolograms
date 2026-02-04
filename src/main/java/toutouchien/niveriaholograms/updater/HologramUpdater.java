@@ -4,9 +4,9 @@ import com.mojang.math.Transformation;
 import net.minecraft.util.Brightness;
 import net.minecraft.world.entity.Display;
 import org.joml.Quaternionf;
-import org.joml.Vector3f;
-import org.joml.Vector3fc;
 import toutouchien.niveriaholograms.configurations.HologramConfiguration;
+import toutouchien.niveriaholograms.utils.HologramUtils;
+import toutouchien.niveriaholograms.utils.TransformationCtorHolder;
 
 public abstract class HologramUpdater<D extends Display, C extends HologramConfiguration> {
     protected final D display;
@@ -41,20 +41,20 @@ public abstract class HologramUpdater<D extends Display, C extends HologramConfi
             display.setBrightnessOverride(new Brightness(brightness.block(), brightness.sky()));
     }
 
+    @SuppressWarnings("java:S112")
     private void updateTransformation() {
-        // This FINALLY fixes 1.21.4 support
-        Vector3fc jomlTrans = config.translation(); // Trans :3
-        Vector3fc jomlScale = config.scale();
-
-        Vector3f translation = new Vector3f(jomlTrans.x(), jomlTrans.y(), jomlTrans.z());
-        Vector3f scale = new Vector3f(jomlScale.x(), jomlScale.y(), jomlScale.z());
-
-        display.setTransformation(new Transformation(
-                translation,
-                new Quaternionf(),
-                scale,
-                new Quaternionf()
-        ));
+        try {
+            TransformationCtorHolder holder = HologramUtils.transformationCtor();
+            Object t = holder.ctor().newInstance(
+                    holder.vecCls().cast(config.translation()),
+                    holder.quatCls().cast(new Quaternionf()),
+                    holder.vecCls().cast(config.scale()),
+                    holder.quatCls().cast(new Quaternionf())
+            );
+            display.setTransformation((Transformation) t);
+        } catch (Exception e) {
+            throw new RuntimeException("Could not construct Transformation reflectively", e);
+        }
     }
 
     private void updateShadowAndVisibility() {
