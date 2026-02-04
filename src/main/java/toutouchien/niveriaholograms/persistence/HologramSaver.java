@@ -7,7 +7,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.joml.Vector3f;
-import toutouchien.niveriaholograms.NiveriaHolograms;
+import org.slf4j.Logger;
 import toutouchien.niveriaholograms.configurations.BlockHologramConfiguration;
 import toutouchien.niveriaholograms.configurations.HologramConfiguration;
 import toutouchien.niveriaholograms.configurations.ItemHologramConfiguration;
@@ -24,14 +24,17 @@ import java.util.Set;
 import java.util.concurrent.*;
 
 public class HologramSaver {
-    private final NiveriaHolograms plugin;
+    private final File dataFolder;
+    private final Logger logger;
     private final ExecutorService saveExecutor;
     private final Set<String> currentlySaving = ConcurrentHashMap.newKeySet();
     private final Set<String> currentlyDeleting = ConcurrentHashMap.newKeySet();
     private volatile boolean shutdown = false;
 
-    public HologramSaver(NiveriaHolograms plugin) {
-        this.plugin = plugin;
+    public HologramSaver(File dataFolder, Logger logger) {
+        this.dataFolder = dataFolder;
+        this.logger = logger;
+
         ThreadFactory vtFactory = Thread.ofVirtual()
                 .name("NiveriaHolograms-Saver-", 0)
                 .factory();
@@ -54,7 +57,7 @@ public class HologramSaver {
             try {
                 this.saveToFile(snapshot);
             } catch (Exception e) {
-                this.plugin.getSLF4JLogger().warn("Failed to save hologram {}: {}", name, e.getMessage(), e);
+                this.logger.warn("Failed to save hologram {}: {}", name, e.getMessage(), e);
             } finally {
                 // Clean up
                 this.currentlySaving.remove(name);
@@ -63,16 +66,14 @@ public class HologramSaver {
     }
 
     public void deleteHologram(Hologram hologram) {
-        if (shutdown) {
+        if (shutdown)
             return;
-        }
 
         String name = hologram.name();
 
         // Skip if already deleting this hologram
-        if (!currentlyDeleting.add(name)) {
+        if (!currentlyDeleting.add(name))
             return;
-        }
 
         hologram.deleteForAllPlayers(false);
 
@@ -80,7 +81,7 @@ public class HologramSaver {
             try {
                 this.deleteFromFile(name);
             } catch (Exception e) {
-                this.plugin.getSLF4JLogger().warn("Failed to delete hologram {}: {}", name, e.getMessage(), e);
+                this.logger.warn("Failed to delete hologram {}: {}", name, e.getMessage(), e);
             } finally {
                 // Clean up
                 this.currentlyDeleting.remove(name);
@@ -94,7 +95,7 @@ public class HologramSaver {
      * only the temporary file may be corrupted, not the main holograms.yml file.
      */
     private void saveToFile(Hologram hologram) throws HologramSaveException {
-        File file = new File(this.plugin.getDataFolder(), "holograms.yml");
+        File file = new File(this.dataFolder, "holograms.yml");
         File tempFile = new File(file.getParent(), file.getName() + ".tmp");
 
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
@@ -137,9 +138,9 @@ public class HologramSaver {
      * only the temporary file may be corrupted, not the main holograms.yml file.
      */
     private void deleteFromFile(String hologramName) throws HologramSaveException {
-        File file = new File(plugin.getDataFolder(), "holograms.yml");
+        File file = new File(this.dataFolder, "holograms.yml");
         if (!file.exists()) {
-            plugin.getSLF4JLogger().warn("Holograms file does not exist, nothing to delete: {}", file.getAbsolutePath());
+            this.logger.warn("Holograms file does not exist, nothing to delete: {}", file.getAbsolutePath());
             return;
         }
 
@@ -147,7 +148,7 @@ public class HologramSaver {
 
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
         if (!config.contains("holograms")) {
-            plugin.getSLF4JLogger().warn("No holograms section found in the configuration file.");
+            this.logger.warn("No holograms section found in the configuration file.");
             return;
         }
 
@@ -186,13 +187,13 @@ public class HologramSaver {
 
         try {
             if (!this.saveExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
-                this.plugin.getSLF4JLogger().warn("Hologram saver did not terminate in time, forcing shutdown.");
+                this.logger.warn("Hologram saver did not terminate in time, forcing shutdown.");
                 this.saveExecutor.shutdownNow();
             }
         } catch (InterruptedException e) {
             this.saveExecutor.shutdownNow();
             Thread.currentThread().interrupt();
-            this.plugin.getSLF4JLogger().warn("Hologram saver interrupted during shutdown: {}", e.getMessage(), e);
+            this.logger.warn("Hologram saver interrupted during shutdown: {}", e.getMessage(), e);
         }
     }
 

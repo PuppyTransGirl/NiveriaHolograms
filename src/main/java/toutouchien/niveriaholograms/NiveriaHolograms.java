@@ -53,7 +53,7 @@ public class NiveriaHolograms extends JavaPlugin {
         this.bStats = new Metrics(this, BSTATS_PLUGIN_ID);
         this.bStats.addCustomChart(new SingleLineChart("holograms_amount", () -> this.hologramManager.holograms().size()));
 
-        getServer().getPluginManager().registerEvents(new HologramListener(this), this);
+        getServer().getPluginManager().registerEvents(new HologramListener(hologramManager, this.getDataFolder()), this);
 
         new UpdateChecker(this, "j3tHqIoj", "niveriaholograms.new_update");
     }

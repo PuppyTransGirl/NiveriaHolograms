@@ -10,7 +10,6 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.world.WorldLoadEvent;
-import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
@@ -19,12 +18,12 @@ import java.util.List;
 import java.util.Map;
 
 public class HologramListener implements Listener {
-    private final NiveriaHolograms plugin;
     private final HologramManager hologramManager;
+    private final File dataFolder;
 
-    public HologramListener(NiveriaHolograms plugin) {
-        this.plugin = plugin;
-        this.hologramManager = plugin.hologramManager();
+    public HologramListener(HologramManager hologramManager, File dataFolder) {
+        this.hologramManager = hologramManager;
+        this.dataFolder = dataFolder;
     }
 
     @EventHandler
@@ -51,7 +50,7 @@ public class HologramListener implements Listener {
         if (!pendingHolograms.containsKey(worldName))
             return;
 
-        File file = new File(plugin.getDataFolder(), "holograms.yml");
+        File file = new File(this.dataFolder, "holograms.yml");
         if (!file.exists())
             return;
 
