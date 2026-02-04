@@ -11,7 +11,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.inventory.ItemStack;
 import org.joml.Vector3f;
-import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.configurations.BlockHologramConfiguration;
 import toutouchien.niveriaholograms.configurations.HologramConfiguration;
 import toutouchien.niveriaholograms.configurations.ItemHologramConfiguration;
@@ -27,10 +26,10 @@ import java.util.List;
 import java.util.UUID;
 
 public class HologramLoader {
-    private final NiveriaHolograms plugin;
+    private final HologramManager hologramManager;
 
-    public HologramLoader(NiveriaHolograms plugin) {
-        this.plugin = plugin;
+    public HologramLoader(HologramManager hologramManager) {
+        this.hologramManager = hologramManager;
     }
 
     public Hologram load(ConfigurationSection section) {
@@ -41,8 +40,7 @@ public class HologramLoader {
 
         HologramConfiguration configuration = type.createConfiguration();
 
-        HologramManager hologramManager = this.plugin.hologramManager();
-        Hologram hologram = hologramManager.createHologram(type, configuration, name, owner, location);
+        Hologram hologram = this.hologramManager.createHologram(type, configuration, name, owner, location);
 
         loadConfiguration(section, configuration);
 

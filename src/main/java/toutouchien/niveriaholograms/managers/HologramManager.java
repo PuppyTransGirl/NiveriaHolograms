@@ -29,8 +29,8 @@ public class HologramManager {
 
     public HologramManager(NiveriaHolograms plugin) {
         this.plugin = plugin;
-        this.hologramLoader = new HologramLoader(plugin);
-        this.hologramSaver = new HologramSaver(plugin);
+        this.hologramLoader = new HologramLoader(this);
+        this.hologramSaver = new HologramSaver(plugin.getDataFolder(), plugin.getSLF4JLogger());
 
         this.holograms = new ConcurrentHashMap<>();
         this.pendingHolograms = new ConcurrentHashMap<>();
