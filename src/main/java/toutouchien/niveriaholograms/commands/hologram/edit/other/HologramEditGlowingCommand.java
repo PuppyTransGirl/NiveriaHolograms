@@ -18,6 +18,8 @@ import toutouchien.niveriaholograms.managers.HologramManager;
 import java.util.List;
 import java.util.Locale;
 
+import static toutouchien.niveriaholograms.NiveriaHolograms.LANG;
+
 public class HologramEditGlowingCommand {
     private HologramEditGlowingCommand() {
         throw new IllegalStateException("Command class");
@@ -44,12 +46,14 @@ public class HologramEditGlowingCommand {
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                             Hologram hologram = hologramManager.hologramByName(hologramName);
                             if (hologram == null) {
-                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+                                LANG.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist",
+                                        Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                                );
                                 return Command.SINGLE_SUCCESS;
                             }
 
                             if (!(hologram.configuration() instanceof GlowingHologramConfiguration)) {
-                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.only_block_and_item");
+                                LANG.sendMessage(sender, "niveriaholograms.hologram.edit.only_block_and_item");
                                 return Command.SINGLE_SUCCESS;
                             }
 
@@ -65,7 +69,9 @@ public class HologramEditGlowingCommand {
                                             : NamedTextColor.NAMES.value(option);
 
                                     if (textColor == null) {
-                                        Lang.sendMessage(sender, "niveriaholograms.hologram.edit.glowing.invalid_color", colorName);
+                                        LANG.sendMessage(sender, "niveriaholograms.hologram.edit.glowing.invalid_color",
+                                                Lang.unparsedPlaceholder("niveriaholograms_input_glowing_color", colorName)
+                                        );
                                         return Command.SINGLE_SUCCESS;
                                     }
 
@@ -83,7 +89,9 @@ public class HologramEditGlowingCommand {
                                 config.glowingColor(glowingColor);
                             });
 
-                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.glowing.edited", hologramName);
+                            LANG.sendMessage(sender, "niveriaholograms.hologram.edit.glowing.edited",
+                                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                            );
                             return Command.SINGLE_SUCCESS;
                         })
                 ).build();

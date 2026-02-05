@@ -13,6 +13,8 @@ import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
+import static toutouchien.niveriaholograms.NiveriaHolograms.LANG;
+
 public class HologramEditSeeThroughCommand {
     private HologramEditSeeThroughCommand() {
         throw new IllegalStateException("Command class");
@@ -30,12 +32,14 @@ public class HologramEditSeeThroughCommand {
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                             Hologram hologram = hologramManager.hologramByName(hologramName);
                             if (hologram == null) {
-                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+                                LANG.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist",
+                                        Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                                );
                                 return Command.SINGLE_SUCCESS;
                             }
 
                             if (!(hologram.configuration() instanceof TextHologramConfiguration)) {
-                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.only_text");
+                                LANG.sendMessage(sender, "niveriaholograms.hologram.edit.only_text");
                                 return Command.SINGLE_SUCCESS;
                             }
 
@@ -43,7 +47,9 @@ public class HologramEditSeeThroughCommand {
                                     config.seeThrough(seeThrough)
                             );
 
-                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.seethrough.edited", hologramName);
+                            LANG.sendMessage(sender, "niveriaholograms.hologram.edit.seethrough.edited",
+                                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                            );
                             return Command.SINGLE_SUCCESS;
                         })
                 ).build();

@@ -13,6 +13,8 @@ import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
+import static toutouchien.niveriaholograms.NiveriaHolograms.LANG;
+
 public class HologramEditScaleCommand {
     private HologramEditScaleCommand() {
         throw new IllegalStateException("Command class");
@@ -48,7 +50,9 @@ public class HologramEditScaleCommand {
         HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
         Hologram hologram = hologramManager.hologramByName(hologramName);
         if (hologram == null) {
-            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+            LANG.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist",
+                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+            );
             return Command.SINGLE_SUCCESS;
         }
 
@@ -56,7 +60,9 @@ public class HologramEditScaleCommand {
                 config.scale().set(scaleX, scaleY, scaleZ)
         );
 
-        Lang.sendMessage(sender, "niveriaholograms.hologram.edit.scale.edited", hologramName);
+        LANG.sendMessage(sender, "niveriaholograms.hologram.edit.scale.edited",
+                Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+        );
         return Command.SINGLE_SUCCESS;
     }
 }

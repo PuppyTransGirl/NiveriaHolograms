@@ -14,6 +14,8 @@ import toutouchien.niveriaholograms.configurations.BlockHologramConfiguration;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
+import static toutouchien.niveriaholograms.NiveriaHolograms.LANG;
+
 public class HologramEditBlockCommand {
     private HologramEditBlockCommand() {
         throw new IllegalStateException("Command class");
@@ -31,17 +33,19 @@ public class HologramEditBlockCommand {
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                             Hologram hologram = hologramManager.hologramByName(hologramName);
                             if (hologram == null) {
-                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+                                LANG.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist",
+                                        Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                                );
                                 return Command.SINGLE_SUCCESS;
                             }
 
                             if (!(hologram.configuration() instanceof BlockHologramConfiguration)) {
-                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.only_block");
+                                LANG.sendMessage(sender, "niveriaholograms.hologram.edit.only_block");
                                 return Command.SINGLE_SUCCESS;
                             }
 
                             if (blockState.getType().isAir()) {
-                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.block.no_air");
+                                LANG.sendMessage(sender, "niveriaholograms.hologram.edit.block.no_air");
                                 return Command.SINGLE_SUCCESS;
                             }
 
@@ -49,7 +53,10 @@ public class HologramEditBlockCommand {
                                     config.blockState(blockState)
                             );
 
-                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.block.edited", hologramName, blockState.getType().translationKey());
+                            LANG.sendMessage(sender, "niveriaholograms.hologram.edit.block.edited",
+                                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName),
+                                    Lang.unparsedPlaceholder("niveriaholograms_hologram_block_block", blockState.getType().translationKey())
+                            );
                             return Command.SINGLE_SUCCESS;
                         })
                 ).build();

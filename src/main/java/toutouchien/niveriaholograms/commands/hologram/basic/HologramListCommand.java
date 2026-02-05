@@ -15,6 +15,8 @@ import toutouchien.niveriaholograms.utils.CustomLocation;
 
 import java.util.List;
 
+import static toutouchien.niveriaholograms.NiveriaHolograms.LANG;
+
 public class HologramListCommand {
     private HologramListCommand() {
         throw new IllegalStateException("Command class");
@@ -29,21 +31,24 @@ public class HologramListCommand {
 
                     List<Hologram> holograms = hologramManager.holograms();
                     if (holograms.isEmpty()) {
-                        Lang.sendMessage(sender, "niveriaholograms.hologram.list.no_holograms");
+                        LANG.sendMessage(sender, "niveriaholograms.hologram.list.no_holograms");
                         return Command.SINGLE_SUCCESS;
                     }
 
-                    Lang.sendMessage(sender, "niveriaholograms.hologram.list.header", holograms.size());
+                    LANG.sendMessage(sender, "niveriaholograms.hologram.list.header",
+                            Lang.numberPlaceholder("niveriaholograms_hologram_amount", holograms.size())
+                    );
 
                     for (Hologram hologram : holograms) {
                         CustomLocation loc = hologram.location();
 
-                        Lang.sendMessage(sender, "niveriaholograms.hologram.list.hologram_entry",
-                                hologram.name(), // For MiniMessage command click
-                                hologram.name(),
-                                StringUtils.capitalize(hologram.type().name()),
-                                loc.world(),
-                                loc.x(), loc.y(), loc.z()
+                        LANG.sendMessage(sender, "niveriaholograms.hologram.list.hologram_entry",
+                                Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologram.name()),
+                                Lang.unparsedPlaceholder("niveriaholograms_hologram_type", StringUtils.capitalize(hologram.type().name())),
+                                Lang.unparsedPlaceholder("niveriaholograms_hologram_world", loc.world()),
+                                Lang.numberPlaceholder("niveriaholograms_hologram_x", loc.x()),
+                                Lang.numberPlaceholder("niveriaholograms_hologram_y", loc.y()),
+                                Lang.numberPlaceholder("niveriaholograms_hologram_z", loc.z())
                         );
                     }
 

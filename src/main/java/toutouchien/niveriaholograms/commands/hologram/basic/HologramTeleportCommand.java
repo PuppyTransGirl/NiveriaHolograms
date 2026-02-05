@@ -13,6 +13,8 @@ import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
+import static toutouchien.niveriaholograms.NiveriaHolograms.LANG;
+
 public class HologramTeleportCommand {
     private HologramTeleportCommand() {
         throw new IllegalStateException("Command class");
@@ -39,13 +41,17 @@ public class HologramTeleportCommand {
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                             Hologram hologram = hologramManager.hologramByName(hologramName);
                             if (hologram == null) {
-                                Lang.sendMessage(player, "niveriaholograms.hologram.teleport.doesnt_exist", hologramName);
+                                LANG.sendMessage(player, "niveriaholograms.hologram.teleport.doesnt_exist",
+                                        Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                                );
                                 return Command.SINGLE_SUCCESS;
                             }
 
                             player.teleportAsync(hologram.location().bukkitLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN)
                                     .thenAccept(ignored ->
-                                            Lang.sendMessage(player, "niveriaholograms.hologram.teleport.teleported", hologram.name())
+                                            LANG.sendMessage(player, "niveriaholograms.hologram.teleport.teleported",
+                                                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologram.name())
+                                            )
                                     );
                             return Command.SINGLE_SUCCESS;
                         })

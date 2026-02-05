@@ -25,22 +25,22 @@ special-tags:
 
 niveriaholograms:
   reload:
-    done: "<prefix:holograms/> <separator> <ncolor:success>NiveriaHolograms a été rechargé. (%s ms)</ncolor>"
+    done: "<prefix:holograms/> <separator> <ncolor:success>NiveriaHolograms a été rechargé. (<niveriholograms_time_ms> ms)</ncolor>"
 
   hologram:
     clone:
-      doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>L'hologramme \"%s\" n'existe pas.</ncolor>"
-      name_too_long: "<prefix:holograms/> <separator> <ncolor:error>Le nom de l'hologramme est trop long. Il ne peut pas dépasser %s caractères.</ncolor>"
+      doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>L'hologramme \"<niveriaholograms_hologram_name>\" n'existe pas.</ncolor>"
+      name_too_long: "<prefix:holograms/> <separator> <ncolor:error>Le nom de l'hologramme est trop long. Il ne peut pas dépasser <niveriaholograms_hologram_name_max_length> caractères.</ncolor>"
       invalid_character: "<prefix:holograms/> <separator> <ncolor:error>Le nom de l'hologramme contient des caractères invalides.</ncolor>"
       already_exists: "<prefix:holograms/> <separator> <ncolor:error>Un hologramme avec ce nom existe déjà.</ncolor>"
-      cloned: "<prefix:holograms/> <separator> <ncolor:success>Hologramme \"%s\" cloné en \"%s\" avec succès.</ncolor>"
+      cloned: "<prefix:holograms/> <separator> <ncolor:success>Hologramme \"<niveriaholograms_cloned_hologram_name>\" cloné en \"<niveriaholograms_hologram_name>\" avec succès.</ncolor>"
 
     create:
-      invalid_type: "<prefix:holograms/> <separator> <ncolor:error>Le type d'hologramme \"%s\" est invalide.</ncolor>"
-      name_too_long: "<prefix:holograms/> <separator> <ncolor:error>Le nom de l'hologramme est trop long. Il ne peut pas dépasser %s caractères.</ncolor>"
+      invalid_type: "<prefix:holograms/> <separator> <ncolor:error>Le type d'hologramme \"<niveriaholograms_hologram_type>\" est invalide.</ncolor>"
+      name_too_long: "<prefix:holograms/> <separator> <ncolor:error>Le nom de l'hologramme est trop long. Il ne peut pas dépasser <niveriaholograms_hologram_name_max_length> caractères.</ncolor>"
       invalid_character: "<prefix:holograms/> <separator> <ncolor:error>Le nom de l'hologramme contient des caractères invalides.</ncolor>"
       already_exists: "<prefix:holograms/> <separator> <ncolor:error>Un hologramme avec ce nom existe déjà.</ncolor>"
-      created: "<prefix:holograms/> <separator> <ncolor:success>Hologramme \"%s\" de type \"%s\" créé avec succès.</ncolor>"
+      created: "<prefix:holograms/> <separator> <ncolor:success>Hologramme \"<niveriaholograms_hologram_name>\" de type \"<niveriaholograms_hologram_type>\" créé avec succès.</ncolor>"
 
     info:
       doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>L'hologramme \"<niveriaholograms_hologram_name>\" n'existe pas.</ncolor>"
@@ -83,24 +83,24 @@ niveriaholograms:
 
     list:
       no_holograms: "<prefix:holograms/> <separator> <ncolor:default>Il n'y a pas d'hologrammes créés.</ncolor>"
-      header: "<prefix:holograms/> <separator> <ncolor:primary>Liste des hologrammes (%s):</ncolor>"
-      hologram_entry: "<hover:show_text:'Clique ici pour te téléporter à cet hologramme'><click:run_command:'/hologram teleport %s'><ncolor:default>- %s (Type: %s, Monde: %s, Position: X: %.2f Y: %.2f Z: %.2f)</ncolor></click></hover>"
+      header: "<prefix:holograms/> <separator> <ncolor:primary>Liste des hologrammes (<niveriaholograms_hologram_amount>):</ncolor>"
+      hologram_entry: "<hover:show_text:'Clique ici pour te téléporter à cet hologramme'><click:run_command:'/hologram teleport <niveriaholograms_hologram_name>'><ncolor:default>- <niveriaholograms_hologram_name> (Type: <niveriaholograms_hologram_type>, Monde: <niveriaholograms_hologram_world>, Position: X: <niveriaholograms_hologram_x> Y: <niveriaholograms_hologram_y> Z: <niveriaholograms_hologram_z>)</ncolor></click></hover>"
 
     nearby:
-      no_holograms: "<prefix:holograms/> <separator> <ncolor:default>Il n'y a pas d'hologrammes dans un rayon de %s.</ncolor>"
-      header: "<prefix:holograms/> <separator> <ncolor:primary>Hologrammes à proximité (%s):</ncolor>"
-      hologram_entry: "<hover:show_text:'Clique ici pour te téléporter à cet hologramme'><click:run_command:'/hologram teleport %s'><ncolor:default>- %s (Type: %s, Monde: %s, Position: X: %.2f Y: %.2f Z: %.2f, Distance: %.2f)</ncolor></click></hover>"
+      no_holograms: "<prefix:holograms/> <separator> <ncolor:default>Il n'y a pas d'hologrammes dans un rayon de <niveriaholograms_nearby_radius>.</ncolor>"
+      header: "<prefix:holograms/> <separator> <ncolor:primary>Hologrammes à proximité (<niveriaholograms_hologram_amount>):</ncolor>"
+      hologram_entry: "<hover:show_text:'Clique ici pour te téléporter à cet hologramme'><click:run_command:'/hologram teleport <niveriaholograms_hologram_name>'><ncolor:default>- <niveriaholograms_hologram_name> (Type: <niveriaholograms_hologram_type>, Monde: <niveriaholograms_hologram_world>, Position: X: <niveriaholograms_hologram_x> Y: <niveriaholograms_hologram_y> Z: <niveriaholograms_hologram_z>, Distance: <niveriaholograms_hologram_distance>)</ncolor></click></hover>"
 
     remove:
-      doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>L'hologramme \"%s\" n'existe pas.</ncolor>"
-      removed: "<prefix:holograms/> <separator> <ncolor:success>Hologramme \"%s\" supprimé avec succès.</ncolor>"
+      doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>L'hologramme \"<niveriaholograms_hologram_name>\" n'existe pas.</ncolor>"_
+      removed: "<prefix:holograms/> <separator> <ncolor:success>Hologramme \"<niveriaholograms_hologram_name>\" supprimé avec succès.</ncolor>"
 
     teleport:
-      doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>L'hologramme \"%s\" n'existe pas.</ncolor>"
-      teleported: "<prefix:holograms/> <separator> <ncolor:success>Téléporté à l'hologramme \"%s\" avec succès.</ncolor>"
+      doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>L'hologramme \"<niveriaholograms_hologram_name>\" n'existe pas.</ncolor>"
+      teleported: "<prefix:holograms/> <separator> <ncolor:success>Téléporté à l'hologramme \"<niveriaholograms_hologram_name>\" avec succès.</ncolor>"
 
     edit:
-      doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>L'hologramme \"%s\" n'existe pas.</ncolor>"
+      doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>L'hologramme \"<niveriaholograms_hologram_name>\" n'existe pas.</ncolor>"
       only_block: "<prefix:holograms/> <separator> <ncolor:error>Cette option ne peut être modifiée que pour les hologrammes de type bloc.</ncolor>"
       only_item: "<prefix:holograms/> <separator> <ncolor:error>Cette option ne peut être modifiée que pour les hologrammes de type item.</ncolor>"
       only_text: "<prefix:holograms/> <separator> <ncolor:error>Cette option ne peut être modifiée que pour les hologrammes de type texte.</ncolor>"
@@ -109,90 +109,90 @@ niveriaholograms:
       # Block
       block:
         no_air: "<prefix:holograms/> <separator> <ncolor:error>Le bloc ne peut pas être de l'air.</ncolor>"
-        edited: "<prefix:holograms/> <separator> <ncolor:success>Le bloc de l'hologramme \"%s\" a été changé en \"<lang:%s/>\" avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>Le bloc de l'hologramme \"<niveriaholograms_hologram_name>\" a été changé en \"<lang:<niveriaholograms_hologram_block_block>/>\" avec succès.</ncolor>"
 
       # Item
       item:
         no_item: "<prefix:holograms/> <separator> <ncolor:error>Vous devez tenir un item dans votre main principale.</ncolor>"
-        edited: "<prefix:holograms/> <separator> <ncolor:success>L'item de l'hologramme \"%s\" a été changé en \"<lang:%s/>\" avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>L'item de l'hologramme \"<niveriaholograms_hologram_name>\" a été changé en \"<lang:<niveriaholograms_hologram_item_item>/>\" avec succès.</ncolor>"
 
       # Text
       addline:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>Le texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>Le texte de l'hologramme \"<niveriaholograms_hologram_name>\" a été mis à jour avec succès.</ncolor>"
 
       background:
-        invalid_color: "<prefix:holograms/> <separator> <ncolor:error>La couleur du fond \"%s\" est invalide.</ncolor>"
-        edited: "<prefix:holograms/> <separator> <ncolor:success>La couleur du fond de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        invalid_color: "<prefix:holograms/> <separator> <ncolor:error>La couleur du fond \"<niveriaholograms_input_background>\" est invalide.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>La couleur du fond de l'hologramme \"<niveriaholograms_hologram_name>\" a été mis à jour avec succès.</ncolor>"
 
       insertafter:
-        invalid_line: "<prefix:holograms/> <separator> <ncolor:error>Le numéro de la ligne \"%s\" est invalide.</ncolor>"
-        edited: "<prefix:holograms/> <separator> <ncolor:success>Le texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        invalid_line: "<prefix:holograms/> <separator> <ncolor:error>Le numéro de la ligne \"<niveriaholograms_input_line>\" est invalide.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>Le texte de l'hologramme \"<niveriaholograms_hologram_name>\" a été mis à jour avec succès.</ncolor>"
 
       insertbefore:
-        invalid_line: "<prefix:holograms/> <separator> <ncolor:error>Le numéro de la ligne \"%s\" est invalide.</ncolor>"
-        edited: "<prefix:holograms/> <separator> <ncolor:success>Le texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        invalid_line: "<prefix:holograms/> <separator> <ncolor:error>Le numéro de la ligne \"<niveriaholograms_input_line>\" est invalide.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>Le texte de l'hologramme \"<niveriaholograms_hologram_name>\" a été mis à jour avec succès.</ncolor>"
 
       removeline:
-        invalid_line: "<prefix:holograms/> <separator> <ncolor:error>Le numéro de la ligne \"%s\" est invalide.</ncolor>"
-        edited: "<prefix:holograms/> <separator> <ncolor:success>Le texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        invalid_line: "<prefix:holograms/> <separator> <ncolor:error>Le numéro de la ligne \"<niveriaholograms_input_line>\" est invalide.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>Le texte de l'hologramme \"<niveriaholograms_hologram_name>\" a été mis à jour avec succès.</ncolor>"
 
       seethrough:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>L'affichage de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>L'affichage de l'hologramme \"<niveriaholograms_hologram_name>\" a été mis à jour avec succès.</ncolor>"
 
       setline:
-        invalid_line: "<prefix:holograms/> <separator> <ncolor:error>Le numéro de la ligne \"%s\" est invalide.</ncolor>"
-        edited: "<prefix:holograms/> <separator> <ncolor:success>Le texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        invalid_line: "<prefix:holograms/> <separator> <ncolor:error>Le numéro de la ligne \"<niveriaholograms_input_line>\" est invalide.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>Le texte de l'hologramme \"<niveriaholograms_hologram_name>\" a été mis à jour avec succès.</ncolor>"
 
       textalignment:
-        invalid_textalignment: "<prefix:holograms/> <separator> <ncolor:error>La valeur d'alignement du texte \"%s\" est invalide.</ncolor>"
-        edited: "<prefix:holograms/> <separator> <ncolor:success>L'alignement du texte de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        invalid_textalignment: "<prefix:holograms/> <separator> <ncolor:error>La valeur d'alignement de texte \"<niveriaholograms_input_alignment>\" est invalide.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>L'alignement du texte de l'hologramme \"<niveriaholograms_hologram_name>\" a été mis à jour avec succès.</ncolor>"
 
       textshadow:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>L'ombre du texte \"%s\" a été mis à jour avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>L'ombre du texte \"<niveriaholograms_hologram_name>\" a été mis à jour avec succès.</ncolor>"
 
       updateinterval:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>L'intervalle de mise à jour de l'hologramme \"%s\" a été changé en \"%s\" avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>L'intervalle de mise à jour de l'hologramme \"<niveriaholograms_hologram_name>\" a été changé en \"<niveriaholograms_hologram_text_update_interval>\" avec succès.</ncolor>"
 
       # General
       billboard:
-        invalid_billboard: "<prefix:holograms/> <separator> <ncolor:error>La valeur de billboard \"%s\" est invalide.</ncolor>"
-        edited: "<prefix:holograms/> <separator> <ncolor:success>Le billboard de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        invalid_billboard: "<prefix:holograms/> <separator> <ncolor:error>La valeur de billboard \"<niveriaholograms_input_billboard>\" est invalide.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>Le billboard de l'hologramme \"<niveriaholograms_hologram_name>\" a été mis à jour avec succès.</ncolor>"
 
       brightness:
-        invalid_type: "<prefix:holograms/> <separator> <ncolor:error>La valeur de type de lumière \"%s\" est invalide.</ncolor>"
-        edited: "<prefix:holograms/> <separator> <ncolor:success>La lumière de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        invalid_type: "<prefix:holograms/> <separator> <ncolor:error>La valeur de type de lumière \"<niveriaholograms_input_brightness_type>\" est invalide.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>La lumière de l'hologramme \"<niveriaholograms_hologram_name>\" a été mis à jour avec succès.</ncolor>"
 
       pitch:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>Le pitch de l'hologramme \"%s\" a été changé en \"%.2f\" avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>Le pitch de l'hologramme \"<niveriaholograms_hologram_name>\" a été changé en \"<niveriaholograms_hologram_pitch>\" avec succès.</ncolor>"
 
       position:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>La position de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>La position de l'hologramme \"<niveriaholograms_hologram_name>\" a été mis à jour avec succès.</ncolor>"
 
       rotation:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>La rotation de l'hologramme \"%s\" a été changé en \"%.2f %.2f\" avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>La rotation de l'hologramme \"<niveriaholograms_hologram_name>\" a été changé en \"<niveriaholograms_hologram_yaw> <niveriaholograms_hologram_pitch>\" avec succès.</ncolor>"
 
       scale:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>La taille de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>La taille de l'hologramme \"<niveriaholograms_hologram_name>\" a été mis à jour avec succès.</ncolor>"
 
       shadowradius:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>Le rayon de l'ombre de l'hologramme \"%s\" a été changé en \"%.2f\" avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>Le rayon de l'ombre de l'hologramme \"<niveriaholograms_hologram_name>\" a été changé en \"<niveriaholograms_hologram_shadow_radius>\" avec succès.</ncolor>"
 
       shadowstrength:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>La force de l'ombre de l'hologramme \"%s\" a été changé en \"%.2f\" avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>La force de l'ombre de l'hologramme \"<niveriaholograms_hologram_name>\" a été changé en \"<niveriaholograms_hologram_shadow_strength>\" avec succès.</ncolor>"
 
       translate:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>La translation de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>La translation de l'hologramme \"<niveriaholograms_hologram_name>\" a été mis à jour avec succès.</ncolor>"
 
       visibilitydistance:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>La distance d'affichage de l'hologramme \"%s\" a été changé en \"%s\" avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>La distance d'affichage de l'hologramme \"<niveriaholograms_hologram_name>\" a été changé en \"<niveriaholograms_hologram_visibility_distance>\" avec succès.</ncolor>"
 
       yaw:
-        edited: "<prefix:holograms/> <separator> <ncolor:success>Le yaw de l'hologramme \"%s\" a été changé en \"%.2f\" avec succès.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>Le yaw de l'hologramme \"<niveriaholograms_hologram_name>\" a été changé en \"<niveriaholograms_hologram_yaw>\" avec succès.</ncolor>"
 
       # Other
       glowing:
-        invalid_color: "<prefix:holograms/> <separator> <ncolor:error>La couleur de brillance \"%s\" est invalide.</ncolor>"
-        edited: "<prefix:holograms/> <separator> <ncolor:success>La brillance de l'hologramme \"%s\" a été mis à jour avec succès.</ncolor>"
+        invalid_color: "<prefix:holograms/> <separator> <ncolor:error>La couleur de brillance \"<niveriaholograms_input_glowing_color>\" est invalide.</ncolor>"
+        edited: "<prefix:holograms/> <separator> <ncolor:success>La brillance de l'hologramme \"<niveriaholograms_hologram_name>\" a été mis à jour avec succès.</ncolor>"
 
   default_text: "Utilise /holo edit <niveriaholograms_hologram_name> setline 1 <ton texte>"
 

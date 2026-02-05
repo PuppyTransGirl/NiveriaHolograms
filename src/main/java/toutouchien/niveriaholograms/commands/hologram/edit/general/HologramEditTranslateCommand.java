@@ -12,6 +12,8 @@ import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
+import static toutouchien.niveriaholograms.NiveriaHolograms.LANG;
+
 public class HologramEditTranslateCommand {
     private HologramEditTranslateCommand() {
         throw new IllegalStateException("Command class");
@@ -33,7 +35,9 @@ public class HologramEditTranslateCommand {
                                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                                             Hologram hologram = hologramManager.hologramByName(hologramName);
                                             if (hologram == null) {
-                                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+                                                LANG.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist",
+                                                        Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                                                );
                                                 return Command.SINGLE_SUCCESS;
                                             }
 
@@ -41,7 +45,9 @@ public class HologramEditTranslateCommand {
                                                     config.translation().set(translateX, translateY, translateZ)
                                             );
 
-                                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.translate.edited", hologramName);
+                                            LANG.sendMessage(sender, "niveriaholograms.hologram.edit.translate.edited",
+                                                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                                            );
                                             return Command.SINGLE_SUCCESS;
                                         })
                                 )

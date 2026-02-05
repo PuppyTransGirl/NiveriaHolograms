@@ -15,6 +15,8 @@ import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
+import static toutouchien.niveriaholograms.NiveriaHolograms.LANG;
+
 public class HologramEditTextAlignmentCommand {
     private HologramEditTextAlignmentCommand() {
         throw new IllegalStateException("Command class");
@@ -50,18 +52,22 @@ public class HologramEditTextAlignmentCommand {
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                             Hologram hologram = hologramManager.hologramByName(hologramName);
                             if (hologram == null) {
-                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+                                LANG.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist",
+                                        Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                                );
                                 return Command.SINGLE_SUCCESS;
                             }
 
                             if (!(hologram.configuration() instanceof TextHologramConfiguration)) {
-                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.only_text");
+                                LANG.sendMessage(sender, "niveriaholograms.hologram.edit.only_text");
                                 return Command.SINGLE_SUCCESS;
                             }
 
                             TextDisplay.TextAlignment textAlignment = StringUtils.match(textAlignmentName, TextDisplay.TextAlignment.class, null);
                             if (textAlignment == null) {
-                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.textalignment.invalid_textalignment", textAlignmentName);
+                                LANG.sendMessage(sender, "niveriaholograms.hologram.edit.textalignment.invalid_textalignment",
+                                        Lang.unparsedPlaceholder("niveriaholograms_input_alignment", textAlignmentName)
+                                );
                                 return Command.SINGLE_SUCCESS;
                             }
 
@@ -69,7 +75,9 @@ public class HologramEditTextAlignmentCommand {
                                     config.textAlignment(textAlignment)
                             );
 
-                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.textalignment.edited", hologramName);
+                            LANG.sendMessage(sender, "niveriaholograms.hologram.edit.textalignment.edited",
+                                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                            );
                             return Command.SINGLE_SUCCESS;
                         })
                 ).build();

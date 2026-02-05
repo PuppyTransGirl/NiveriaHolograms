@@ -18,6 +18,8 @@ import toutouchien.niveriaholograms.managers.HologramManager;
 import java.util.List;
 import java.util.Locale;
 
+import static toutouchien.niveriaholograms.NiveriaHolograms.LANG;
+
 public class HologramEditBrightnessCommand {
     private static final List<String> BRIGHTNESS_TYPES = List.of("block", "sky");
 
@@ -55,13 +57,17 @@ public class HologramEditBrightnessCommand {
                                     HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                                     Hologram hologram = hologramManager.hologramByName(hologramName);
                                     if (hologram == null) {
-                                        Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+                                        LANG.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist",
+                                                Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                                        );
                                         return Command.SINGLE_SUCCESS;
                                     }
 
                                     String type = typeName.toLowerCase(Locale.ROOT);
                                     if (!BRIGHTNESS_TYPES.contains(type)) {
-                                        Lang.sendMessage(sender, "niveriaholograms.hologram.edit.brightness.invalid_type", typeName);
+                                        LANG.sendMessage(sender, "niveriaholograms.hologram.edit.brightness.invalid_type",
+                                                Lang.unparsedPlaceholder("niveriaholograms_input_brightness_type", typeName)
+                                        );
                                         return Command.SINGLE_SUCCESS;
                                     }
 
@@ -82,7 +88,9 @@ public class HologramEditBrightnessCommand {
                                             config.brightness(new Brightness(finalBlock, finalSky))
                                     );
 
-                                    Lang.sendMessage(sender, "niveriaholograms.hologram.edit.brightness.edited", hologramName);
+                                    LANG.sendMessage(sender, "niveriaholograms.hologram.edit.brightness.edited",
+                                            Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                                    );
                                     return Command.SINGLE_SUCCESS;
                                 })
                         )
