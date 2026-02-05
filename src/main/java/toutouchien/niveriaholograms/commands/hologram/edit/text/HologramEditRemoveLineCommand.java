@@ -17,8 +17,7 @@ import java.util.List;
 
 import static toutouchien.niveriaholograms.NiveriaHolograms.LANG;
 
-public class
-HologramEditRemoveLineCommand {
+public class HologramEditRemoveLineCommand {
     private HologramEditRemoveLineCommand() {
         throw new IllegalStateException("Command class");
     }

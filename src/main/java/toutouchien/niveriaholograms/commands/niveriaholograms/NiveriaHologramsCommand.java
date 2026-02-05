@@ -48,7 +48,7 @@ public class NiveriaHologramsCommand {
                     NiveriaHolograms.instance().reload();
                     long timeTaken = System.currentTimeMillis() - startMillis;
                     LANG.sendMessage(sender, "niveriaholograms.reload.done",
-                            Lang.numberPlaceholder("niveriholograms_time_ms", timeTaken)
+                            Lang.numberPlaceholder("niveriaholograms_time_ms", timeTaken)
                     );
 
                     return Command.SINGLE_SUCCESS;

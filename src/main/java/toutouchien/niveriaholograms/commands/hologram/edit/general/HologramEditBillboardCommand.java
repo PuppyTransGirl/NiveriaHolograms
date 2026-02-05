@@ -59,7 +59,7 @@ public class HologramEditBillboardCommand {
                             Display.BillboardConstraints billboard = StringUtils.match(billboardName, Display.BillboardConstraints.class, null);
                             if (billboard == null) {
                                 LANG.sendMessage(sender, "niveriaholograms.hologram.edit.billboard.invalid_billboard",
-                                        Lang.unparsedPlaceholder("niveriaholograms_input_billboard", hologramName)
+                                        Lang.unparsedPlaceholder("niveriaholograms_input_billboard", billboardName)
                                 );
                                 return Command.SINGLE_SUCCESS;
                             }

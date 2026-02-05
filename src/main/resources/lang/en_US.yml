@@ -25,7 +25,7 @@ special-tags:
 
 niveriaholograms:
   reload:
-    done: "<prefix:holograms/> <separator> <ncolor:success>NiveriaHolograms has been reloaded. (<niveriholograms_time_ms> ms)</ncolor>"
+    done: "<prefix:holograms/> <separator> <ncolor:success>NiveriaHolograms has been reloaded. (<niveriaholograms_time_ms> ms)</ncolor>"
 
   hologram:
     clone:

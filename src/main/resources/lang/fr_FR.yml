@@ -25,7 +25,7 @@ special-tags:
 
 niveriaholograms:
   reload:
-    done: "<prefix:holograms/> <separator> <ncolor:success>NiveriaHolograms a été rechargé. (<niveriholograms_time_ms> ms)</ncolor>"
+    done: "<prefix:holograms/> <separator> <ncolor:success>NiveriaHolograms a été rechargé. (<niveriaholograms_time_ms> ms)</ncolor>"
 
   hologram:
     clone:
@@ -92,7 +92,7 @@ niveriaholograms:
       hologram_entry: "<hover:show_text:'Clique ici pour te téléporter à cet hologramme'><click:run_command:'/hologram teleport <niveriaholograms_hologram_name>'><ncolor:default>- <niveriaholograms_hologram_name> (Type: <niveriaholograms_hologram_type>, Monde: <niveriaholograms_hologram_world>, Position: X: <niveriaholograms_hologram_x> Y: <niveriaholograms_hologram_y> Z: <niveriaholograms_hologram_z>, Distance: <niveriaholograms_hologram_distance>)</ncolor></click></hover>"
 
     remove:
-      doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>L'hologramme \"<niveriaholograms_hologram_name>\" n'existe pas.</ncolor>"_
+      doesnt_exist: "<prefix:holograms/> <separator> <ncolor:error>L'hologramme \"<niveriaholograms_hologram_name>\" n'existe pas.</ncolor>"
       removed: "<prefix:holograms/> <separator> <ncolor:success>Hologramme \"<niveriaholograms_hologram_name>\" supprimé avec succès.</ncolor>"
 
     teleport:

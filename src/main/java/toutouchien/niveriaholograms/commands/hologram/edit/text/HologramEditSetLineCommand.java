@@ -102,9 +102,7 @@ public class HologramEditSetLineCommand {
         }
 
         if (!(hologram.configuration() instanceof TextHologramConfiguration configuration)) {
-            LANG.sendMessage(sender, "niveriaholograms.hologram.edit.only_text",
-                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
-            );
+            LANG.sendMessage(sender, "niveriaholograms.hologram.edit.only_text");
             return false;
         }
 
