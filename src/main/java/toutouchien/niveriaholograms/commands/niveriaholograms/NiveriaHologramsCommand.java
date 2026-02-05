@@ -11,6 +11,7 @@ import toutouchien.niveriaapi.lang.Lang;
 import toutouchien.niveriaapi.utils.CommandUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.migration.MigrationMenu;
+import toutouchien.niveriaholograms.utils.HologramUtils;
 
 import static toutouchien.niveriaholograms.NiveriaHolograms.LANG;
 
@@ -48,7 +49,7 @@ public class NiveriaHologramsCommand {
                     NiveriaHolograms.instance().reload();
                     long timeTaken = System.currentTimeMillis() - startMillis;
                     LANG.sendMessage(sender, "niveriaholograms.reload.done",
-                            Lang.numberPlaceholder("niveriaholograms_time_ms", timeTaken)
+                            Lang.numberPlaceholder("niveriaholograms_time_ms", HologramUtils.formatNumber(timeTaken))
                     );
 
                     return Command.SINGLE_SUCCESS;

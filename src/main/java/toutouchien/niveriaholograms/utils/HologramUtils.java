@@ -2,6 +2,7 @@ package toutouchien.niveriaholograms.utils;
 
 import com.mojang.math.Transformation;
 import net.kyori.adventure.text.format.TextColor;
+import toutouchien.niveriaapi.utils.MathUtils;
 import toutouchien.niveriaholograms.updater.HologramUpdater;
 
 import java.lang.reflect.Constructor;
@@ -45,5 +46,13 @@ public class HologramUtils {
                 throw new RuntimeException("Could not resolve Transformation constructor reflectively", e);
             }
         }
+    }
+
+    public static double formatNumber(double number) {
+        return MathUtils.decimalRound(number, 3);
+    }
+
+    public static float formatNumber(float number) {
+        return MathUtils.decimalRound(number, 3);
     }
 }

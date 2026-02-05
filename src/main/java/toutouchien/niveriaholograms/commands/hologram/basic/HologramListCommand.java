@@ -12,6 +12,7 @@ import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 import toutouchien.niveriaholograms.utils.CustomLocation;
+import toutouchien.niveriaholograms.utils.HologramUtils;
 
 import java.util.List;
 
@@ -46,9 +47,9 @@ public class HologramListCommand {
                                 Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologram.name()),
                                 Lang.unparsedPlaceholder("niveriaholograms_hologram_type", StringUtils.capitalize(hologram.type().name())),
                                 Lang.unparsedPlaceholder("niveriaholograms_hologram_world", loc.world()),
-                                Lang.numberPlaceholder("niveriaholograms_hologram_x", loc.x()),
-                                Lang.numberPlaceholder("niveriaholograms_hologram_y", loc.y()),
-                                Lang.numberPlaceholder("niveriaholograms_hologram_z", loc.z())
+                                Lang.numberPlaceholder("niveriaholograms_hologram_x", HologramUtils.formatNumber(loc.x())),
+                                Lang.numberPlaceholder("niveriaholograms_hologram_y", HologramUtils.formatNumber(loc.y())),
+                                Lang.numberPlaceholder("niveriaholograms_hologram_z", HologramUtils.formatNumber(loc.z()))
                         );
                     }
 
