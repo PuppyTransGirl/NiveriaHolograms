@@ -11,6 +11,8 @@ import toutouchien.niveriaholograms.managers.HologramManager;
 import toutouchien.niveriaholograms.migration.migrators.DecentHologramsMigrator;
 import toutouchien.niveriaholograms.migration.migrators.FancyHologramsV2Migrator;
 
+import static toutouchien.niveriaholograms.NiveriaHolograms.LANG;
+
 public class MigrationManager {
     private final NiveriaHolograms plugin;
     private final HologramManager hologramManager;
@@ -23,7 +25,7 @@ public class MigrationManager {
     public void convertFromDecentHolograms(@NotNull Player player) {
         DecentHologramsMigrator migrator = new DecentHologramsMigrator();
         if (!migrator.canRun()) {
-            Lang.sendMessage(player, "niveriaholograms.migrator.decentholograms.cannot_run");
+            LANG.sendMessage(player, "niveriaholograms.migrator.decentholograms.cannot_run");
             return;
         }
 
@@ -37,14 +39,16 @@ public class MigrationManager {
                 this.hologramManager.addHologram(hologram);
             }
 
-            Lang.sendMessage(player, "niveriaholograms.migrator.decentholograms.migrated", migratedHolograms.size());
+            LANG.sendMessage(player, "niveriaholograms.migrator.decentholograms.migrated",
+                    Lang.numberPlaceholder("niveriaholograms_migrated_amount", migratedHolograms.size())
+            );
         }, this.plugin);
     }
 
     public void convertFromFancyHologramsV2(@NotNull Player player) {
         FancyHologramsV2Migrator migrator = new FancyHologramsV2Migrator();
         if (!migrator.canRun()) {
-            Lang.sendMessage(player, "niveriaholograms.migrator.fancyholograms.cannot_run");
+            LANG.sendMessage(player, "niveriaholograms.migrator.fancyholograms.cannot_run");
             return;
         }
 
@@ -58,7 +62,9 @@ public class MigrationManager {
                 this.hologramManager.addHologram(hologram);
             }
 
-            Lang.sendMessage(player, "niveriaholograms.migrator.fancyholograms.migrated", migratedHolograms.size());
+            LANG.sendMessage(player, "niveriaholograms.migrator.fancyholograms.migrated",
+                    Lang.numberPlaceholder("niveriaholograms_migrated_amount", migratedHolograms.size())
+            );
         }, this.plugin);
     }
 }

@@ -21,6 +21,8 @@ public class NiveriaHolograms extends JavaPlugin {
     private static final int BSTATS_PLUGIN_ID = 29011;
     private static NiveriaHolograms instance;
 
+    public static Lang LANG;
+
     private HologramManager hologramManager;
     private MigrationManager migrationManager;
 
@@ -43,9 +45,11 @@ public class NiveriaHolograms extends JavaPlugin {
             registrar.register(HologramCommand.get(), List.of("holo", "nholo"));
         });
 
-        saveDefaultConfig();
+        LANG = Lang.builder(this)
+                .addDefaultLanguageFiles("en_US.yml", "fr_FR.yml")
+                .build();
 
-        Lang.load(this);
+        saveDefaultConfig();
 
         (this.hologramManager = new HologramManager(this)).initialize();
         this.migrationManager = new MigrationManager(this, this.hologramManager);
@@ -68,7 +72,7 @@ public class NiveriaHolograms extends JavaPlugin {
     }
 
     public void reload() {
-        Lang.reload(this);
+        LANG.reload();
         this.hologramManager.reload();
     }
 
