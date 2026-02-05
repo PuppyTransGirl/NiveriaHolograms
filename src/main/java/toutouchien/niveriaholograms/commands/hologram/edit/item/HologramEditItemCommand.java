@@ -13,6 +13,8 @@ import toutouchien.niveriaholograms.configurations.ItemHologramConfiguration;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
+import static toutouchien.niveriaholograms.NiveriaHolograms.LANG;
+
 public class HologramEditItemCommand {
     private HologramEditItemCommand() {
         throw new IllegalStateException("Command class");
@@ -28,18 +30,20 @@ public class HologramEditItemCommand {
                     HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                     Hologram hologram = hologramManager.hologramByName(hologramName);
                     if (hologram == null) {
-                        Lang.sendMessage(player, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+                        LANG.sendMessage(player, "niveriaholograms.hologram.edit.doesnt_exist",
+                                Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                        );
                         return Command.SINGLE_SUCCESS;
                     }
 
                     if (!(hologram.configuration() instanceof ItemHologramConfiguration)) {
-                        Lang.sendMessage(player, "niveriaholograms.hologram.edit.only_item");
+                        LANG.sendMessage(player, "niveriaholograms.hologram.edit.only_item");
                         return Command.SINGLE_SUCCESS;
                     }
 
                     ItemStack itemStack = player.getInventory().getItemInMainHand();
                     if (itemStack.getType().isAir() || itemStack.getAmount() < 1) {
-                        Lang.sendMessage(player, "niveriaholograms.hologram.edit.item.no_item");
+                        LANG.sendMessage(player, "niveriaholograms.hologram.edit.item.no_item");
                         return Command.SINGLE_SUCCESS;
                     }
 
@@ -47,7 +51,10 @@ public class HologramEditItemCommand {
                             config.itemStack(itemStack)
                     );
 
-                    Lang.sendMessage(player, "niveriaholograms.hologram.edit.item.edited", hologramName, itemStack.translationKey());
+                    LANG.sendMessage(player, "niveriaholograms.hologram.edit.item.edited",
+                            Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName),
+                            Lang.unparsedPlaceholder("niveriaholograms_hologram_item_item", itemStack.translationKey())
+                    );
                     return Command.SINGLE_SUCCESS;
                 }).build();
     }

@@ -19,6 +19,8 @@ import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
+import static toutouchien.niveriaholograms.NiveriaHolograms.LANG;
+
 @SuppressWarnings("UnstableApiUsage")
 public class HologramEditPositionCommand {
     private HologramEditPositionCommand() {
@@ -59,7 +61,9 @@ public class HologramEditPositionCommand {
         HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
         Hologram hologram = hologramManager.hologramByName(hologramName);
         if (hologram == null) {
-            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+            LANG.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist",
+                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+            );
             return Command.SINGLE_SUCCESS;
         }
 
@@ -71,7 +75,9 @@ public class HologramEditPositionCommand {
                         .z(newLocation.z())
         );
 
-        Lang.sendMessage(sender, "niveriaholograms.hologram.edit.position.edited", hologramName);
+        LANG.sendMessage(sender, "niveriaholograms.hologram.edit.position.edited",
+                Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+        );
         return Command.SINGLE_SUCCESS;
     }
 }

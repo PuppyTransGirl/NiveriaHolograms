@@ -12,6 +12,8 @@ import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
+import static toutouchien.niveriaholograms.NiveriaHolograms.LANG;
+
 public class HologramRemoveCommand {
     private HologramRemoveCommand() {
         throw new IllegalStateException("Command class");
@@ -38,12 +40,16 @@ public class HologramRemoveCommand {
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                             Hologram hologram = hologramManager.hologramByName(hologramName);
                             if (hologram == null) {
-                                Lang.sendMessage(sender, "niveriaholograms.hologram.remove.doesnt_exist", hologramName);
+                                LANG.sendMessage(sender, "niveriaholograms.hologram.remove.doesnt_exist",
+                                        Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                                );
                                 return Command.SINGLE_SUCCESS;
                             }
 
                             hologramManager.delete(hologram);
-                            Lang.sendMessage(sender, "niveriaholograms.hologram.remove.removed", hologram.name());
+                            LANG.sendMessage(sender, "niveriaholograms.hologram.remove.removed",
+                                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                            );
                             return Command.SINGLE_SUCCESS;
                         })
                 ).build();

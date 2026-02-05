@@ -27,6 +27,8 @@ import toutouchien.niveriaholograms.utils.HologramUtils;
 
 import java.util.Locale;
 
+import static toutouchien.niveriaholograms.NiveriaHolograms.LANG;
+
 public class HologramInfoCommand {
     private HologramInfoCommand() {
         throw new IllegalStateException("Command class");
@@ -53,7 +55,9 @@ public class HologramInfoCommand {
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                             Hologram hologram = hologramManager.hologramByName(hologramName);
                             if (hologram == null) {
-                                Lang.sendMessage(sender, "niveriaholograms.hologram.info.doesnt_exist", hologramName);
+                                LANG.sendMessage(sender, "niveriaholograms.hologram.info.doesnt_exist",
+                                        Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                                );
                                 return Command.SINGLE_SUCCESS;
                             }
 
@@ -62,43 +66,47 @@ public class HologramInfoCommand {
                             CustomLocation loc = hologram.location();
 
                             String[] brightnessText = brightnessText(config.brightness());
-                            Lang.sendMessage(sender, "niveriaholograms.hologram.info.info",
-                                    hologram.name(),
-                                    StringUtils.capitalize(type.name()),
-                                    loc.x(), loc.y(), loc.z(),
-                                    hologram.location().world(),
-                                    loc.yaw(), loc.pitch(),
-                                    scaleText(config.scale()),
-                                    StringUtils.capitalize(config.billboard().name()),
-                                    brightnessText[0], brightnessText[1],
-                                    config.shadowRadius(),
-                                    config.shadowStrength(),
-                                    config.visibilityDistance()
+                            LANG.sendMessage(sender, "niveriaholograms.hologram.info.info",
+                                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologram.name()),
+                                    Lang.unparsedPlaceholder("niveriaholograms_hologram_type", StringUtils.capitalize(type.name())),
+                                    Lang.numberPlaceholder("niveriaholograms_hologram_x", loc.x()),
+                                    Lang.numberPlaceholder("niveriaholograms_hologram_y", loc.y()),
+                                    Lang.numberPlaceholder("niveriaholograms_hologram_z", loc.z()),
+                                    Lang.unparsedPlaceholder("niveriaholograms_hologram_world", loc.world()),
+                                    Lang.numberPlaceholder("niveriaholograms_hologram_yaw", loc.yaw()),
+                                    Lang.numberPlaceholder("niveriaholograms_hologram_pitch", loc.pitch()),
+                                    Lang.unparsedPlaceholder("niveriaholograms_hologram_scale", scaleText(config.scale())),
+                                    Lang.unparsedPlaceholder("niveriaholograms_hologram_billboard", StringUtils.capitalize(config.billboard().name())),
+                                    Lang.unparsedPlaceholder("niveriaholograms_hologram_brightness_block", brightnessText[0]),
+                                    Lang.unparsedPlaceholder("niveriaholograms_hologram_brightness_sky", brightnessText[1]),
+                                    Lang.numberPlaceholder("niveriaholograms_hologram_shadow_radius", config.shadowRadius()),
+                                    Lang.numberPlaceholder("niveriaholograms_hologram_shadow_strength", config.shadowStrength()),
+                                    Lang.numberPlaceholder("niveriaholograms_hologram_visibility_distance", config.visibilityDistance())
                             );
 
-                            String noGlowingColorText = Lang.getString("niveriaholograms.hologram.other.no_glowing_color");
+                            String noGlowingColorText = LANG.getString("niveriaholograms.hologram.other.no_glowing_color");
                             switch (config) {
                                 case BlockHologramConfiguration block ->
-                                        Lang.sendMessage(sender, "niveriaholograms.hologram.info.info_block",
-                                                block.blockState().getType().name(),
-                                                block.glowing(),
-                                                block.glowingColor() == null ? noGlowingColorText : block.glowingColor().asHexString()
+                                        LANG.sendMessage(sender, "niveriaholograms.hologram.info.info_block",
+                                                Lang.unparsedPlaceholder("niveriaholograms_hologram_block_block", block.blockState().getType().name()),
+                                                Lang.unparsedPlaceholder("niveriaholograms_hologram_block_glowing", String.valueOf(block.glowing())),
+                                                Lang.unparsedPlaceholder("niveriaholograms_hologram_block_glowing_color", block.glowingColor() == null ? noGlowingColorText : block.glowingColor().asHexString())
                                         );
 
                                 case ItemHologramConfiguration item ->
-                                        Lang.sendMessage(sender, "niveriaholograms.hologram.info.info_item",
-                                                item.itemStack().getType(),
-                                                item.glowing(),
-                                                item.glowingColor() == null ? noGlowingColorText : item.glowingColor().asHexString()
+                                        LANG.sendMessage(sender, "niveriaholograms.hologram.info.info_item",
+                                                Lang.unparsedPlaceholder("niveriaholograms_hologram_item_item", item.itemStack().getType().name()),
+                                                Lang.unparsedPlaceholder("niveriaholograms_hologram_item_glowing", String.valueOf(item.glowing())),
+                                                Lang.unparsedPlaceholder("niveriaholograms_hologram_item_glowing_color", item.glowingColor() == null ? noGlowingColorText : item.glowingColor().asHexString())
                                         );
 
                                 case TextHologramConfiguration text ->
-                                        Lang.sendMessage(sender, "niveriaholograms.hologram.info.info_text",
-                                                backgroundText(text.background()),
-                                                text.textAlignment().name(),
-                                                text.seeThrough(),
-                                                text.textShadow(),
-                                                text.updateInterval()
+                                        LANG.sendMessage(sender, "niveriaholograms.hologram.info.info_text",
+                                                Lang.unparsedPlaceholder("niveriaholograms_hologram_text_background", backgroundText(text.background())),
+                                                Lang.unparsedPlaceholder("niveriaholograms_hologram_text_alignment", text.textAlignment().name()),
+                                                Lang.unparsedPlaceholder("niveriaholograms_hologram_text_see_through", String.valueOf(text.seeThrough())),
+                                                Lang.unparsedPlaceholder("niveriaholograms_hologram_text_shadow", String.valueOf(text.textShadow())),
+                                                Lang.numberPlaceholder("niveriaholograms_hologram_text_update_interval", text.updateInterval())
                                         );
 
                                 default -> throw new IllegalStateException("Unexpected value: " + config);
@@ -117,7 +125,7 @@ public class HologramInfoCommand {
 
     @NotNull
     private static String[] brightnessText(@Nullable Brightness brightness) {
-        String defaultText = Lang.getString("niveriaholograms.hologram.info.other.default");
+        String defaultText = LANG.getString("niveriaholograms.hologram.info.other.default");
 
         if (brightness == null)
             return new String[]{defaultText, defaultText};
@@ -130,10 +138,10 @@ public class HologramInfoCommand {
     @NotNull
     private static String backgroundText(@Nullable TextColor background) {
         if (background == null)
-            return Lang.getString("niveriaholograms.hologram.info.other.default");
+            return LANG.getString("niveriaholograms.hologram.info.other.default");
 
         if (background == HologramUtils.TRANSPARENT)
-            return Lang.getString("niveriaholograms.hologram.info.other.transparent");
+            return LANG.getString("niveriaholograms.hologram.info.other.transparent");
 
         return background.asHexString().toUpperCase(Locale.ROOT);
     }

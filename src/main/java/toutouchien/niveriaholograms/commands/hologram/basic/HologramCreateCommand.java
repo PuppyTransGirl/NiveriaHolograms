@@ -17,6 +17,8 @@ import toutouchien.niveriaholograms.managers.HologramManager;
 
 import java.util.Arrays;
 
+import static toutouchien.niveriaholograms.NiveriaHolograms.LANG;
+
 public class HologramCreateCommand {
     private HologramCreateCommand() {
         throw new IllegalStateException("Command class");
@@ -47,7 +49,10 @@ public class HologramCreateCommand {
                                         return Command.SINGLE_SUCCESS;
 
                                     hologramManager.create(player, hologramType, name);
-                                    Lang.sendMessage(player, "niveriaholograms.hologram.create.created", name, type);
+                                    LANG.sendMessage(player, "niveriaholograms.hologram.create.created",
+                                            Lang.unparsedPlaceholder("niveriaholograms_hologram_name", name),
+                                            Lang.unparsedPlaceholder("niveriaholograms_hologram_type", type)
+                                    );
                                     return Command.SINGLE_SUCCESS;
                                 })
                         )
@@ -56,23 +61,27 @@ public class HologramCreateCommand {
 
     private static boolean isValidHologram(@Nullable HologramType hologramType, @NotNull String type, @NotNull Player player, @NotNull String name, @NotNull HologramManager hologramManager) {
         if (hologramType == null) {
-            Lang.sendMessage(player, "niveriaholograms.hologram.create.invalid_type", type);
+            LANG.sendMessage(player, "niveriaholograms.hologram.create.invalid_type",
+                    Lang.unparsedPlaceholder("niveriaholograms_hologram_type", type)
+            );
             return false;
         }
 
         int length = name.length();
         if (length > 64) {
-            Lang.sendMessage(player, "niveriaholograms.hologram.create.name_too_long", 64);
+            LANG.sendMessage(player, "niveriaholograms.hologram.create.name_too_long",
+                    Lang.numberPlaceholder("niveriaholograms_hologram_name_max_length", 64)
+            );
             return false;
         }
 
         if (name.contains(".") || name.contains("+")) {
-            Lang.sendMessage(player, "niveriaholograms.hologram.create.invalid_character");
+            LANG.sendMessage(player, "niveriaholograms.hologram.create.invalid_character");
             return false;
         }
 
         if (hologramManager.hologramExists(name)) {
-            Lang.sendMessage(player, "niveriaholograms.hologram.create.already_exists");
+            LANG.sendMessage(player, "niveriaholograms.hologram.create.already_exists");
             return false;
         }
 

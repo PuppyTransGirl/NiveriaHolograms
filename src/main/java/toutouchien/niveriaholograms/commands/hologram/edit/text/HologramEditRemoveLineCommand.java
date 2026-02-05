@@ -15,6 +15,8 @@ import toutouchien.niveriaholograms.managers.HologramManager;
 
 import java.util.List;
 
+import static toutouchien.niveriaholograms.NiveriaHolograms.LANG;
+
 public class HologramEditRemoveLineCommand {
     private HologramEditRemoveLineCommand() {
         throw new IllegalStateException("Command class");
@@ -52,18 +54,22 @@ public class HologramEditRemoveLineCommand {
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                             Hologram hologram = hologramManager.hologramByName(hologramName);
                             if (hologram == null) {
-                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+                                LANG.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist",
+                                        Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                                );
                                 return Command.SINGLE_SUCCESS;
                             }
 
                             if (!(hologram.configuration() instanceof TextHologramConfiguration configuration)) {
-                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.only_text");
+                                LANG.sendMessage(sender, "niveriaholograms.hologram.edit.only_text");
                                 return Command.SINGLE_SUCCESS;
                             }
 
                             List<String> lines = configuration.text();
                             if (line > lines.size()) {
-                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.removeline.invalid_line", line);
+                                LANG.sendMessage(sender, "niveriaholograms.hologram.edit.removeline.invalid_line",
+                                        Lang.numberPlaceholder("niveriaholograms_input_line", line)
+                                );
                                 return Command.SINGLE_SUCCESS;
                             }
 
@@ -71,7 +77,9 @@ public class HologramEditRemoveLineCommand {
                                     config.removeText(line - 1)
                             );
 
-                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.removeline.edited", hologramName);
+                            LANG.sendMessage(sender, "niveriaholograms.hologram.edit.removeline.edited",
+                                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                            );
                             return Command.SINGLE_SUCCESS;
                         })
                 ).build();

@@ -12,6 +12,8 @@ import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
 
+import static toutouchien.niveriaholograms.NiveriaHolograms.LANG;
+
 public class HologramEditVisibilityDistanceCommand {
     private HologramEditVisibilityDistanceCommand() {
         throw new IllegalStateException("Command class");
@@ -29,7 +31,9 @@ public class HologramEditVisibilityDistanceCommand {
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                             Hologram hologram = hologramManager.hologramByName(hologramName);
                             if (hologram == null) {
-                                Lang.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist", hologramName);
+                                LANG.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist",
+                                        Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                                );
                                 return Command.SINGLE_SUCCESS;
                             }
 
@@ -37,7 +41,10 @@ public class HologramEditVisibilityDistanceCommand {
                                     config.visibilityDistance(visibilityDistance)
                             );
 
-                            Lang.sendMessage(sender, "niveriaholograms.hologram.edit.visibilitydistance.edited", hologramName, visibilityDistance);
+                            LANG.sendMessage(sender, "niveriaholograms.hologram.edit.visibilitydistance.edited",
+                                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName),
+                                    Lang.numberPlaceholder("niveriaholograms_hologram_visibility_distance", visibilityDistance)
+                            );
                             return Command.SINGLE_SUCCESS;
                         })
                 ).build();

@@ -18,6 +18,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import static toutouchien.niveriaholograms.NiveriaHolograms.LANG;
+
 public class HologramNearbyCommand {
     private HologramNearbyCommand() {
         throw new IllegalStateException("Command class");
@@ -41,11 +43,15 @@ public class HologramNearbyCommand {
 
 
                             if (nearbyHolograms.isEmpty()) {
-                                Lang.sendMessage(player, "niveriaholograms.hologram.nearby.no_holograms", radius);
+                                LANG.sendMessage(player, "niveriaholograms.hologram.nearby.no_holograms",
+                                        Lang.numberPlaceholder("niveriaholograms_nearby_radius", radius)
+                                );
                                 return Command.SINGLE_SUCCESS;
                             }
 
-                            Lang.sendMessage(player, "niveriaholograms.hologram.nearby.header", nearbyHolograms.size());
+                            LANG.sendMessage(player, "niveriaholograms.hologram.nearby.header",
+                                    Lang.numberPlaceholder("niveriaholograms_hologram_amount", nearbyHolograms.size())
+                            );
 
                             for (Map.Entry<Hologram, Double> entry : nearbyHolograms) {
                                 Hologram hologram = entry.getKey();
@@ -53,13 +59,14 @@ public class HologramNearbyCommand {
 
                                 CustomLocation loc = hologram.location();
 
-                                Lang.sendMessage(player, "niveriaholograms.hologram.nearby.hologram_entry",
-                                        hologram.name(), // For MiniMessage command click
-                                        hologram.name(),
-                                        StringUtils.capitalize(hologram.type().name()),
-                                        loc.world(),
-                                        loc.x(), loc.y(), loc.z(),
-                                        distance
+                                LANG.sendMessage(player, "niveriaholograms.hologram.nearby.hologram_entry",
+                                        Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologram.name()),
+                                        Lang.unparsedPlaceholder("niveriaholograms_hologram_type", StringUtils.capitalize(hologram.type().name())),
+                                        Lang.unparsedPlaceholder("niveriaholograms_hologram_world", loc.world()),
+                                        Lang.numberPlaceholder("niveriaholograms_hologram_x", loc.x()),
+                                        Lang.numberPlaceholder("niveriaholograms_hologram_y", loc.y()),
+                                        Lang.numberPlaceholder("niveriaholograms_hologram_z", loc.z()),
+                                        Lang.numberPlaceholder("niveriaholograms_hologram_distance", distance)
                                 );
                             }
 

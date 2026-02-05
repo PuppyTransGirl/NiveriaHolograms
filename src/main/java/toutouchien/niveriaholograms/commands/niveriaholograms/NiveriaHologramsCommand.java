@@ -12,6 +12,8 @@ import toutouchien.niveriaapi.utils.CommandUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.migration.MigrationMenu;
 
+import static toutouchien.niveriaholograms.NiveriaHolograms.LANG;
+
 public class NiveriaHologramsCommand {
     private NiveriaHologramsCommand() {
         throw new IllegalStateException("Command class");
@@ -45,7 +47,9 @@ public class NiveriaHologramsCommand {
                     long startMillis = System.currentTimeMillis();
                     NiveriaHolograms.instance().reload();
                     long timeTaken = System.currentTimeMillis() - startMillis;
-                    Lang.sendMessage(sender, "niveriaholograms.reload.done", timeTaken);
+                    LANG.sendMessage(sender, "niveriaholograms.reload.done",
+                            Lang.numberPlaceholder("niveriaholograms_time_ms", timeTaken)
+                    );
 
                     return Command.SINGLE_SUCCESS;
                 });

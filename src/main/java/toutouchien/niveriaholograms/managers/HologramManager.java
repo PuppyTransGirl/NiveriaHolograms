@@ -5,7 +5,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import toutouchien.niveriaapi.lang.Lang;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.configurations.HologramConfiguration;
 import toutouchien.niveriaholograms.configurations.TextHologramConfiguration;
@@ -18,6 +17,8 @@ import toutouchien.niveriaholograms.utils.CustomLocation;
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static toutouchien.niveriaholograms.NiveriaHolograms.LANG;
 
 public class HologramManager {
     private final NiveriaHolograms plugin;
@@ -53,7 +54,7 @@ public class HologramManager {
         Hologram hologram = createHologram(type, configuration, name, player.getUniqueId(), new CustomLocation(player.getLocation()));
 
         if (type == HologramType.TEXT)
-            ((TextHologramConfiguration) configuration).text(List.of(Lang.getString("niveriaholograms.default_text", name)));
+            ((TextHologramConfiguration) configuration).text(List.of(LANG.getString("niveriaholograms.default_text").replace("<niveriaholograms_hologram_name>", name)));
 
         hologram.create();
         hologram.createForAllPlayers();

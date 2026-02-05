@@ -15,6 +15,8 @@ import toutouchien.niveriaholograms.NiveriaHolograms;
 
 import java.io.File;
 
+import static toutouchien.niveriaholograms.NiveriaHolograms.LANG;
+
 public class MigrationMenu extends Menu {
     /**
      * Constructs a new Menu for the specified player.
@@ -35,7 +37,7 @@ public class MigrationMenu extends Menu {
      */
     @Override
     protected @NotNull Component title() {
-        return Lang.get("niveriaholograms.menu.migration.title");
+        return LANG.get("niveriaholograms.menu.migration.title");
     }
 
     /**
@@ -55,8 +57,10 @@ public class MigrationMenu extends Menu {
                     String presence = "niveriaholograms.menu.migration.decentholograms.lore" + (pluginHolograms.isDirectory() ? "_present" : "_not_present");
 
                     return ItemBuilder.of(Material.PLAYER_HEAD)
-                            .name(Lang.get("niveriaholograms.menu.migration.decentholograms.name"))
-                            .lore(Lang.getList("niveriaholograms.menu.migration.decentholograms.lore", Lang.getString(presence)))
+                            .name(LANG.get("niveriaholograms.menu.migration.decentholograms.name"))
+                            .lore(LANG.getList("niveriaholograms.menu.migration.decentholograms.lore",
+                                    Lang.placeholder("niveriaholograms_migration_presence", LANG.getString(presence))
+                            ))
                             .headTexture("http://textures.minecraft.net/texture/a7ab5cf2dfdc9e8ee3c79db14226cdf41b1b15f67b1613184a49e3c13e379de")
                             .build();
                 })
@@ -73,8 +77,10 @@ public class MigrationMenu extends Menu {
                     String presence = "niveriaholograms.menu.migration.fancyholograms.lore" + (pluginHolograms.isFile() ? "_present" : "_not_present");
 
                     return ItemBuilder.of(Material.PLAYER_HEAD)
-                            .name(Lang.get("niveriaholograms.menu.migration.fancyholograms.name"))
-                            .lore(Lang.getList("niveriaholograms.menu.migration.fancyholograms.lore", Lang.getString(presence)))
+                            .name(LANG.get("niveriaholograms.menu.migration.fancyholograms.name"))
+                            .lore(LANG.getList("niveriaholograms.menu.migration.fancyholograms.lore",
+                                    Lang.placeholder("niveriaholograms_migration_presence", LANG.getString(presence))
+                            ))
                             .headTexture("http://textures.minecraft.net/texture/70dc9420c14fcab98dcd6f5ad51e8ebe2bb97895976caa70578f73c66dfbd")
                             .build();
                 })
