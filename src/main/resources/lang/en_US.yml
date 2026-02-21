@@ -25,9 +25,9 @@ special-tags:
 
 command:
   reload:
-    start: "<prefix:niveria> <separator> <ncolor:default>Reloading NiveriaHolograms...</ncolor>"
-    done: "<prefix:niveria> <separator> <ncolor:success>NiveriaHolograms has been reloaded. (<time_ms> ms)</ncolor>"
-    error: "<prefix:niveria> <separator> <ncolor:error>An error occurred while reloading NiveriaHolograms. Please check the console for more information.</ncolor>"
+    start: "<prefix:holograms> <separator> <ncolor:default>Reloading NiveriaHolograms...</ncolor>"
+    done: "<prefix:holograms> <separator> <ncolor:success>NiveriaHolograms has been reloaded. (<time_ms> ms)</ncolor>"
+    error: "<prefix:holograms> <separator> <ncolor:error>An error occurred while reloading NiveriaHolograms. Please check the console for more information.</ncolor>"
 
   hologram:
     clone:
