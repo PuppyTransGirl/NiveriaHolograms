@@ -47,14 +47,14 @@ public class HologramEditBackgroundCommand {
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                             Hologram hologram = hologramManager.hologramByName(hologramName);
                             if (hologram == null) {
-                                LANG.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist",
-                                        Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                                LANG.sendMessage(sender, "command.hologram.edit.doesnt_exist",
+                                        Lang.unparsedPlaceholder("hologram_name", hologramName)
                                 );
                                 return Command.SINGLE_SUCCESS;
                             }
 
                             if (!(hologram.configuration() instanceof TextHologramConfiguration)) {
-                                LANG.sendMessage(sender, "niveriaholograms.hologram.edit.only_text");
+                                LANG.sendMessage(sender, "command.hologram.edit.only_text");
                                 return Command.SINGLE_SUCCESS;
                             }
 
@@ -70,8 +70,8 @@ public class HologramEditBackgroundCommand {
                                             : NamedTextColor.NAMES.value(option);
 
                                     if (textColor == null) {
-                                        LANG.sendMessage(sender, "niveriaholograms.hologram.edit.background.invalid_color",
-                                                Lang.unparsedPlaceholder("niveriaholograms_input_background", colorName)
+                                        LANG.sendMessage(sender, "command.hologram.edit.background.invalid_color",
+                                                Lang.unparsedPlaceholder("input_background", colorName)
                                         );
                                         return Command.SINGLE_SUCCESS;
                                     }
@@ -84,8 +84,8 @@ public class HologramEditBackgroundCommand {
                                     config.background(backgroundColor)
                             );
 
-                            LANG.sendMessage(sender, "niveriaholograms.hologram.edit.background.edited",
-                                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                            LANG.sendMessage(sender, "command.hologram.edit.background.edited",
+                                    Lang.unparsedPlaceholder("hologram_name", hologramName)
                             );
                             return Command.SINGLE_SUCCESS;
                         })

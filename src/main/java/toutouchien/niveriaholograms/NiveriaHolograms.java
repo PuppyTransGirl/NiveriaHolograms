@@ -59,7 +59,7 @@ public class NiveriaHolograms extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new HologramListener(hologramManager, this.getDataFolder()), this);
 
-        new UpdateChecker(this, "j3tHqIoj", "niveriaholograms.new_update");
+        new UpdateChecker(this, "j3tHqIoj");
     }
 
     @Override
@@ -72,8 +72,14 @@ public class NiveriaHolograms extends JavaPlugin {
     }
 
     public void reload() {
+        this.getSLF4JLogger().info("Reloading NiveriaAPI...");
+
+        this.reloadConfig();
         LANG.reload();
+
         this.hologramManager.reload();
+
+        this.getSLF4JLogger().info("NiveriaAPI reloaded.");
     }
 
     public HologramManager hologramManager() {

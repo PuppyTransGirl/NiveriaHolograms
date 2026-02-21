@@ -41,16 +41,16 @@ public class HologramTeleportCommand {
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                             Hologram hologram = hologramManager.hologramByName(hologramName);
                             if (hologram == null) {
-                                LANG.sendMessage(player, "niveriaholograms.hologram.teleport.doesnt_exist",
-                                        Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                                LANG.sendMessage(player, "command.hologram.teleport.doesnt_exist",
+                                        Lang.unparsedPlaceholder("hologram_name", hologramName)
                                 );
                                 return Command.SINGLE_SUCCESS;
                             }
 
                             player.teleportAsync(hologram.location().bukkitLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN)
                                     .thenAccept(ignored ->
-                                            LANG.sendMessage(player, "niveriaholograms.hologram.teleport.teleported",
-                                                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologram.name())
+                                            LANG.sendMessage(player, "command.hologram.teleport.teleported",
+                                                    Lang.unparsedPlaceholder("hologram_name", hologram.name())
                                             )
                                     );
                             return Command.SINGLE_SUCCESS;

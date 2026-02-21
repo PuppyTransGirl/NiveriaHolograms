@@ -37,7 +37,7 @@ public class MigrationMenu extends Menu {
      */
     @Override
     protected @NotNull Component title() {
-        return LANG.get("niveriaholograms.menu.migration.title");
+        return LANG.get("menu.migration.title");
     }
 
     /**
@@ -54,12 +54,12 @@ public class MigrationMenu extends Menu {
         Button decentHologramsButton = Button.create()
                 .item(ctx -> {
                     File pluginHolograms = new File("plugins/DecentHolograms/holograms/");
-                    String presence = "niveriaholograms.menu.migration.decentholograms.lore" + (pluginHolograms.isDirectory() ? "_present" : "_not_present");
+                    String presence = "menu.migration.decentholograms.lore" + (pluginHolograms.isDirectory() ? "_present" : "_not_present");
 
                     return ItemBuilder.of(Material.PLAYER_HEAD)
-                            .name(LANG.get("niveriaholograms.menu.migration.decentholograms.name"))
-                            .lore(LANG.getList("niveriaholograms.menu.migration.decentholograms.lore",
-                                    Lang.placeholder("niveriaholograms_migration_presence", LANG.getString(presence))
+                            .name(LANG.get("menu.migration.decentholograms.name"))
+                            .lore(LANG.getList("menu.migration.decentholograms.lore",
+                                    Lang.placeholder("migration_presence", LANG.getString(presence))
                             ))
                             .headTexture("http://textures.minecraft.net/texture/a7ab5cf2dfdc9e8ee3c79db14226cdf41b1b15f67b1613184a49e3c13e379de")
                             .build();
@@ -74,12 +74,12 @@ public class MigrationMenu extends Menu {
         Button fancyHologramsButton = Button.create()
                 .item(ctx -> {
                     File pluginHolograms = new File("plugins/FancyHolograms/holograms.yml");
-                    String presence = "niveriaholograms.menu.migration.fancyholograms.lore" + (pluginHolograms.isFile() ? "_present" : "_not_present");
+                    String presence = "menu.migration.fancyholograms.lore" + (pluginHolograms.isFile() ? "_present" : "_not_present");
 
                     return ItemBuilder.of(Material.PLAYER_HEAD)
-                            .name(LANG.get("niveriaholograms.menu.migration.fancyholograms.name"))
-                            .lore(LANG.getList("niveriaholograms.menu.migration.fancyholograms.lore",
-                                    Lang.placeholder("niveriaholograms_migration_presence", LANG.getString(presence))
+                            .name(LANG.get("menu.migration.fancyholograms.name"))
+                            .lore(LANG.getList("menu.migration.fancyholograms.lore",
+                                    Lang.placeholder("migration_presence", LANG.getString(presence))
                             ))
                             .headTexture("http://textures.minecraft.net/texture/70dc9420c14fcab98dcd6f5ad51e8ebe2bb97895976caa70578f73c66dfbd")
                             .build();
@@ -93,8 +93,8 @@ public class MigrationMenu extends Menu {
 
         return Grid.create()
                 .size(9, 3)
-                .add(context, 11, decentHologramsButton)
-                .add(context, 15, fancyHologramsButton)
+                .add(11, decentHologramsButton)
+                .add(15, fancyHologramsButton)
                 .build();
     }
 }

@@ -9,7 +9,7 @@ import net.minecraft.world.entity.Display;
 import org.bukkit.command.CommandSender;
 import toutouchien.niveriaapi.lang.Lang;
 import toutouchien.niveriaapi.utils.CommandUtils;
-import toutouchien.niveriaapi.utils.StringUtils;
+import toutouchien.niveriaapi.utils.EnumUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.Hologram;
 import toutouchien.niveriaholograms.managers.HologramManager;
@@ -50,16 +50,16 @@ public class HologramEditBillboardCommand {
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                             Hologram hologram = hologramManager.hologramByName(hologramName);
                             if (hologram == null) {
-                                LANG.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist",
-                                        Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                                LANG.sendMessage(sender, "command.hologram.edit.doesnt_exist",
+                                        Lang.unparsedPlaceholder("hologram_name", hologramName)
                                 );
                                 return Command.SINGLE_SUCCESS;
                             }
 
-                            Display.BillboardConstraints billboard = StringUtils.match(billboardName, Display.BillboardConstraints.class, null);
+                            Display.BillboardConstraints billboard = EnumUtils.match(billboardName, Display.BillboardConstraints.class, null);
                             if (billboard == null) {
-                                LANG.sendMessage(sender, "niveriaholograms.hologram.edit.billboard.invalid_billboard",
-                                        Lang.unparsedPlaceholder("niveriaholograms_input_billboard", billboardName)
+                                LANG.sendMessage(sender, "command.hologram.edit.billboard.invalid_billboard",
+                                        Lang.unparsedPlaceholder("input_billboard", billboardName)
                                 );
                                 return Command.SINGLE_SUCCESS;
                             }
@@ -68,8 +68,8 @@ public class HologramEditBillboardCommand {
                                     config.billboard(billboard)
                             );
 
-                            LANG.sendMessage(sender, "niveriaholograms.hologram.edit.billboard.edited",
-                                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                            LANG.sendMessage(sender, "command.hologram.edit.billboard.edited",
+                                    Lang.unparsedPlaceholder("hologram_name", hologramName)
                             );
                             return Command.SINGLE_SUCCESS;
                         })

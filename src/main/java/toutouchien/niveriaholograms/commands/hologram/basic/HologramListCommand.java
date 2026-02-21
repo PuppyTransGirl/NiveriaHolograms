@@ -32,24 +32,24 @@ public class HologramListCommand {
 
                     List<Hologram> holograms = hologramManager.holograms();
                     if (holograms.isEmpty()) {
-                        LANG.sendMessage(sender, "niveriaholograms.hologram.list.no_holograms");
+                        LANG.sendMessage(sender, "command.hologram.list.no_holograms");
                         return Command.SINGLE_SUCCESS;
                     }
 
-                    LANG.sendMessage(sender, "niveriaholograms.hologram.list.header",
-                            Lang.numberPlaceholder("niveriaholograms_hologram_amount", holograms.size())
+                    LANG.sendMessage(sender, "command.hologram.list.header",
+                            Lang.numberPlaceholder("hologram_amount", holograms.size())
                     );
 
                     for (Hologram hologram : holograms) {
                         CustomLocation loc = hologram.location();
 
-                        LANG.sendMessage(sender, "niveriaholograms.hologram.list.hologram_entry",
-                                Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologram.name()),
-                                Lang.unparsedPlaceholder("niveriaholograms_hologram_type", StringUtils.capitalize(hologram.type().name())),
-                                Lang.unparsedPlaceholder("niveriaholograms_hologram_world", loc.world()),
-                                Lang.numberPlaceholder("niveriaholograms_hologram_x", HologramUtils.formatNumber(loc.x())),
-                                Lang.numberPlaceholder("niveriaholograms_hologram_y", HologramUtils.formatNumber(loc.y())),
-                                Lang.numberPlaceholder("niveriaholograms_hologram_z", HologramUtils.formatNumber(loc.z()))
+                        LANG.sendMessage(sender, "command.hologram.list.hologram_entry",
+                                Lang.unparsedPlaceholder("hologram_name", hologram.name()),
+                                Lang.unparsedPlaceholder("hologram_type", StringUtils.capitalize(hologram.type().name())),
+                                Lang.unparsedPlaceholder("hologram_world", loc.world()),
+                                Lang.numberPlaceholder("hologram_x", HologramUtils.formatNumber(loc.x())),
+                                Lang.numberPlaceholder("hologram_y", HologramUtils.formatNumber(loc.y())),
+                                Lang.numberPlaceholder("hologram_z", HologramUtils.formatNumber(loc.z()))
                         );
                     }
 

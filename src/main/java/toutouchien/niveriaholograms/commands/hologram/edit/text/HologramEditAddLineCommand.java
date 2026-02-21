@@ -32,14 +32,14 @@ public class HologramEditAddLineCommand {
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                             Hologram hologram = hologramManager.hologramByName(hologramName);
                             if (hologram == null) {
-                                LANG.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist",
-                                        Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                                LANG.sendMessage(sender, "command.hologram.edit.doesnt_exist",
+                                        Lang.unparsedPlaceholder("hologram_name", hologramName)
                                 );
                                 return Command.SINGLE_SUCCESS;
                             }
 
                             if (!(hologram.configuration() instanceof TextHologramConfiguration)) {
-                                LANG.sendMessage(sender, "niveriaholograms.hologram.edit.only_text");
+                                LANG.sendMessage(sender, "command.hologram.edit.only_text");
                                 return Command.SINGLE_SUCCESS;
                             }
 
@@ -47,8 +47,8 @@ public class HologramEditAddLineCommand {
                                     config.addText(text)
                             );
 
-                            LANG.sendMessage(sender, "niveriaholograms.hologram.edit.addline.edited",
-                                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                            LANG.sendMessage(sender, "command.hologram.edit.addline.edited",
+                                    Lang.unparsedPlaceholder("hologram_name", hologramName)
                             );
                             return Command.SINGLE_SUCCESS;
                         })

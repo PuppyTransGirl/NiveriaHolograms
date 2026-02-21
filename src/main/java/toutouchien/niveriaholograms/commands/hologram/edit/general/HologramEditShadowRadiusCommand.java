@@ -31,8 +31,8 @@ public class HologramEditShadowRadiusCommand {
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                             Hologram hologram = hologramManager.hologramByName(hologramName);
                             if (hologram == null) {
-                                LANG.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist",
-                                        Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                                LANG.sendMessage(sender, "command.hologram.edit.doesnt_exist",
+                                        Lang.unparsedPlaceholder("hologram_name", hologramName)
                                 );
                                 return Command.SINGLE_SUCCESS;
                             }
@@ -41,9 +41,9 @@ public class HologramEditShadowRadiusCommand {
                                     config.shadowRadius(shadowRadius)
                             );
 
-                            LANG.sendMessage(sender, "niveriaholograms.hologram.edit.shadowradius.edited",
-                                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName),
-                                    Lang.numberPlaceholder("niveriaholograms_hologram_shadow_radius", shadowRadius)
+                            LANG.sendMessage(sender, "command.hologram.edit.shadowradius.edited",
+                                    Lang.unparsedPlaceholder("hologram_name", hologramName),
+                                    Lang.numberPlaceholder("hologram_shadow_radius", shadowRadius)
                             );
                             return Command.SINGLE_SUCCESS;
                         })

@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import toutouchien.niveriaapi.lang.Lang;
 import toutouchien.niveriaapi.utils.CommandUtils;
+import toutouchien.niveriaapi.utils.EnumUtils;
 import toutouchien.niveriaapi.utils.StringUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.core.HologramType;
@@ -42,16 +43,16 @@ public class HologramCreateCommand {
                                     String type = StringUtils.capitalize(ctx.getArgument("type", String.class));
                                     String name = ctx.getArgument("name", String.class);
 
-                                    HologramType hologramType = StringUtils.match(type, HologramType.class, null);
+                                    HologramType hologramType = EnumUtils.match(type, HologramType.class, null);
                                     HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                                     boolean isValidHologram = isValidHologram(hologramType, type, player, name, hologramManager);
                                     if (!isValidHologram)
                                         return Command.SINGLE_SUCCESS;
 
                                     hologramManager.create(player, hologramType, name);
-                                    LANG.sendMessage(player, "niveriaholograms.hologram.create.created",
-                                            Lang.unparsedPlaceholder("niveriaholograms_hologram_name", name),
-                                            Lang.unparsedPlaceholder("niveriaholograms_hologram_type", type)
+                                    LANG.sendMessage(player, "command.hologram.create.created",
+                                            Lang.unparsedPlaceholder("hologram_name", name),
+                                            Lang.unparsedPlaceholder("hologram_type", type)
                                     );
                                     return Command.SINGLE_SUCCESS;
                                 })
@@ -61,27 +62,27 @@ public class HologramCreateCommand {
 
     private static boolean isValidHologram(@Nullable HologramType hologramType, @NotNull String type, @NotNull Player player, @NotNull String name, @NotNull HologramManager hologramManager) {
         if (hologramType == null) {
-            LANG.sendMessage(player, "niveriaholograms.hologram.create.invalid_type",
-                    Lang.unparsedPlaceholder("niveriaholograms_hologram_type", type)
+            LANG.sendMessage(player, "command.hologram.create.invalid_type",
+                    Lang.unparsedPlaceholder("hologram_type", type)
             );
             return false;
         }
 
         int length = name.length();
         if (length > 64) {
-            LANG.sendMessage(player, "niveriaholograms.hologram.create.name_too_long",
-                    Lang.numberPlaceholder("niveriaholograms_hologram_name_max_length", 64)
+            LANG.sendMessage(player, "command.hologram.create.name_too_long",
+                    Lang.numberPlaceholder("hologram_name_max_length", 64)
             );
             return false;
         }
 
         if (name.contains(".") || name.contains("+")) {
-            LANG.sendMessage(player, "niveriaholograms.hologram.create.invalid_character");
+            LANG.sendMessage(player, "command.hologram.create.invalid_character");
             return false;
         }
 
         if (hologramManager.hologramExists(name)) {
-            LANG.sendMessage(player, "niveriaholograms.hologram.create.already_exists");
+            LANG.sendMessage(player, "command.hologram.create.already_exists");
             return false;
         }
 
