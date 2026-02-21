@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 import toutouchien.niveriaapi.lang.Lang;
-import toutouchien.niveriaapi.utils.StringUtils;
+import toutouchien.niveriaapi.utils.EnumUtils;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.configurations.BlockHologramConfiguration;
 import toutouchien.niveriaholograms.configurations.HologramConfiguration;
@@ -73,8 +73,8 @@ public class FancyHologramsV2Migrator implements Migrator {
 
                 holograms.add(hologram);
             } catch (Exception e) {
-                LANG.sendMessage(player, "niveriaholograms.migrator.fancyholograms.cannot_migrate_hologram",
-                        Lang.unparsedPlaceholder("niveriaholograms_hologram_name", key)
+                LANG.sendMessage(player, "migrator.fancyholograms.cannot_migrate_hologram",
+                        Lang.unparsedPlaceholder("hologram_name", key)
                 );
                 NiveriaHolograms.instance().getSLF4JLogger().error("The hologram '{}' couldn't be migrated", key, e);
             }
@@ -114,7 +114,7 @@ public class FancyHologramsV2Migrator implements Migrator {
         switch (type) {
             case BLOCK -> {
                 BlockHologramConfiguration blockConfig = (BlockHologramConfiguration) config;
-                Material material = StringUtils.match(section.getString("block", "GRASS_BLOCK").toUpperCase(Locale.ROOT), Material.class, Material.GRASS_BLOCK);
+                Material material = EnumUtils.match(section.getString("block", "GRASS_BLOCK").toUpperCase(Locale.ROOT), Material.class, Material.GRASS_BLOCK);
                 blockConfig.blockState(material.asBlockType().createBlockData().createBlockState());
             }
 
@@ -156,8 +156,8 @@ public class FancyHologramsV2Migrator implements Migrator {
     @Nullable
     private CustomLocation parseLocation(@NotNull String name, @NotNull Player player, @Nullable ConfigurationSection section) {
         if (section == null) {
-            LANG.sendMessage(player, "niveriaholograms.migrator.fancyholograms.malformed_location",
-                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", name)
+            LANG.sendMessage(player, "migrator.fancyholograms.malformed_location",
+                    Lang.unparsedPlaceholder("hologram_name", name)
             );
             return null;
         }
@@ -170,9 +170,9 @@ public class FancyHologramsV2Migrator implements Migrator {
                 .findAny();
 
         if (loadedWorld.isEmpty()) {
-            LANG.sendMessage(player, "niveriaholograms.migrator.fancyholograms.invalid_world",
-                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", name),
-                    Lang.unparsedPlaceholder("niveriaholograms_hologram_world", String.valueOf(world))
+            LANG.sendMessage(player, "migrator.fancyholograms.invalid_world",
+                    Lang.unparsedPlaceholder("hologram_name", name),
+                    Lang.unparsedPlaceholder("hologram_world", String.valueOf(world))
             );
             return null;
         }
@@ -183,8 +183,8 @@ public class FancyHologramsV2Migrator implements Migrator {
         Number yawNum = section.getObject("yaw", Number.class);
         Number pitchNum = section.getObject("pitch", Number.class);
         if (xNum == null || yNum == null || zNum == null || yawNum == null || pitchNum == null) {
-            LANG.sendMessage(player, "niveriaholograms.migrator.fancyholograms.malformed_location",
-                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", name)
+            LANG.sendMessage(player, "migrator.fancyholograms.malformed_location",
+                    Lang.unparsedPlaceholder("hologram_name", name)
             );
             return null;
         }

@@ -40,15 +40,15 @@ public class HologramRemoveCommand {
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                             Hologram hologram = hologramManager.hologramByName(hologramName);
                             if (hologram == null) {
-                                LANG.sendMessage(sender, "niveriaholograms.hologram.remove.doesnt_exist",
-                                        Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                                LANG.sendMessage(sender, "command.hologram.remove.doesnt_exist",
+                                        Lang.unparsedPlaceholder("hologram_name", hologramName)
                                 );
                                 return Command.SINGLE_SUCCESS;
                             }
 
                             hologramManager.delete(hologram);
-                            LANG.sendMessage(sender, "niveriaholograms.hologram.remove.removed",
-                                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                            LANG.sendMessage(sender, "command.hologram.remove.removed",
+                                    Lang.unparsedPlaceholder("hologram_name", hologramName)
                             );
                             return Command.SINGLE_SUCCESS;
                         })

@@ -69,8 +69,8 @@ public class DecentHologramsMigrator implements Migrator {
 
             holograms.add(hologram);
         } catch (Exception e) {
-            LANG.sendMessage(player, "niveriaholograms.migrator.decentholograms.cannot_migrate_hologram",
-                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", name)
+            LANG.sendMessage(player, "migrator.decentholograms.cannot_migrate_hologram",
+                    Lang.unparsedPlaceholder("hologram_name", name)
             );
             NiveriaHolograms.instance().getSLF4JLogger().error("The hologram '{}' couldn't be migrated", name, e);
         }
@@ -114,22 +114,22 @@ public class DecentHologramsMigrator implements Migrator {
     private List<Map<String, Object>> firstPageLines(@NotNull String name, @NotNull Player player, @NotNull FileConfiguration config) {
         List<Map<?, ?>> pages = config.getMapList("pages");
         if (pages.isEmpty()) {
-            LANG.sendMessage(player, "niveriaholograms.migrator.decentholograms.no_page",
-                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", name)
+            LANG.sendMessage(player, "migrator.decentholograms.no_page",
+                    Lang.unparsedPlaceholder("hologram_name", name)
             );
             return null;
         }
 
         if (pages.size() > 1)
-            LANG.sendMessage(player, "niveriaholograms.migrator.decentholograms.too_many_pages",
-                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", name),
-                    Lang.numberPlaceholder("niveriaholograms_migration_page_amount", pages.size())
+            LANG.sendMessage(player, "migrator.decentholograms.too_many_pages",
+                    Lang.unparsedPlaceholder("hologram_name", name),
+                    Lang.numberPlaceholder("migration_page_amount", pages.size())
             );
 
         Object linesObj = pages.getFirst().get("lines");
         if (!(linesObj instanceof List<?> linesList)) {
-            LANG.sendMessage(player, "niveriaholograms.migrator.decentholograms.malformed_pages",
-                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", name)
+            LANG.sendMessage(player, "migrator.decentholograms.malformed_pages",
+                    Lang.unparsedPlaceholder("hologram_name", name)
             );
             return null;
         }
@@ -137,8 +137,8 @@ public class DecentHologramsMigrator implements Migrator {
         List<Map<String, Object>> firstPage = (List<Map<String, Object>>) linesList;
         for (Map<String, Object> line : firstPage) {
             if (line.get("content") == null) {
-                LANG.sendMessage(player, "niveriaholograms.migrator.decentholograms.malformed_pages",
-                        Lang.unparsedPlaceholder("niveriaholograms_hologram_name", name)
+                LANG.sendMessage(player, "migrator.decentholograms.malformed_pages",
+                        Lang.unparsedPlaceholder("hologram_name", name)
                 );
                 return null;
             }
@@ -197,16 +197,16 @@ public class DecentHologramsMigrator implements Migrator {
     @Nullable
     private CustomLocation parseLocation(@NotNull String name, @NotNull Player player, @Nullable String line) {
         if (line == null) {
-            LANG.sendMessage(player, "niveriaholograms.migrator.decentholograms.malformed_location",
-                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", name)
+            LANG.sendMessage(player, "migrator.decentholograms.malformed_location",
+                    Lang.unparsedPlaceholder("hologram_name", name)
             );
             return null;
         }
 
         String[] splitLine = line.split(":");
         if (splitLine.length != 4) {
-            LANG.sendMessage(player, "niveriaholograms.migrator.decentholograms.malformed_location",
-                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", name)
+            LANG.sendMessage(player, "migrator.decentholograms.malformed_location",
+                    Lang.unparsedPlaceholder("hologram_name", name)
             );
             return null;
         }
@@ -220,9 +220,9 @@ public class DecentHologramsMigrator implements Migrator {
                 .findAny();
 
         if (loadedWorld.isEmpty()) {
-            LANG.sendMessage(player, "niveriaholograms.migrator.decentholograms.invalid_world",
-                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", name),
-                    Lang.unparsedPlaceholder("niveriaholograms_hologram_world", String.valueOf(world))
+            LANG.sendMessage(player, "migrator.decentholograms.invalid_world",
+                    Lang.unparsedPlaceholder("hologram_name", name),
+                    Lang.unparsedPlaceholder("hologram_world", String.valueOf(world))
             );
             return null;
         }
@@ -232,8 +232,8 @@ public class DecentHologramsMigrator implements Migrator {
             y = Double.parseDouble(splitLine[2]);
             z = Double.parseDouble(splitLine[3]);
         } catch (NumberFormatException e) {
-            LANG.sendMessage(player, "niveriaholograms.migrator.decentholograms.malformed_location",
-                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", name)
+            LANG.sendMessage(player, "migrator.decentholograms.malformed_location",
+                    Lang.unparsedPlaceholder("hologram_name", name)
             );
             return null;
         }

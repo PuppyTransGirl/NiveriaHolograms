@@ -49,9 +49,9 @@ public class HologramCloneCommand {
                                         return Command.SINGLE_SUCCESS;
 
                                     hologramManager.cloneHologram(hologram, player, newHologramName);
-                                    LANG.sendMessage(player, "niveriaholograms.hologram.clone.cloned",
-                                            Lang.unparsedPlaceholder("niveriaholograms_cloned_hologram_name", hologram.name()),
-                                            Lang.unparsedPlaceholder("niveriaholograms_hologram_name", newHologramName)
+                                    LANG.sendMessage(player, "command.hologram.clone.cloned",
+                                            Lang.unparsedPlaceholder("cloned_hologram_name", hologram.name()),
+                                            Lang.unparsedPlaceholder("hologram_name", newHologramName)
                                     );
                                     return Command.SINGLE_SUCCESS;
                                 })
@@ -62,27 +62,27 @@ public class HologramCloneCommand {
 
     private static boolean isValidHologram(@Nullable Hologram hologram, @NotNull Player player, @NotNull String hologramName, @NotNull String newHologramName, @NotNull HologramManager hologramManager) {
         if (hologram == null) {
-            LANG.sendMessage(player, "niveriaholograms.hologram.clone.doesnt_exist",
-                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+            LANG.sendMessage(player, "command.hologram.clone.doesnt_exist",
+                    Lang.unparsedPlaceholder("hologram_name", hologramName)
             );
             return false;
         }
 
         int length = newHologramName.length();
         if (length > 64) {
-            LANG.sendMessage(player, "niveriaholograms.hologram.clone.name_too_long",
-                    Lang.numberPlaceholder("niveriaholograms_hologram_name_max_length", 64)
+            LANG.sendMessage(player, "command.hologram.clone.name_too_long",
+                    Lang.numberPlaceholder("hologram_name_max_length", 64)
             );
             return false;
         }
 
         if (newHologramName.contains(".") || newHologramName.contains("+")) {
-            LANG.sendMessage(player, "niveriaholograms.hologram.clone.invalid_character");
+            LANG.sendMessage(player, "command.hologram.clone.invalid_character");
             return false;
         }
 
         if (hologramManager.hologramExists(newHologramName)) {
-            LANG.sendMessage(player, "niveriaholograms.hologram.clone.already_exists");
+            LANG.sendMessage(player, "command.hologram.clone.already_exists");
             return false;
         }
 

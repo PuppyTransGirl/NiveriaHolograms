@@ -84,8 +84,8 @@ public class HologramEditSetLineCommand {
                                             config.text(line - 1, text)
                                     );
 
-                                    LANG.sendMessage(sender, "niveriaholograms.hologram.edit.setline.edited",
-                                            Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                                    LANG.sendMessage(sender, "command.hologram.edit.setline.edited",
+                                            Lang.unparsedPlaceholder("hologram_name", hologramName)
                                     );
                                     return Command.SINGLE_SUCCESS;
                                 })
@@ -95,21 +95,21 @@ public class HologramEditSetLineCommand {
 
     private static boolean isValidHologram(@Nullable Hologram hologram, @NotNull CommandSender sender, @NotNull String hologramName, @Positive int line) {
         if (hologram == null) {
-            LANG.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist",
-                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+            LANG.sendMessage(sender, "command.hologram.edit.doesnt_exist",
+                    Lang.unparsedPlaceholder("hologram_name", hologramName)
             );
             return false;
         }
 
         if (!(hologram.configuration() instanceof TextHologramConfiguration configuration)) {
-            LANG.sendMessage(sender, "niveriaholograms.hologram.edit.only_text");
+            LANG.sendMessage(sender, "command.hologram.edit.only_text");
             return false;
         }
 
         List<String> lines = configuration.text();
         if (line > lines.size()) {
-            LANG.sendMessage(sender, "niveriaholograms.hologram.edit.setline.invalid_line",
-                    Lang.numberPlaceholder("niveriaholograms_input_line", line)
+            LANG.sendMessage(sender, "command.hologram.edit.setline.invalid_line",
+                    Lang.numberPlaceholder("input_line", line)
             );
             return false;
         }

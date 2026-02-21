@@ -9,9 +9,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import toutouchien.niveriaapi.lang.Lang;
 import toutouchien.niveriaapi.utils.CommandUtils;
+import toutouchien.niveriaapi.utils.MathUtils;
+import toutouchien.niveriaapi.utils.Task;
 import toutouchien.niveriaholograms.NiveriaHolograms;
 import toutouchien.niveriaholograms.migration.MigrationMenu;
-import toutouchien.niveriaholograms.utils.HologramUtils;
 
 import static toutouchien.niveriaholograms.NiveriaHolograms.LANG;
 
@@ -45,12 +46,22 @@ public class NiveriaHologramsCommand {
                 .executes(ctx -> {
                     CommandSender sender = CommandUtils.sender(ctx);
 
-                    long startMillis = System.currentTimeMillis();
-                    NiveriaHolograms.instance().reload();
-                    long timeTaken = System.currentTimeMillis() - startMillis;
-                    LANG.sendMessage(sender, "niveriaholograms.reload.done",
-                            Lang.numberPlaceholder("niveriaholograms_time_ms", HologramUtils.formatNumber(timeTaken))
-                    );
+                    LANG.sendMessage(sender, "command.reload.start");
+                    long startNanos = System.nanoTime();
+
+                    Task.async(task -> {
+                        try {
+                            NiveriaHolograms.instance().reload();
+                            double timeTaken = (System.nanoTime() - startNanos) / 1_000_000D;
+
+                            LANG.sendMessage(sender, "command.reload.done",
+                                    Lang.numberPlaceholder("time_ms", MathUtils.decimalRound(timeTaken, 2))
+                            );
+                        } catch (Exception e) {
+                            NiveriaHolograms.instance().getSLF4JLogger().error("Failed to reload NiveriaHolograms", e);
+                            LANG.sendMessage(sender, "command.reload.error");
+                        }
+                    }, NiveriaHolograms.instance());
 
                     return Command.SINGLE_SUCCESS;
                 });

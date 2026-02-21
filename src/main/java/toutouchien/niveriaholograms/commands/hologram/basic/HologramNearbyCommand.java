@@ -44,14 +44,14 @@ public class HologramNearbyCommand {
 
 
                             if (nearbyHolograms.isEmpty()) {
-                                LANG.sendMessage(player, "niveriaholograms.hologram.nearby.no_holograms",
-                                        Lang.numberPlaceholder("niveriaholograms_nearby_radius", radius)
+                                LANG.sendMessage(player, "command.hologram.nearby.no_holograms",
+                                        Lang.numberPlaceholder("nearby_radius", radius)
                                 );
                                 return Command.SINGLE_SUCCESS;
                             }
 
-                            LANG.sendMessage(player, "niveriaholograms.hologram.nearby.header",
-                                    Lang.numberPlaceholder("niveriaholograms_hologram_amount", nearbyHolograms.size())
+                            LANG.sendMessage(player, "command.hologram.nearby.header",
+                                    Lang.numberPlaceholder("hologram_amount", nearbyHolograms.size())
                             );
 
                             for (Map.Entry<Hologram, Double> entry : nearbyHolograms) {
@@ -60,14 +60,14 @@ public class HologramNearbyCommand {
 
                                 CustomLocation loc = hologram.location();
 
-                                LANG.sendMessage(player, "niveriaholograms.hologram.nearby.hologram_entry",
-                                        Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologram.name()),
-                                        Lang.unparsedPlaceholder("niveriaholograms_hologram_type", StringUtils.capitalize(hologram.type().name())),
-                                        Lang.unparsedPlaceholder("niveriaholograms_hologram_world", loc.world()),
-                                        Lang.numberPlaceholder("niveriaholograms_hologram_x", HologramUtils.formatNumber(loc.x())),
-                                        Lang.numberPlaceholder("niveriaholograms_hologram_y", HologramUtils.formatNumber(loc.y())),
-                                        Lang.numberPlaceholder("niveriaholograms_hologram_z", HologramUtils.formatNumber(loc.z())),
-                                        Lang.numberPlaceholder("niveriaholograms_hologram_distance", HologramUtils.formatNumber(distance))
+                                LANG.sendMessage(player, "command.hologram.nearby.hologram_entry",
+                                        Lang.unparsedPlaceholder("hologram_name", hologram.name()),
+                                        Lang.unparsedPlaceholder("hologram_type", StringUtils.capitalize(hologram.type().name())),
+                                        Lang.unparsedPlaceholder("hologram_world", loc.world()),
+                                        Lang.numberPlaceholder("hologram_x", HologramUtils.formatNumber(loc.x())),
+                                        Lang.numberPlaceholder("hologram_y", HologramUtils.formatNumber(loc.y())),
+                                        Lang.numberPlaceholder("hologram_z", HologramUtils.formatNumber(loc.z())),
+                                        Lang.numberPlaceholder("hologram_distance", HologramUtils.formatNumber(distance))
                                 );
                             }
 

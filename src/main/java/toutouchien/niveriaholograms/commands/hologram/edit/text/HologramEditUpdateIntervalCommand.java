@@ -32,14 +32,14 @@ public class HologramEditUpdateIntervalCommand {
                             HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                             Hologram hologram = hologramManager.hologramByName(hologramName);
                             if (hologram == null) {
-                                LANG.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist",
-                                        Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                                LANG.sendMessage(sender, "command.hologram.edit.doesnt_exist",
+                                        Lang.unparsedPlaceholder("hologram_name", hologramName)
                                 );
                                 return Command.SINGLE_SUCCESS;
                             }
 
                             if (!(hologram.configuration() instanceof TextHologramConfiguration)) {
-                                LANG.sendMessage(sender, "niveriaholograms.hologram.edit.only_text");
+                                LANG.sendMessage(sender, "command.hologram.edit.only_text");
                                 return Command.SINGLE_SUCCESS;
                             }
 
@@ -47,9 +47,9 @@ public class HologramEditUpdateIntervalCommand {
                                     config.updateInterval(updateInterval)
                             );
 
-                            LANG.sendMessage(sender, "niveriaholograms.hologram.edit.updateinterval.edited",
-                                    Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName),
-                                    Lang.numberPlaceholder("niveriaholograms_hologram_text_update_interval", updateInterval)
+                            LANG.sendMessage(sender, "command.hologram.edit.updateinterval.edited",
+                                    Lang.unparsedPlaceholder("hologram_name", hologramName),
+                                    Lang.numberPlaceholder("hologram_text_update_interval", updateInterval)
                             );
                             return Command.SINGLE_SUCCESS;
                         })

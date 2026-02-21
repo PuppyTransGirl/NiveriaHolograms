@@ -57,16 +57,16 @@ public class HologramEditBrightnessCommand {
                                     HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                                     Hologram hologram = hologramManager.hologramByName(hologramName);
                                     if (hologram == null) {
-                                        LANG.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist",
-                                                Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                                        LANG.sendMessage(sender, "command.hologram.edit.doesnt_exist",
+                                                Lang.unparsedPlaceholder("hologram_name", hologramName)
                                         );
                                         return Command.SINGLE_SUCCESS;
                                     }
 
                                     String type = typeName.toLowerCase(Locale.ROOT);
                                     if (!BRIGHTNESS_TYPES.contains(type)) {
-                                        LANG.sendMessage(sender, "niveriaholograms.hologram.edit.brightness.invalid_type",
-                                                Lang.unparsedPlaceholder("niveriaholograms_input_brightness_type", typeName)
+                                        LANG.sendMessage(sender, "command.hologram.edit.brightness.invalid_type",
+                                                Lang.unparsedPlaceholder("input_brightness_type", typeName)
                                         );
                                         return Command.SINGLE_SUCCESS;
                                     }
@@ -88,8 +88,8 @@ public class HologramEditBrightnessCommand {
                                             config.brightness(new Brightness(finalBlock, finalSky))
                                     );
 
-                                    LANG.sendMessage(sender, "niveriaholograms.hologram.edit.brightness.edited",
-                                            Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                                    LANG.sendMessage(sender, "command.hologram.edit.brightness.edited",
+                                            Lang.unparsedPlaceholder("hologram_name", hologramName)
                                     );
                                     return Command.SINGLE_SUCCESS;
                                 })

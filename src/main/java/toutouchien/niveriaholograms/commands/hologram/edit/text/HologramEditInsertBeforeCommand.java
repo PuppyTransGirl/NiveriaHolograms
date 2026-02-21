@@ -57,21 +57,21 @@ public class HologramEditInsertBeforeCommand {
                                     HologramManager hologramManager = NiveriaHolograms.instance().hologramManager();
                                     Hologram hologram = hologramManager.hologramByName(hologramName);
                                     if (hologram == null) {
-                                        LANG.sendMessage(sender, "niveriaholograms.hologram.edit.doesnt_exist",
-                                                Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                                        LANG.sendMessage(sender, "command.hologram.edit.doesnt_exist",
+                                                Lang.unparsedPlaceholder("hologram_name", hologramName)
                                         );
                                         return Command.SINGLE_SUCCESS;
                                     }
 
                                     if (!(hologram.configuration() instanceof TextHologramConfiguration configuration)) {
-                                        LANG.sendMessage(sender, "niveriaholograms.hologram.edit.only_text");
+                                        LANG.sendMessage(sender, "command.hologram.edit.only_text");
                                         return Command.SINGLE_SUCCESS;
                                     }
 
                                     List<String> lines = configuration.text();
                                     if (line > lines.size()) {
-                                        LANG.sendMessage(sender, "niveriaholograms.hologram.edit.insertbefore.invalid_line",
-                                                Lang.numberPlaceholder("niveriaholograms_input_line", line)
+                                        LANG.sendMessage(sender, "command.hologram.edit.insertbefore.invalid_line",
+                                                Lang.numberPlaceholder("input_line", line)
                                         );
                                         return Command.SINGLE_SUCCESS;
                                     }
@@ -80,8 +80,8 @@ public class HologramEditInsertBeforeCommand {
                                             config.addTextBefore(line - 1, text)
                                     );
 
-                                    LANG.sendMessage(sender, "niveriaholograms.hologram.edit.insertbefore.edited",
-                                            Lang.unparsedPlaceholder("niveriaholograms_hologram_name", hologramName)
+                                    LANG.sendMessage(sender, "command.hologram.edit.insertbefore.edited",
+                                            Lang.unparsedPlaceholder("hologram_name", hologramName)
                                     );
                                     return Command.SINGLE_SUCCESS;
                                 })
