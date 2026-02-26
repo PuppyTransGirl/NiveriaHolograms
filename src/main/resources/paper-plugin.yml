@@ -1,0 +1,15 @@
+name: NiveriaHolograms
+version: '${version}'
+main: toutouchien.niveriaholograms.NiveriaHolograms
+api-version: '${minMinecraftVersion}'
+load: STARTUP
+authors: [ PuppyTransGirl ]
+website: https://niveria.fr
+
+folia-supported: true
+
+dependencies:
+  server:
+    NiveriaAPI:
+      load: BEFORE
+      required: true

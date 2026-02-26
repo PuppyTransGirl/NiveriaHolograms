@@ -1,0 +1,44 @@
+# ============================================================
+# ===============  OTHER (PREFIXES, COLORS, ETC.) ============
+# ============================================================
+
+special-tags:
+  # ---------------- PREFIXES ----------------
+  prefix:
+    holograms: "<gradient:#4BC0C8:#7EE8FA>ʜᴏʟᴏɢʀᴀᴍѕ</gradient>"
+
+  # ---------------- COLORS ----------------
+  ncolor:
+    primary: "#4BC0C8"
+    secondary: "#7EE8FA"
+    success: "#7AF291"
+    error: "#F27474"
+    default: "#B0AEC1"
+
+  # ---------------- OTHER ----------------
+  other:
+    separator: "<#B0AEC1>»</#B0AEC1>"
+
+# ============================================================
+# ======================== FEATURES ==========================
+# ============================================================
+
+command:
+  fixcommands:
+    single: "<prefix:holograms> <separator> <ncolor:success>You have reloaded commands for <player_amount> player.</ncolor>"
+    multiple: "<prefix:holograms> <separator> <ncolor:success>You have reloaded commands for <player_amount> players.</ncolor>"
+
+  ping:
+    header: "<prefix:holograms> <separator> <ncolor:default>Database ping</ncolor>"
+    line: "<ncolor:primary><database_name></ncolor> <ncolor:default>-</ncolor> <ping_ms> ms"
+
+  reload:
+    start: "<prefix:holograms> <separator> <ncolor:default>Reloading NiveriaHolograms...</ncolor>"
+    done: "<prefix:holograms> <separator> <ncolor:success>NiveriaHolograms has been reloaded. (<time_ms> ms)</ncolor>"
+    error: "<prefix:holograms> <separator> <ncolor:error>An error occurred while reloading NiveriaHolograms. Please check the console for more information.</ncolor>"
+
+
+update:
+  available: |-
+    <prefix:holograms> <separator> <ncolor:default>There is a new version of <ncolor:primary>NiveriaHolograms</ncolor>: <ncolor:error><current_version></ncolor> → <ncolor:success><latest_version></ncolor></ncolor>
+    <ncolor:default>Download link: <ncolor:secondary><click:open_url:"https://modrinth.com/plugin/niveriaholograms">https://modrinth.com/plugin/niveriaholograms</click></ncolor></ncolor>

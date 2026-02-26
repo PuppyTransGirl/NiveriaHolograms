@@ -11,7 +11,7 @@ val niveriaApiVersion: String by project
 val bStatsVersion: String by project
 
 group = "toutouchien.niveriaholograms"
-version = "1.0.2"
+version = "2.0.0"
 
 repositories {
     mavenCentral()
@@ -49,7 +49,7 @@ tasks {
 
         downloadPlugins {
             modrinth("LuckPerms", "v5.5.17-bukkit")
-            github("jpenilla", "TabTPS", "v1.3.29", "tabtps-paper-1.3.29.jar")
+            github("jpenilla", "TabTPS", "v1.3.29", "tabtps-paper-1.3.30.jar")
             modrinth("ServerLogViewer-Paper", "1.0.0")
             github("PuppyTransGirl", "NiveriaAPI", niveriaApiVersion, "NiveriaAPI-$niveriaApiVersion.jar")
             modrinth("PlaceholderAPI", "2.11.7")
