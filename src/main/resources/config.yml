@@ -1,3 +1,6 @@
+lang: "en_US"
+use_player_locale: false
+
 update-checker:
   enabled: true
   on-join: true
