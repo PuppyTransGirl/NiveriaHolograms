@@ -117,3 +117,30 @@ publishing {
         mavenLocal()
     }
 }
+
+subprojects {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        maven("https://repo.papermc.io/repository/maven-public/")
+        maven("https://jitpack.io")
+    }
+}
+
+project(":nms").subprojects {
+    if (!project.name.startsWith("nms_v"))
+        return@subprojects
+
+    plugins.apply("io.papermc.paperweight.userdev")
+    plugins.apply("java-library")
+
+    dependencies {
+        add(
+            JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME,
+            paperweight.paperDevBundle("${minecraftVersion}-R0.1-SNAPSHOT")
+        )
+
+        "implementation"(project(rootProject.path))
+        compileOnly("com.github.PuppyTransGirl:NiveriaAPI:${niveriaApiVersion}")
+    }
+}
