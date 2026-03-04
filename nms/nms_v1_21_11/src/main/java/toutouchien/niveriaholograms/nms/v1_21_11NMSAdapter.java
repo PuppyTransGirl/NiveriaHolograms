@@ -76,7 +76,7 @@ public class v1_21_11NMSAdapter implements NMSAdapter {
         if (hologram.config() instanceof TextHologramConfig textConfig && textConfig.updateIntervalDirty()) {
             if (textConfig.updateInterval() > 0)
                 hologram.updateTask(Task.asyncRepeat(
-                        ignored -> hologram.updateForAllPlayers(),
+                        ignored -> NiveriaHolograms.instance().nmsManager().updateHologram(hologram),
                         NiveriaHolograms.instance(),
                         Math.max(40L, textConfig.updateInterval()) * 50L,
                         textConfig.updateInterval() * 50L,
@@ -86,15 +86,28 @@ public class v1_21_11NMSAdapter implements NMSAdapter {
             textConfig.updateIntervalDirty(false);
         }
 
-        sendDataPackets(players, teleportPacket);
+        sendDataPackets(hologram, players, teleportPacket);
     }
 
-    private void sendDataPackets(List<Player> players, @Nullable ClientboundTeleportEntityPacket teleportPacket) {
+    private void sendDataPackets(Hologram hologram, List<Player> players, @Nullable ClientboundTeleportEntityPacket teleportPacket) {
         Hologram.hologramSender().submit(() -> {
-            for (Player player : players) {
+            List<SynchedEntityData.DataValue<?>> lastSentData = null;
 
+            for (Player player : players) {
+                Entity entity = hologram.entity(Entity.class);
+                if (entity instanceof Display.TextDisplay textDisplay && hologram.config() instanceof TextHologramConfig textConfig)
+                    textDisplay.setText(PaperAdventure.asVanilla(textConfig.serializedText(player)));
+
+                List<SynchedEntityData.DataValue<?>> newData = entity.getEntityData().packDirty();
+                if (newData == null)
+                    newData = lastSentData;
+
+                ClientboundSetEntityDataPacket dataPacket = newData == null ? null : new ClientboundSetEntityDataPacket(entity.getId(), newData);
+                NMSUtils.sendNonNullPackets(player, teleportPacket, dataPacket);
+
+                lastSentData = newData;
             }
-        })
+        });
     }
 
     @Override

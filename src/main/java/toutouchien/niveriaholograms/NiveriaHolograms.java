@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import toutouchien.niveriaapi.lang.Lang;
 import toutouchien.niveriaapi.updatechecker.UpdateChecker;
 import toutouchien.niveriaholograms.commands.NiveriaHologramsCommand;
+import toutouchien.niveriaholograms.nms.NMSManager;
 
 public class NiveriaHolograms extends JavaPlugin {
     private static final String MODRINTH_PROJECT_ID = "j3tHqIoj";
@@ -17,6 +18,8 @@ public class NiveriaHolograms extends JavaPlugin {
 
     @SuppressWarnings({"java:S1104", "java:S1444", "java:S3008"})
     public static Lang LANG;
+
+    private NMSManager nmsManager;
 
     private Metrics bStats;
 
@@ -40,6 +43,8 @@ public class NiveriaHolograms extends JavaPlugin {
             registrar.register(NiveriaHologramsCommand.get());
         });
 
+        this.nmsManager = new NMSManager(this);
+
         if (this.getConfig().getBoolean("update-checker.enabled", true))
             new UpdateChecker(this, MODRINTH_PROJECT_ID);
     }
@@ -53,14 +58,18 @@ public class NiveriaHolograms extends JavaPlugin {
         this.getSLF4JLogger().info("NiveriaHolograms reloaded.");
     }
 
-    public static NiveriaHolograms instance() {
-        return instance;
-    }
-
     @Override
     public void onDisable() {
         this.bStats.shutdown();
 
         Bukkit.getScheduler().cancelTasks(this);
+    }
+
+    public NMSManager nmsManager() {
+        return this.nmsManager;
+    }
+
+    public static NiveriaHolograms instance() {
+        return instance;
     }
 }

@@ -37,6 +37,14 @@ public class Hologram {
         this.location = location;
     }
 
+    public HologramType type() {
+        return this.type;
+    }
+
+    public Object entity() {
+        return this.entity;
+    }
+
     public <T> T entity(Class<T> clazz) {
         return clazz.cast(this.entity);
     }
