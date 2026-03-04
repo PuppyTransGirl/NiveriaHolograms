@@ -247,3 +247,4 @@ public final class LegacyToMiniMessage {
         return closer.toString();
     }
 }
+

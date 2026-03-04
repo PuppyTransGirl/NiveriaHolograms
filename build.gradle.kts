@@ -11,7 +11,7 @@ val niveriaApiVersion: String by project
 val bStatsVersion: String by project
 
 group = "toutouchien.niveriaholograms"
-version = "1.0.2"
+version = "2.0.0"
 
 repositories {
     mavenCentral()
@@ -49,7 +49,7 @@ tasks {
 
         downloadPlugins {
             modrinth("LuckPerms", "v5.5.17-bukkit")
-            github("jpenilla", "TabTPS", "v1.3.29", "tabtps-paper-1.3.29.jar")
+            github("jpenilla", "TabTPS", "v1.3.29", "tabtps-paper-1.3.30.jar")
             modrinth("ServerLogViewer-Paper", "1.0.0")
             github("PuppyTransGirl", "NiveriaAPI", niveriaApiVersion, "NiveriaAPI-$niveriaApiVersion.jar")
             modrinth("PlaceholderAPI", "2.11.7")
@@ -115,5 +115,32 @@ publishing {
     }
     repositories {
         mavenLocal()
+    }
+}
+
+subprojects {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        maven("https://repo.papermc.io/repository/maven-public/")
+        maven("https://jitpack.io")
+    }
+}
+
+project(":nms").subprojects {
+    if (!project.name.startsWith("nms_v"))
+        return@subprojects
+
+    plugins.apply("io.papermc.paperweight.userdev")
+    plugins.apply("java-library")
+
+    dependencies {
+        add(
+            JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME,
+            paperweight.paperDevBundle("${minecraftVersion}-R0.1-SNAPSHOT")
+        )
+
+        "implementation"(project(rootProject.path))
+        compileOnly("com.github.PuppyTransGirl:NiveriaAPI:${niveriaApiVersion}")
     }
 }
